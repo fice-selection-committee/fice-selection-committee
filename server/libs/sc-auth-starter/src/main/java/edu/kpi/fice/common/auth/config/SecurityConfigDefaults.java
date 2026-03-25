@@ -1,6 +1,7 @@
 package edu.kpi.fice.common.auth.config;
 
 import edu.kpi.fice.common.auth.filter.AuthFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,12 @@ public class SecurityConfigDefaults {
 
     http.cors(AbstractHttpConfigurer::disable)
         .csrf(AbstractHttpConfigurer::disable)
+        .exceptionHandling(
+            ex ->
+                ex.authenticationEntryPoint(
+                    (request, response, authException) ->
+                        response.sendError(
+                            HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
         .authorizeHttpRequests(
             request ->
                 request.requestMatchers(publicPaths).permitAll().anyRequest().authenticated())
