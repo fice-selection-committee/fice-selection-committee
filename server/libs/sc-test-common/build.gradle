@@ -6,6 +6,9 @@ dependencies {
     api platform(libs.testcontainers.bom)
     api libs.testcontainers.core
     api libs.testcontainers.junit.jupiter
+    api libs.testcontainers.postgresql
+    api libs.testcontainers.rabbitmq
+    api libs.testcontainers.minio
     api libs.spring.boot.testcontainers
     api libs.spring.boot.starter.test
 }
