@@ -7,7 +7,6 @@ server/services/selection-committee-notifications-service/
 server/services/selection-committee-environment-service/
 server/services/selection-committee-computer-vision/
 server/services/selection-committee-e2e-tests/
-server/libs/sc-auth-starter/
 client/
 tests/
 
