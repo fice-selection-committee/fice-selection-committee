@@ -1,0 +1,12 @@
+package edu.kpi.fice.common.auth.client;
+
+import edu.kpi.fice.common.auth.dto.UserDto;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@FeignClient(name = "identity-service", url = "${sc.auth.identity-service-url}")
+public interface IdentityServiceClient {
+
+  @PostMapping("/api/v1/auth/user")
+  UserDto getCurrentUser();
+}
