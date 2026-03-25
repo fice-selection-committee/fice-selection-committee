@@ -7,4 +7,7 @@ dependencies {
     api libs.micrometer.prometheus
     api libs.micrometer.tracing.brave
     api libs.zipkin.reporter.brave
+
+    implementation libs.spring.boot.autoconfigure
+    annotationProcessor libs.spring.boot.configuration.processor
 }
