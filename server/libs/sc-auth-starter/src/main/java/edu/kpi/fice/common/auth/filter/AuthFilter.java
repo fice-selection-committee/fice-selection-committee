@@ -55,7 +55,12 @@ public class AuthFilter extends OncePerRequestFilter {
       UserDto authUser = identityServiceClient.getCurrentUser();
       ArrayList<String> permissions =
           new ArrayList<>(authUser.extraPermissions().stream().map(PermissionDto::name).toList());
-      permissions.add(authUser.role().name());
+      String roleName = authUser.role().name();
+      permissions.add(roleName);
+      // Also add the short form (without ROLE_ prefix) so @PreAuthorize("hasAuthority('ADMIN')") works
+      if (roleName.startsWith("ROLE_")) {
+        permissions.add(roleName.substring(5));
+      }
       Authentication authentication =
           new UsernamePasswordAuthenticationToken(
               authUser, null, permissions.stream().map(SimpleGrantedAuthority::new).toList());
