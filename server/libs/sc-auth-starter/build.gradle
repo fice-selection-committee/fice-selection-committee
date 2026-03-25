@@ -1,0 +1,23 @@
+plugins {
+    id 'sc.library-conventions'
+}
+
+def catalog = extensions.getByType(VersionCatalogsExtension).named("libs")
+
+dependencyManagement {
+    imports {
+        mavenBom catalog.findLibrary("spring-cloud-bom").get().get().toString()
+    }
+}
+
+dependencies {
+    api libs.spring.boot.starter.security
+    api libs.spring.boot.starter.web
+    api libs.spring.cloud.openfeign
+
+    implementation libs.spring.boot.autoconfigure
+    annotationProcessor libs.spring.boot.configuration.processor
+
+    testImplementation libs.spring.boot.starter.test
+    testRuntimeOnly libs.junit.platform.launcher
+}
