@@ -3,6 +3,7 @@ package edu.kpi.fice.sc.s3;
 import java.net.URI;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -36,6 +37,12 @@ public class S3AutoConfiguration {
                   S3Configuration.builder().pathStyleAccessEnabled(props.pathStyle()).build());
     }
     return builder.build();
+  }
+
+  @Bean
+  @ConditionalOnProperty(name = "minio.bucket")
+  public S3BucketInitializer s3BucketInitializer(S3Client s3Client, S3Properties props) {
+    return new S3BucketInitializer(s3Client, props);
   }
 
   @Bean
