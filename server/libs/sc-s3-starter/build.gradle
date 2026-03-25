@@ -1,0 +1,12 @@
+plugins {
+    id 'sc.library-conventions'
+}
+
+dependencies {
+    api libs.aws.s3
+    api libs.aws.auth
+    api libs.aws.regions
+
+    implementation libs.spring.boot.autoconfigure
+    annotationProcessor libs.spring.boot.configuration.processor
+}

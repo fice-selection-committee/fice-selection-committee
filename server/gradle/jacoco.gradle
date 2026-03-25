@@ -1,0 +1,52 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir("reports/coverage")
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    group = "Reporting"
+    description = "Generates code coverage report for Unit and Integration tests"
+
+    executionData.setFrom(fileTree(layout.buildDirectory).include("jacoco/*.exec"))
+
+    reports {
+        csv.required = true
+        xml.required = true
+        html.required = true
+
+        xml.outputLocation = layout.buildDirectory.file("reports/coverage/coverage.xml")
+        html.outputLocation = layout.buildDirectory.dir("reports/coverage")
+        csv.outputLocation = layout.buildDirectory.file("reports/coverage/coverage.csv")
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: filesExcludedFromCoverage)
+        }))
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    executionData.setFrom(fileTree(layout.buildDirectory).include("jacoco/*.exec"))
+    violationRules {
+        rule {
+            enabled = true
+            element = 'SOURCEFILE'
+            limit {
+                counter = 'LINE'
+                minimum = minimumCoveragePerFile ?: 0.8
+            }
+            excludes = filesExcludedFromCoverage
+        }
+    }
+}

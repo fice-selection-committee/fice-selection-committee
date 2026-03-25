@@ -1,0 +1,94 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.TestResult
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+
+    testLogging {
+        // set options for log level LIFECYCLE
+        events TestLogEvent.FAILED,
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED
+        exceptionFormat TestExceptionFormat.FULL
+        showExceptions true
+        showCauses true
+        showStackTraces true
+
+        // set options for log level DEBUG and INFO
+        debug {
+            events TestLogEvent.STARTED,
+                    TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED,
+                    TestLogEvent.STANDARD_ERROR,
+                    TestLogEvent.STANDARD_OUT
+            exceptionFormat TestExceptionFormat.FULL
+        }
+        info.events = debug.events
+        info.exceptionFormat = debug.exceptionFormat
+
+        // define file to store test summary and populate in subsequent methods, if not yet existing
+        File testSummaryFile = layout.buildDirectory.file("reports/tests/test-summary.md").get().asFile
+
+        beforeSuite { desc ->
+            if (!desc.parent) { // will match the outermost suite
+                if (!testSummaryFile.exists() || testSummaryFile.text.contains(retrieveTestType(desc) + ' Report Details')) {
+                    // Overwrite file if test results of current test type already exist
+                    testSummaryFile.write('\n<details>\n' + '<summary>' + retrieveTestType(desc) + ' Report Details</summary>\n')
+                } else {
+                    testSummaryFile.append('\n<details>\n' + '<summary>' + retrieveTestType(desc) + ' Report Details</summary>\n')
+                }
+                testSummaryFile.append('<table><tr><th>Test Suite</th><th>Test Case</th><th>Test Result</th></tr>')
+            }
+        }
+
+        afterTest { desc, result ->
+            testSummaryFile.append("<tr><td>" + desc.className.split("\\.").last() + "</td><td>${desc.displayName}</td><td>" + retrieveResultMarkdownSymbol(result.resultType) + "</td></tr>\n")
+        }
+
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+
+                testSummaryFile.append("</table>\n</details>")
+                def title = '## ' + retrieveTestType(desc) + ' Summary'
+                def tableHeader = '<table><tr><th>Test Result</th><th>Passed  :green_circle:</th><th>Failed  :x:</th><th>Skipped  :warning:</th></tr>' + '\n'
+                def results = "<tr><td>${result.resultType}  " + retrieveResultMarkdownSymbol(result.resultType) + "</td><td>${result.successfulTestCount}</td><td>${result.failedTestCount}</td><td>${result.skippedTestCount}</td></tr></table>"
+                testSummaryFile.append '\n\n' + title + '\n' + tableHeader + '\n' + results
+            }
+        }
+    }
+}
+
+def static retrieveResultMarkdownSymbol(TestResult.ResultType resultType) {
+    switch (resultType) {
+        case TestResult.ResultType.FAILURE:
+            return ":x:"
+            break
+        case TestResult.ResultType.SUCCESS:
+            return ":green_circle:"
+            break
+        case TestResult.ResultType.SKIPPED:
+            return ":warning:"
+            break
+        default:
+            return "UNKNOWN"
+    }
+}
+
+def static retrieveTestType(TestDescriptor descriptor) {
+    switch (descriptor.getDisplayName()) {
+        case ~/.*:integrationTest.*/:
+            return "Thin Integration Test"
+            break
+        case ~/.*:test.*/:
+            return "Unit Test"
+            break
+        default:
+            return "Test"
+    }
+}

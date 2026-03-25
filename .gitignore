@@ -1,0 +1,42 @@
+# ── Cloned service repositories (managed individually) ─────
+server/services/selection-committee-gateway/
+server/services/selection-committee-identity-service/
+server/services/selection-committee-admission-service/
+server/services/selection-committee-documents-service/
+server/services/selection-committee-notifications-service/
+server/services/selection-committee-environment-service/
+server/services/selection-committee-computer-vision/
+server/services/selection-committee-e2e-tests/
+server/libs/sc-auth-starter/
+client/
+tests/
+
+# ── Infra and bootstrap (separate repos) ──────────────────
+infra/
+bootstrap/
+
+# ── Build output ──────────────────────────────────────────
+**/build/
+**/.gradle/
+allure-report/
+allure-results/
+
+# ── IDE ───────────────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# ── Claude Code / MCP ─────────────────────────────────────
+.claude/
+.mcp.json
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Secrets ───────────────────────────────────────────────
+**/.env
+**/secrets/

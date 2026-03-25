@@ -1,0 +1,53 @@
+{
+  "name": "selection-committee",
+  "timezone": "Europe/Kyiv",
+
+  "repos": [
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-gateway.git",                "dest": "server/services/selection-committee-gateway" },
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-identity-service.git",       "dest": "server/services/selection-committee-identity-service" },
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-admission-service.git",      "dest": "server/services/selection-committee-admission-service" },
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-documents-service.git",      "dest": "server/services/selection-committee-documents-service" },
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-notifications-service.git",  "dest": "server/services/selection-committee-notifications-service" },
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-environment-service.git",    "dest": "server/services/selection-committee-environment-service" },
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-computer-vision.git",        "dest": "server/services/selection-committee-computer-vision" },
+
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-web.git",                    "dest": "client/web" },
+
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-tests-api.git",              "dest": "tests/api-tests" },
+    { "url": "https://github.com/FICE-Selection-Committee-Solutions/selection-committee-tests-mock.git",             "dest": "tests/web-tests" }
+  ],
+
+  "infra": {
+    "postgres": { "db": "selection-committee", "user": "scadmin", "password": "scadminpass", "port": 5432 },
+    "redis":    { "port": 6379 },
+    "rabbitmq": { "user": "scadmin", "pass": "scadminpass", "port": 5672, "mgmtPort": 15672 },
+    "pgadmin":  { "enabled": false, "email": "scadmin@fice.kpi.edu", "password": "scadminpass", "port": 5050 }
+  },
+
+  "server": {
+    "java": { "distribution": "Temurin", "version": 21 },
+    "services": [
+      { "name": "selection-committee-gateway",               "path": "server/services/selection-committee-gateway",               "start": { "command": "./gradlew", "args": ["-q","bootRun","--args=--spring.profiles.active=local"] } },
+      { "name": "selection-committee-identity-service",      "path": "server/services/selection-committee-identity-service",      "start": { "command": "./gradlew", "args": ["-q","bootRun","--args=--spring.profiles.active=local"] } },
+      { "name": "selection-committee-admission-service",     "path": "server/services/selection-committee-admission-service",     "start": { "command": "./gradlew", "args": ["-q","bootRun","--args=--spring.profiles.active=local"] } },
+      { "name": "selection-committee-documents-service",     "path": "server/services/selection-committee-documents-service",     "start": { "command": "./gradlew", "args": ["-q","bootRun","--args=--spring.profiles.active=local"] } },
+      { "name": "selection-committee-notifications-service", "path": "server/services/selection-committee-notifications-service", "start": { "command": "./gradlew", "args": ["-q","bootRun","--args=--spring.profiles.active=local"] } },
+      { "name": "selection-committee-environment-service",   "path": "server/services/selection-committee-environment-service",   "start": { "command": "./gradlew", "args": ["-q","bootRun","--args=--spring.profiles.active=local"] } },
+      { "name": "selection-committee-computer-vision",       "path": "server/services/selection-committee-computer-vision",       "start": { "command": "./gradlew", "args": ["-q","bootRun","--args=--spring.profiles.active=local"] } }
+    ]
+  },
+
+  "client": {
+    "web": {
+      "path": "client/web",
+      "env": { "NEXT_PUBLIC_API_BASE": "http://localhost:8080", "NEXT_PUBLIC_ENV": "local", "TZ": "${TZ}" },
+      "packageManager": "pnpm",
+      "devCommand": "pnpm dev"
+    }
+  },
+
+  "tests": {
+    "api": { "path": "tests/api-tests" },
+    "web": { "path": "tests/web-tests" }
+  }
+}

@@ -1,0 +1,10 @@
+plugins {
+    id 'sc.library-conventions'
+}
+
+dependencies {
+    api libs.spring.boot.starter.actuator
+    api libs.micrometer.prometheus
+    api libs.micrometer.tracing.brave
+    api libs.zipkin.reporter.brave
+}

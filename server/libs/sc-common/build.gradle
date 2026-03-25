@@ -1,0 +1,23 @@
+plugins {
+    id 'sc.library-conventions'
+}
+
+dependencies {
+    api libs.spring.boot.starter.web
+    api libs.spring.boot.starter.validation
+
+    // For EntityNotFoundException in BaseGlobalExceptionHandler
+    compileOnly 'jakarta.persistence:jakarta.persistence-api'
+
+    // For AccessDeniedException in BaseGlobalExceptionHandler
+    compileOnly libs.spring.boot.starter.security
+
+    // For DataIntegrityViolationException
+    compileOnly 'org.springframework:spring-tx'
+
+    // For MaxUploadSizeExceededException
+    compileOnly 'org.springframework:spring-web'
+
+    // For Jackson annotations in ErrorResponse
+    implementation libs.jackson.databind
+}

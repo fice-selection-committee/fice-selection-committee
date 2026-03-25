@@ -1,0 +1,11 @@
+plugins {
+    id 'sc.library-conventions'
+}
+
+dependencies {
+    api platform(libs.testcontainers.bom)
+    api libs.testcontainers.core
+    api libs.testcontainers.junit.jupiter
+    api libs.spring.boot.testcontainers
+    api libs.spring.boot.starter.test
+}
