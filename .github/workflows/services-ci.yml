@@ -5,10 +5,13 @@ on:
     branches: [main]
     paths:
       - 'server/services/**'
+      - '.github/workflows/services-ci.yml'
   push:
     branches: [main]
     paths:
       - 'server/services/**'
+      - '.github/workflows/services-ci.yml'
+  workflow_dispatch:
 
 concurrency:
   group: services-ci-${{ github.ref }}
