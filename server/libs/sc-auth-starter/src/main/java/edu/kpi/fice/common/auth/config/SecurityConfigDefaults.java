@@ -31,8 +31,7 @@ public class SecurityConfigDefaults {
             ex ->
                 ex.authenticationEntryPoint(
                     (request, response, authException) ->
-                        response.sendError(
-                            HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
         .authorizeHttpRequests(
             request ->
                 request.requestMatchers(publicPaths).permitAll().anyRequest().authenticated())
