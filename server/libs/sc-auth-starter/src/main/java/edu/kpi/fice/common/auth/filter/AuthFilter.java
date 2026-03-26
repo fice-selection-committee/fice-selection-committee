@@ -57,7 +57,8 @@ public class AuthFilter extends OncePerRequestFilter {
           new ArrayList<>(authUser.extraPermissions().stream().map(PermissionDto::name).toList());
       String roleName = authUser.role().name();
       permissions.add(roleName);
-      // Also add the short form (without ROLE_ prefix) so @PreAuthorize("hasAuthority('ADMIN')") works
+      // Also add the short form (without ROLE_ prefix) so @PreAuthorize("hasAuthority('ADMIN')")
+      // works
       if (roleName.startsWith("ROLE_")) {
         permissions.add(roleName.substring(5));
       }

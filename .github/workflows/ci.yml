@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'server/libs/**'
+      - 'server/buildSrc/**'
+      - 'server/build.gradle.kts'
+      - 'server/settings.gradle.kts'
+      - 'server/gradle/**'
+  push:
+    branches: [main]
+    paths:
+      - 'server/libs/**'
+      - 'server/buildSrc/**'
+      - 'server/build.gradle.kts'
+      - 'server/settings.gradle.kts'
+      - 'server/gradle/**'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build & Test Libraries
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build all libraries
+        working-directory: server
+        run: ./gradlew build --no-daemon
+
+      - name: Verify publishable
+        working-directory: server
+        run: ./gradlew publishToMavenLocal --no-daemon
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: server/libs/*/build/reports/
+          retention-days: 7
+          if-no-files-found: ignore

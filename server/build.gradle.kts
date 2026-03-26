@@ -1,6 +1,15 @@
+val versionFromFile = file("version.properties")
+    .readLines()
+    .first { it.startsWith("version=") }
+    .substringAfter("=")
+    .trim()
+
+val isRelease = System.getenv("GITHUB_REF_TYPE") == "tag"
+val effectiveVersion = if (isRelease) versionFromFile else "$versionFromFile-SNAPSHOT"
+
 allprojects {
     group = "edu.kpi.fice"
-    version = "0.0.1-SNAPSHOT"
+    version = effectiveVersion
 
     repositories {
         mavenCentral()
