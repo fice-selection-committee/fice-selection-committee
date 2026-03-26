@@ -30,7 +30,11 @@ tasks.named<JacocoReport>("jacocoTestReport") {
         csv.outputLocation.set(layout.buildDirectory.file("reports/coverage/coverage.csv"))
     }
 
-    doFirst {
+    finalizedBy(tasks.named("jacocoTestCoverageVerification"))
+}
+
+afterEvaluate {
+    tasks.named<JacocoReport>("jacocoTestReport") {
         val excludePatterns = project.extensions.extraProperties.let {
             if (it.has("filesExcludedFromCoverage")) {
                 @Suppress("UNCHECKED_CAST")
@@ -43,8 +47,6 @@ tasks.named<JacocoReport>("jacocoTestReport") {
             fileTree(it) { exclude(excludePatterns) }
         }))
     }
-
-    finalizedBy(tasks.named("jacocoTestCoverageVerification"))
 }
 
 tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
