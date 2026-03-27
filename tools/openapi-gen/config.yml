@@ -1,0 +1,19 @@
+# OpenAPI Generator Configuration
+# https://openapi-generator.tech/docs/generators/typescript-axios
+
+generatorName: typescript-axios
+templateDir: ""
+globalProperties:
+  skipFormModel: false
+
+additionalProperties:
+  supportsES6: true
+  npmVersion: 1.0.0
+  withInterfaces: true
+  useSingleRequestParameter: true
+  enumNameSuffix: ""
+  enumPropertyNaming: original
+
+typeMappings:
+  DateTime: string
+  Date: string
