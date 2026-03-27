@@ -11,7 +11,8 @@ server/services/selection-committee-e2e-tests/
 /tests/
 
 # ── Infra and bootstrap (separate repos) ──────────────────
-infra/
+infra/*
+!infra/docker-compose.services.yml
 bootstrap/
 
 # ── Build output ──────────────────────────────────────────
