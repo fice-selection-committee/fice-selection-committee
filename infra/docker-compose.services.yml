@@ -1,0 +1,245 @@
+version: "3.9"
+
+services:
+  identity-service:
+    build:
+      context: ../server/services/selection-committee-identity-service
+    container_name: sc-identity
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgres
+      PGPORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBIT_USER}
+      RABBITMQ_PASSWORD: ${RABBIT_PASS}
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+      feature-flags-config.env-service-url: http://environment-service:8085
+    ports:
+      - "${IDENTITY_SERVICE_PORT:-8081}:8081"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  environment-service:
+    build:
+      context: ../server/services/selection-committee-environment-service
+    container_name: sc-environment
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgres
+      PGPORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      RABBIT_HOST: rabbitmq
+      RABBIT_PORT: 5672
+      RABBIT_USER: ${RABBIT_USER}
+      RABBIT_PASS: ${RABBIT_PASS}
+      ENVIRONMENT_SERVICE_PORT: 8085
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+    ports:
+      - "${ENVIRONMENT_SERVICE_PORT:-8085}:8085"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8085/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  admission-service:
+    build:
+      context: ../server/services/selection-committee-admission-service
+    container_name: sc-admission
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      identity-service:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgres
+      PGPORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBIT_USER}
+      RABBITMQ_PASSWORD: ${RABBIT_PASS}
+      IDENTITY_SERVICE_URL: http://identity-service:8081
+      service.identity-service-url: http://identity-service:8081
+      service.documents-service-url: http://documents-service:8084
+      sc.auth.identity-service-url: http://identity-service:8081
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+    ports:
+      - "${ADMISSION_SERVICE_PORT:-8083}:8083"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8083/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  documents-service:
+    build:
+      context: ../server/services/selection-committee-documents-service
+    container_name: sc-documents
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      identity-service:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgres
+      PGPORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MINIO_INTERNAL_ENDPOINT: http://minio:9000
+      MINIO_EXTERNAL_ENDPOINT: http://localhost:${MINIO_PORT:-9000}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      service.identity-service-url: http://identity-service:8081
+      service.admission-service-url: http://admission-service:8083
+      sc.auth.identity-service-url: http://identity-service:8081
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+    ports:
+      - "${DOCUMENTS_SERVICE_PORT:-8084}:8084"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8084/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  notifications-service:
+    build:
+      context: ../server/services/selection-committee-notifications-service
+    container_name: sc-notifications
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      mailpit:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBIT_USER}
+      RABBITMQ_PASSWORD: ${RABBIT_PASS}
+      MAIL_USER_EMAIL: test@localhost
+      MAIL_PASSWORD: test
+      spring.mail.host: mailpit
+      spring.mail.port: 1025
+      spring.mail.properties.mail.smtp.auth: "false"
+      spring.mail.properties.mail.smtp.starttls.enable: "false"
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+    ports:
+      - "${NOTIFICATIONS_SERVICE_PORT:-8086}:8086"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8086/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  gateway:
+    build:
+      context: ../server/services/selection-committee-gateway
+    container_name: sc-gateway
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      redis:
+        condition: service_started
+      identity-service:
+        condition: service_healthy
+      admission-service:
+        condition: service_healthy
+      documents-service:
+        condition: service_healthy
+      environment-service:
+        condition: service_healthy
+      notifications-service:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      IDENTITY_SERVICE_HOST: identity-service
+      IDENTITY_SERVICE_PORT: 8081
+      ADMISSION_SERVICE_HOST: admission-service
+      ADMISSION_SERVICE_PORT: 8083
+      DOCUMENTS_SERVICE_HOST: documents-service
+      DOCUMENTS_SERVICE_PORT: 8084
+      ENVIRONMENT_SERVICE_HOST: environment-service
+      ENVIRONMENT_SERVICE_PORT: 8085
+      NOTIFICATIONS_SERVICE_HOST: notifications-service
+      NOTIFICATIONS_SERVICE_PORT: 8086
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+    ports:
+      - "${GATEWAY_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+networks:
+  sc-net: {}
