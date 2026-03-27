@@ -1,0 +1,124 @@
+name: Service CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'server/services/**'
+      - 'server/libs/**'
+      - 'server/buildSrc/**'
+      - 'server/build.gradle.kts'
+      - 'server/settings.gradle.kts'
+      - 'server/gradle/**'
+  push:
+    branches: [main]
+    paths:
+      - 'server/services/**'
+      - 'server/libs/**'
+      - 'server/buildSrc/**'
+
+concurrency:
+  group: service-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      gateway: ${{ steps.filter.outputs.gateway }}
+      identity: ${{ steps.filter.outputs.identity }}
+      admission: ${{ steps.filter.outputs.admission }}
+      documents: ${{ steps.filter.outputs.documents }}
+      environment: ${{ steps.filter.outputs.environment }}
+      notifications: ${{ steps.filter.outputs.notifications }}
+      shared: ${{ steps.filter.outputs.shared }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            gateway:
+              - 'server/services/selection-committee-gateway/**'
+            identity:
+              - 'server/services/selection-committee-identity-service/**'
+            admission:
+              - 'server/services/selection-committee-admission-service/**'
+            documents:
+              - 'server/services/selection-committee-documents-service/**'
+            environment:
+              - 'server/services/selection-committee-environment-service/**'
+            notifications:
+              - 'server/services/selection-committee-notifications-service/**'
+            shared:
+              - 'server/libs/**'
+              - 'server/buildSrc/**'
+              - 'server/build.gradle.kts'
+              - 'server/settings.gradle.kts'
+              - 'server/gradle/**'
+
+  build-and-test:
+    name: Build & Test (${{ matrix.service }})
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: selection-committee-gateway
+            filter: gateway
+          - service: selection-committee-identity-service
+            filter: identity
+          - service: selection-committee-admission-service
+            filter: admission
+          - service: selection-committee-documents-service
+            filter: documents
+          - service: selection-committee-environment-service
+            filter: environment
+          - service: selection-committee-notifications-service
+            filter: notifications
+
+    if: >-
+      needs.detect-changes.outputs[matrix.filter] == 'true' ||
+      needs.detect-changes.outputs.shared == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Publish shared libs to mavenLocal
+        working-directory: server
+        run: ./gradlew publishToMavenLocal --no-daemon
+
+      - name: Build service
+        working-directory: server/services/${{ matrix.service }}
+        run: ./gradlew build --no-daemon
+
+      - name: Run integration tests
+        working-directory: server/services/${{ matrix.service }}
+        run: ./gradlew integrationTest --no-daemon
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.service }}
+          path: server/services/${{ matrix.service }}/build/reports/
+          retention-days: 7
+          if-no-files-found: ignore
