@@ -13,6 +13,9 @@ server/services/selection-committee-e2e-tests/
 # ── Infra and bootstrap (separate repos) ──────────────────
 infra/*
 !infra/docker-compose.services.yml
+!infra/grafana/
+!infra/grafana/dashboards/
+!infra/grafana/dashboards/**
 bootstrap/
 
 # ── Build output ──────────────────────────────────────────
