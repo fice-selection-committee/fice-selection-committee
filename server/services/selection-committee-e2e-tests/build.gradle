@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    testImplementation platform(libs.testcontainers.bom)
+    testImplementation libs.testcontainers.core
+    testImplementation libs.testcontainers.junit.jupiter
+    testImplementation libs.rest.assured
+    testImplementation libs.junit.jupiter
+    testImplementation libs.assertj.core
+    testImplementation libs.awaitility
+    testImplementation libs.jackson.databind
+}
+
+tasks.named('test') {
+    useJUnitPlatform {
+        if (project.hasProperty('includeTags')) {
+            includeTags(*project.property('includeTags').toString().split(','))
+        }
+        if (project.hasProperty('excludeTags')) {
+            excludeTags(*project.property('excludeTags').toString().split(','))
+        }
+    }
+    jvmArgs '-Duser.timezone=UTC'
+    systemProperty 'junit.jupiter.execution.timeout.default', '5m'
+}
