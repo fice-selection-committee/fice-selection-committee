@@ -241,5 +241,27 @@ services:
       retries: 10
       start_period: 30s
 
+  web:
+    build:
+      context: ../client/web
+      dockerfile: docker/Dockerfile
+    container_name: sc-web
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      gateway:
+        condition: service_healthy
+    environment:
+      NEXT_PUBLIC_API_BASE: http://gateway:8080
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
 networks:
   sc-net: {}
