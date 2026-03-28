@@ -66,7 +66,7 @@ jobs:
           ALL='${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.shared == 'true' }}'
 
           services='[]'
-          add() { services=$(echo "$services" | jq --arg s "$1" '. + [{"service": $s}]'); }
+          add() { services=$(echo "$services" | jq -c --arg s "$1" '. + [{"service": $s}]'); }
 
           if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.gateway }}" = "true" ]; then
             add "selection-committee-gateway"
