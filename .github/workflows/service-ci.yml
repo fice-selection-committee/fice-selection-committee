@@ -93,29 +93,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check service source availability
+        id: check-source
+        run: |
+          if [ -f "server/services/${{ matrix.service }}/build.gradle" ] || \
+             [ -f "server/services/${{ matrix.service }}/build.gradle.kts" ]; then
+            echo "buildable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Skipping ${{ matrix.service }} — source code not in monorepo (managed as separate repository)"
+            echo "buildable=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup Java 21
+        if: steps.check-source.outputs.buildable == 'true'
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: temurin
 
       - name: Setup Gradle
+        if: steps.check-source.outputs.buildable == 'true'
         uses: gradle/actions/setup-gradle@v4
 
       - name: Publish shared libs to mavenLocal
+        if: steps.check-source.outputs.buildable == 'true'
         working-directory: server
         run: ./gradlew publishToMavenLocal --no-daemon
 
       - name: Build service
+        if: steps.check-source.outputs.buildable == 'true'
         working-directory: server/services/${{ matrix.service }}
         run: ./gradlew build --no-daemon
 
       - name: Run integration tests
+        if: steps.check-source.outputs.buildable == 'true'
         working-directory: server/services/${{ matrix.service }}
         run: ./gradlew integrationTest --no-daemon
 
       - name: Upload test reports
-        if: always()
+        if: always() && steps.check-source.outputs.buildable == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: test-reports-${{ matrix.service }}
