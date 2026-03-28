@@ -91,7 +91,7 @@ jobs:
         id: check-source
         run: |
           if [ -f "server/services/${{ matrix.service }}/Dockerfile" ] && \
-             [ -d "server/services/${{ matrix.service }}/src" ]; then
+             [ -d "server/services/${{ matrix.service }}/src/main" ]; then
             echo "buildable=true" >> "$GITHUB_OUTPUT"
           else
             echo "::notice::Skipping ${{ matrix.service }} — Dockerfile or source code not in monorepo (managed as separate repository)"
