@@ -48,7 +48,7 @@ jobs:
 
           services='[]'
           add() {
-            services=$(echo "$services" | jq --arg s "$1" --arg n "$2" '. + [{"service": $s, "short-name": $n}]')
+            services=$(echo "$services" | jq -c --arg s "$1" --arg n "$2" '. + [{"service": $s, "short-name": $n}]')
           }
 
           if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.gateway }}" = "true" ]; then
