@@ -27,13 +27,7 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      gateway: ${{ steps.filter.outputs.gateway }}
-      identity: ${{ steps.filter.outputs.identity }}
-      admission: ${{ steps.filter.outputs.admission }}
-      documents: ${{ steps.filter.outputs.documents }}
-      environment: ${{ steps.filter.outputs.environment }}
-      notifications: ${{ steps.filter.outputs.notifications }}
-      shared: ${{ steps.filter.outputs.shared }}
+      matrix: ${{ steps.build-matrix.outputs.matrix }}
 
     steps:
       - name: Checkout
@@ -41,6 +35,7 @@ jobs:
 
       - name: Detect changed paths
         id: filter
+        if: github.event_name != 'workflow_dispatch'
         uses: dorny/paths-filter@v3
         with:
           filters: |
@@ -63,32 +58,48 @@ jobs:
               - 'server/settings.gradle.kts'
               - 'server/gradle/**'
 
+      - name: Build service matrix
+        id: build-matrix
+        run: |
+          # For workflow_dispatch or shared-lib changes, include all services.
+          # Otherwise include only services whose paths changed.
+          ALL='${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.shared == 'true' }}'
+
+          services='[]'
+          add() { services=$(echo "$services" | jq --arg s "$1" '. + [{"service": $s}]'); }
+
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.gateway }}" = "true" ]; then
+            add "selection-committee-gateway"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.identity }}" = "true" ]; then
+            add "selection-committee-identity-service"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.admission }}" = "true" ]; then
+            add "selection-committee-admission-service"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.documents }}" = "true" ]; then
+            add "selection-committee-documents-service"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.environment }}" = "true" ]; then
+            add "selection-committee-environment-service"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.notifications }}" = "true" ]; then
+            add "selection-committee-notifications-service"
+          fi
+
+          echo "matrix={\"include\":$services}" >> "$GITHUB_OUTPUT"
+          echo "Selected services: $services"
+
   build-and-test:
     name: Build & Test (${{ matrix.service }})
     needs: detect-changes
+    if: needs.detect-changes.outputs.matrix != '{"include":[]}'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - service: selection-committee-gateway
-            filter: gateway
-          - service: selection-committee-identity-service
-            filter: identity
-          - service: selection-committee-admission-service
-            filter: admission
-          - service: selection-committee-documents-service
-            filter: documents
-          - service: selection-committee-environment-service
-            filter: environment
-          - service: selection-committee-notifications-service
-            filter: notifications
-
-    if: >-
-      needs.detect-changes.outputs[matrix.filter] == 'true' ||
-      needs.detect-changes.outputs.shared == 'true'
+      matrix: ${{ fromJSON(needs.detect-changes.outputs.matrix) }}
 
     steps:
       - name: Checkout
