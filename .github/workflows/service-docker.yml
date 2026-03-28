@@ -16,12 +16,7 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      gateway: ${{ steps.filter.outputs.gateway }}
-      identity: ${{ steps.filter.outputs.identity }}
-      admission: ${{ steps.filter.outputs.admission }}
-      documents: ${{ steps.filter.outputs.documents }}
-      environment: ${{ steps.filter.outputs.environment }}
-      notifications: ${{ steps.filter.outputs.notifications }}
+      matrix: ${{ steps.build-matrix.outputs.matrix }}
 
     steps:
       - name: Checkout
@@ -29,6 +24,7 @@ jobs:
 
       - name: Detect changed paths
         id: filter
+        if: github.event_name != 'workflow_dispatch'
         uses: dorny/paths-filter@v3
         with:
           filters: |
@@ -45,35 +41,47 @@ jobs:
             notifications:
               - 'server/services/selection-committee-notifications-service/**'
 
+      - name: Build service matrix
+        id: build-matrix
+        run: |
+          ALL='${{ github.event_name == 'workflow_dispatch' }}'
+
+          services='[]'
+          add() {
+            services=$(echo "$services" | jq --arg s "$1" --arg n "$2" '. + [{"service": $s, "short-name": $n}]')
+          }
+
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.gateway }}" = "true" ]; then
+            add "selection-committee-gateway" "gateway"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.identity }}" = "true" ]; then
+            add "selection-committee-identity-service" "identity"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.admission }}" = "true" ]; then
+            add "selection-committee-admission-service" "admission"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.documents }}" = "true" ]; then
+            add "selection-committee-documents-service" "documents"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.environment }}" = "true" ]; then
+            add "selection-committee-environment-service" "environment"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.notifications }}" = "true" ]; then
+            add "selection-committee-notifications-service" "notifications"
+          fi
+
+          echo "matrix={\"include\":$services}" >> "$GITHUB_OUTPUT"
+          echo "Selected services: $services"
+
   build-and-push:
     name: Build & Push (${{ matrix.service }})
     needs: detect-changes
+    if: needs.detect-changes.outputs.matrix != '{"include":[]}'
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - service: selection-committee-gateway
-            short-name: gateway
-            filter: gateway
-          - service: selection-committee-identity-service
-            short-name: identity
-            filter: identity
-          - service: selection-committee-admission-service
-            short-name: admission
-            filter: admission
-          - service: selection-committee-documents-service
-            short-name: documents
-            filter: documents
-          - service: selection-committee-environment-service
-            short-name: environment
-            filter: environment
-          - service: selection-committee-notifications-service
-            short-name: notifications
-            filter: notifications
-
-    if: needs.detect-changes.outputs[matrix.filter] == 'true'
+      matrix: ${{ fromJSON(needs.detect-changes.outputs.matrix) }}
 
     steps:
       - name: Checkout
