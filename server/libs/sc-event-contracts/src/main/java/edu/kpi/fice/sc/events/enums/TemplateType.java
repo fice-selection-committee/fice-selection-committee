@@ -9,6 +9,7 @@ public enum TemplateType {
   VERIFY_EMAIL("verify_email"),
   PASSWORD_RESET("password_reset"),
   WELCOME_MESSAGE("welcome_message"),
+  MAGIC_LINK("magic_link"),
 
   APPLICATION_SUBMITTED("application_submitted"),
   APPLICATION_STATUS_CHANGED("application_status_changed"),
