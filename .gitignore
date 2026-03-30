@@ -35,6 +35,9 @@ allure-results/
 # ── Claude Code / MCP ─────────────────────────────────────
 .claude/
 .mcp.json
+.playwright-mcp/
+.playwright-cli/
+.prompts/
 
 # ── OS ────────────────────────────────────────────────────
 .DS_Store
@@ -43,6 +46,17 @@ Thumbs.db
 # ── Kotlin ────────────────────────────────────────────────
 **/.kotlin/
 
+# ── Runtime data ──────────────────────────────────────────
+**/data/subscriptions.json
+
 # ── Secrets ───────────────────────────────────────────────
 **/.env
 **/secrets/
+
+# ── Node / npm ────────────────────────────────────────────
+node_modules/
+
+# ── Development artifacts ─────────────────────────────────
+screenshots/
+applicant-page.png
+test-loading-spinner.py
