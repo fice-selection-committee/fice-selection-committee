@@ -1,9 +1,0 @@
-.gradle/
-.idea/
-*.iml
-build/
-!build/libs/
-src/test/
-src/integrationTest/
-*.md
-.git/

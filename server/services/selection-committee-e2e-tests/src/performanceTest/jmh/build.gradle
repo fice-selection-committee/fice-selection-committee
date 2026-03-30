@@ -1,0 +1,79 @@
+/**
+ * JMH Microbenchmark subproject
+ * ================================
+ * Measures CPU/memory throughput of hot code paths that run on every request.
+ * Results feed the performance baseline document.
+ *
+ * Run all benchmarks:
+ *   ./gradlew :selection-committee-e2e-tests:jmhJar
+ *   java -jar build/libs/jmh-benchmarks.jar -rf json -rff build/reports/jmh-results.json
+ *
+ * Run a specific benchmark:
+ *   java -jar build/libs/jmh-benchmarks.jar "ContractNumberGeneratorBenchmark" \
+ *     -rf json -rff build/reports/jmh-results.json
+ */
+plugins {
+    id 'java'
+    id 'me.champeau.jmh' version '0.7.2'
+}
+
+group   = 'edu.kpi.fice'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    jjwtVersion    = '0.13.0'
+    lombokVersion  = '1.18.34'
+    mockitoVersion = '5.13.0'
+}
+
+dependencies {
+    // JMH is pulled in automatically by the me.champeau.jmh plugin
+    // Add only the classes-under-test and their dependencies
+
+    // JWT — identity-service uses JJWT 0.13 with RSA keys
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    runtimeOnly    "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    runtimeOnly    "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+
+    // PDF generation — documents-service uses openhtmltopdf + Thymeleaf
+    implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.5.6'
+
+    // H2 for ContractNumberGenerator (uses JdbcTemplate sequence call)
+    implementation 'com.h2database:h2:2.2.224'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:3.5.6'
+
+    // Lombok
+    compileOnly                  "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor          "org.projectlombok:lombok:${lombokVersion}"
+    jmhAnnotationProcessor       "org.projectlombok:lombok:${lombokVersion}"
+
+    // Mockito for state setup in benchmark @Setup methods
+    implementation "org.mockito:mockito-core:${mockitoVersion}"
+}
+
+jmh {
+    // Benchmark parameters — override at runtime with -p
+    benchmarkParameters = [
+        warmupIterations : ['3'],
+        measureIterations: ['5'],
+    ]
+    resultsFile          = project.file("${project.buildDir}/reports/jmh-results.json")
+    resultFormat         = 'JSON'
+    fork                 = 1
+    warmupIterations     = 3
+    iterations           = 5
+    timeOnIteration      = '1s'
+    failOnError          = true
+    includeTests         = false
+}

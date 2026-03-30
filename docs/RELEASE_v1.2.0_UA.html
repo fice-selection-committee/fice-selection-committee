@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FICE Selection Committee — Технічний звіт v1.2.0</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a56db;
+      --primary-light: #e8eefb;
+      --primary-dark: #133ea0;
+      --accent: #059669;
+      --accent-light: #ecfdf5;
+      --accent-dark: #047857;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--gray-800);
+      background: #fff;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    /* ===== Typography ===== */
+    h1, h2, h3, h4 { color: var(--gray-900); font-weight: 700; line-height: 1.3; }
+    h1 { font-size: 2.2em; margin-bottom: 0.4em; }
+    h2 { font-size: 1.6em; margin: 1.8em 0 0.6em; padding-bottom: 0.35em; border-bottom: 3px solid var(--primary); }
+    h3 { font-size: 1.25em; margin: 1.4em 0 0.5em; color: var(--primary-dark); }
+    h4 { font-size: 1.05em; margin: 1em 0 0.4em; }
+    p { margin-bottom: 0.9em; }
+    ul, ol { margin: 0.5em 0 1em 1.6em; }
+    li { margin-bottom: 0.35em; }
+    strong { color: var(--gray-900); }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ===== Title Page ===== */
+    .title-page {
+      text-align: center;
+      padding: 100px 20px 80px;
+      page-break-after: always;
+    }
+    .title-page .logo-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 12px 28px;
+      border-radius: 50px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+    .title-page h1 {
+      font-size: 2.8em;
+      margin-bottom: 0.15em;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .title-page .version-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.3em;
+      font-weight: 700;
+      padding: 8px 24px;
+      border-radius: 6px;
+      margin: 16px 0 40px;
+    }
+    .title-page .meta {
+      color: var(--gray-500);
+      font-size: 1.05em;
+      line-height: 2;
+    }
+    .title-page .meta strong { color: var(--gray-700); }
+    .title-page .divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      margin: 30px auto;
+    }
+
+    /* ===== Table of Contents ===== */
+    .toc { page-break-after: always; }
+    .toc ul { list-style: none; margin: 0; padding: 0; }
+    .toc > ul > li {
+      border-bottom: 1px solid var(--gray-200);
+      padding: 10px 0;
+    }
+    .toc > ul > li > a {
+      font-weight: 600;
+      font-size: 1.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .toc > ul > li > a .num { color: var(--primary); margin-right: 10px; }
+    .toc ul ul { margin: 6px 0 0 24px; }
+    .toc ul ul li { padding: 3px 0; border: none; }
+    .toc ul ul a { font-weight: 400; font-size: 0.95em; color: var(--gray-600); }
+    .toc ul ul a:hover { color: var(--primary); }
+
+    /* ===== Info Boxes ===== */
+    .info-box {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 1.2em 0;
+    }
+    .info-box.accent {
+      background: var(--accent-light);
+      border-left-color: var(--accent);
+    }
+    .info-box.warn {
+      background: #fffbeb;
+      border-left-color: var(--warning);
+    }
+    .info-box p:last-child { margin-bottom: 0; }
+
+    /* ===== Tables ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2em 0;
+      font-size: 0.93em;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+    }
+    thead th {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) { background: var(--gray-50); }
+    tbody tr:hover { background: var(--primary-light); }
+
+    /* ===== Code Blocks ===== */
+    code {
+      font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-size: 0.88em;
+      background: var(--gray-100);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary-dark);
+    }
+    pre {
+      background: var(--gray-900);
+      color: #e5e7eb;
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 1em 0 1.4em;
+      line-height: 1.6;
+      font-size: 0.88em;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      font-size: 1em;
+    }
+    pre .comment { color: #6b7280; }
+    pre .string { color: #34d399; }
+    pre .keyword { color: #818cf8; }
+    pre .flag { color: #fbbf24; }
+
+    /* ===== Badges & Tags ===== */
+    .badge {
+      display: inline-block;
+      font-size: 0.78em;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      vertical-align: middle;
+    }
+    .badge-new { background: var(--accent-light); color: var(--accent-dark); }
+    .badge-changed { background: #eff6ff; color: var(--primary); }
+    .badge-removed { background: #fef2f2; color: var(--danger); }
+    .badge-improved { background: #fffbeb; color: var(--warning); }
+
+    /* ===== Comparison Table ===== */
+    .compare-table td:first-child {
+      font-weight: 600;
+      color: var(--gray-700);
+      white-space: nowrap;
+      width: 22%;
+    }
+    .compare-table td:nth-child(2) {
+      color: var(--gray-500);
+      text-decoration: line-through;
+      text-decoration-color: var(--danger);
+    }
+    .compare-table td:nth-child(3) {
+      color: var(--accent-dark);
+      font-weight: 500;
+    }
+
+    /* ===== Stage Diagram ===== */
+    .stages {
+      display: flex;
+      gap: 12px;
+      margin: 1.2em 0;
+      flex-wrap: wrap;
+    }
+    .stage {
+      flex: 1;
+      min-width: 200px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 16px;
+      position: relative;
+    }
+    .stage::after {
+      content: "→";
+      position: absolute;
+      right: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.4em;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .stage:last-child::after { display: none; }
+    .stage .stage-num {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      border-radius: 50%;
+      font-size: 0.85em;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .stage .stage-title { font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+    .stage .stage-desc { font-size: 0.88em; color: var(--gray-600); }
+
+    /* ===== Architecture List ===== */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 1em 0;
+    }
+    .arch-item {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 14px;
+      text-align: center;
+    }
+    .arch-item .icon { font-size: 1.6em; margin-bottom: 6px; }
+    .arch-item .name { font-weight: 600; font-size: 0.92em; }
+    .arch-item .desc { font-size: 0.82em; color: var(--gray-500); margin-top: 2px; }
+
+    /* ===== Section Dividers ===== */
+    .section { page-break-inside: avoid; }
+    .page-break { page-break-before: always; }
+
+    /* ===== Stats Row ===== */
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin: 1.4em 0;
+      flex-wrap: wrap;
+    }
+    .stat {
+      flex: 1;
+      min-width: 140px;
+      background: linear-gradient(135deg, var(--primary-light), #fff);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 18px;
+      text-align: center;
+    }
+    .stat .stat-value {
+      font-size: 2em;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+    .stat .stat-label {
+      font-size: 0.82em;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    /* ===== Print ===== */
+    @media print {
+      body { padding: 0; font-size: 12pt; max-width: 100%; }
+      .title-page { padding: 120px 20px 80px; }
+      pre { white-space: pre-wrap; word-break: break-all; }
+      .stages { flex-direction: column; }
+      .stage::after { display: none; }
+      a { color: var(--primary) !important; }
+      table { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- 1. TITLE PAGE                                                 -->
+<!-- ============================================================ -->
+<div class="title-page">
+  <div class="logo-badge">FICE Selection Committee</div>
+  <h1>Технічний звіт</h1>
+  <div class="version-badge">v1.2.0</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <strong>Дата:</strong> 30 березня 2026<br>
+    <strong>Підготовлено:</strong> Release Engineering Team<br>
+    <strong>Попередня версія:</strong> v1.1.0
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 2. TABLE OF CONTENTS                                          -->
+<!-- ============================================================ -->
+<div class="toc">
+  <h2 id="toc">Зміст</h2>
+  <ul>
+    <li><a href="#summary"><span class="num">1.</span> Загальний огляд</a></li>
+    <li><a href="#before"><span class="num">2.</span> Що було до змін (v1.1.0)</a></li>
+    <li>
+      <a href="#changes"><span class="num">3.</span> Що саме змінено</a>
+      <ul>
+        <li><a href="#docker-builds">3.1 Docker: Перехід на багатоетапні збірки</a></li>
+        <li><a href="#auth-fix">3.2 Авторизація: POST &rarr; GET для getCurrentUser</a></li>
+        <li><a href="#compose">3.3 Інфраструктура: Docker Compose</a></li>
+        <li><a href="#cicd">3.4 CI/CD: Розширена матриця та сканування вразливостей</a></li>
+        <li><a href="#telegram">3.5 Telegram Bot: Новий сервіс</a></li>
+        <li><a href="#monitoring">3.6 Моніторинг: Grafana</a></li>
+        <li><a href="#docs">3.7 Документація</a></li>
+      </ul>
+    </li>
+    <li><a href="#new-modules"><span class="num">4.</span> Нові бібліотеки та модулі</a></li>
+    <li><a href="#architecture"><span class="num">5.</span> Як тепер працює система</a></li>
+    <li><a href="#how-to-run"><span class="num">6.</span> Як запускати</a></li>
+    <li><a href="#how-to-deploy"><span class="num">7.</span> Як деплоїти</a></li>
+    <li><a href="#how-to-monitor"><span class="num">8.</span> Як моніторити</a></li>
+    <li><a href="#how-to-test"><span class="num">9.</span> Як тестувати</a></li>
+    <li><a href="#comparison"><span class="num">10.</span> Порівняння &laquo;Було / Стало&raquo;</a></li>
+    <li><a href="#conclusions"><span class="num">11.</span> Висновки та подальші кроки</a></li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- 3. EXECUTIVE SUMMARY                                          -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="summary">1. Загальний огляд</h2>
+
+  <div class="info-box">
+    <p><strong>Реліз v1.2.0</strong> &mdash; це масштабне оновлення інфраструктури та операційної зрілості платформи FICE Selection Committee. Основний фокус: надійність збірок, коректність контрактів, розширення функціональності та спостережуваність системи.</p>
+  </div>
+
+  <p>Цей реліз приносить ключові покращення в кількох напрямках:</p>
+  <ul>
+    <li><strong>Багатоетапні Docker-збірки</strong> &mdash; триетапний процес побудови образів, що забезпечує відтворюваність та мінімальний розмір runtime-образу.</li>
+    <li><strong>Виправлення Auth API</strong> &mdash; зміна HTTP-методу <code>getCurrentUser</code> з <code>POST</code> на <code>GET</code> для семантичної коректності.</li>
+    <li><strong>Новий Telegram Bot сервіс</strong> &mdash; управління feature-прапорцями через Telegram з підтримкою webhook, inline-клавіатур та i18n.</li>
+    <li><strong>Розширений CI/CD</strong> &mdash; нова матриця збірок, сканування вразливостей Trivy, семантичне тегування Docker-образів.</li>
+    <li><strong>Моніторинг Grafana</strong> &mdash; 4 попередньо налаштовані дашборди для операційного моніторингу.</li>
+    <li><strong>Інженерна документація</strong> &mdash; CLAUDE.md та 10 довідкових файлів як стандарт інженерної роботи.</li>
+  </ul>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">7+1</div>
+      <div class="stat-label">мікросервісів + шлюз</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">79</div>
+      <div class="stat-label">файлів у Telegram Bot</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">4</div>
+      <div class="stat-label">Grafana дашборди</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">3</div>
+      <div class="stat-label">етапи Docker-збірки</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 4. BEFORE STATE                                               -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="before">2. Що було до змін (v1.1.0)</h2>
+
+  <p>Стан системи до релізу v1.2.0 характеризувався наступними обмеженнями та особливостями:</p>
+
+  <table>
+    <thead>
+      <tr><th>Аспект</th><th>Стан у v1.1.0</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Мікросервіси</td><td>6 сервісів (identity, admission, documents, environment, notifications, gateway) + Next.js фронтенд</td></tr>
+      <tr><td>Dockerfile</td><td>Одноетапні збірки на базі <code>gradle:jdk21-ubi-minimal</code>, Gradle-скрипти копіювались у директорію кожного сервісу</td></tr>
+      <tr><td>Docker Compose</td><td><code>service_started</code> для некритичних залежностей (Redis, RabbitMQ) &mdash; без перевірки здоров'я</td></tr>
+      <tr><td>CI/CD</td><td>Тригери лише на <code>server/services/**</code>, без сканування вразливостей</td></tr>
+      <tr><td>Auth API</td><td><code>POST /api/v1/auth/user</code> &mdash; семантично некоректний метод для читання даних</td></tr>
+      <tr><td>Telegram</td><td>Інтеграція відсутня</td></tr>
+      <tr><td>Моніторинг</td><td>Без провізійованих Grafana дашбордів</td></tr>
+      <tr><td>Онбордінг розробника</td><td>Без <code>.env.example</code> шаблону</td></tr>
+      <tr><td>Інженерна документація</td><td>Відсутня &mdash; немає стандартів та довідкових файлів</td></tr>
+      <tr><td>Планування задач</td><td>14 загальних фаз (phase-01-scaffolding &ndash; phase-14-polish)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- 5. WHAT CHANGED                                               -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="changes">3. Що саме змінено</h2>
+
+  <!-- 5.1 Docker Multi-stage -->
+  <h3 id="docker-builds">3.1 Docker: Перехід на багатоетапні збірки <span class="badge badge-changed">ЗМІНЕНО</span></h3>
+
+  <p>Усі сервіси переведено на триетапну Docker-збірку, що забезпечує ізоляцію етапів, мінімальний runtime-образ та правильний порядок побудови спільних бібліотек.</p>
+
+  <div class="stages">
+    <div class="stage">
+      <div class="stage-num">1</div>
+      <div class="stage-title">lib-builder</div>
+      <div class="stage-desc"><code>eclipse-temurin:21-jdk-alpine</code><br>Побудова спільних бібліотек (<code>publishToMavenLocal</code>)</div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">2</div>
+      <div class="stage-title">service-builder</div>
+      <div class="stage-desc">Збірка JAR сервісу з використанням бібліотек з етапу 1</div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">3</div>
+      <div class="stage-title">runtime</div>
+      <div class="stage-desc"><code>eclipse-temurin:21-jre-alpine</code><br>Мінімальний образ + <code>HEALTHCHECK</code></div>
+    </div>
+  </div>
+
+  <p>Ключові рішення:</p>
+  <ul>
+    <li>Базовий образ змінено з <code>gradle:jdk21-ubi-minimal</code> на <code>eclipse-temurin:21-jdk-alpine</code> (збірка) та <code>eclipse-temurin:21-jre-alpine</code> (runtime)</li>
+    <li>Стандартизований користувач <code>spring</code> з UID/GID <code>10000/10001</code> у всіх сервісах</li>
+    <li>Додано <code>server/.dockerignore</code> для оптимізації контексту збірки</li>
+    <li>Вбудований <code>HEALTHCHECK</code> для кожного контейнера</li>
+  </ul>
+
+  <p>Приклад структури Dockerfile:</p>
+  <pre><code><span class="comment"># Етап 1: Побудова спільних бібліотек</span>
+<span class="keyword">FROM</span> eclipse-temurin:21-jdk-alpine <span class="keyword">AS</span> lib-builder
+<span class="keyword">WORKDIR</span> /workspace
+<span class="keyword">COPY</span> libs/ libs/
+<span class="keyword">COPY</span> buildSrc/ buildSrc/
+<span class="keyword">RUN</span> ./gradlew :libs:sc-auth-starter:publishToMavenLocal
+
+<span class="comment"># Етап 2: Збірка сервісу</span>
+<span class="keyword">FROM</span> eclipse-temurin:21-jdk-alpine <span class="keyword">AS</span> service-builder
+<span class="keyword">COPY</span> <span class="flag">--from=</span>lib-builder /root/.m2 /root/.m2
+<span class="keyword">RUN</span> ./gradlew :services:my-service:bootJar
+
+<span class="comment"># Етап 3: Runtime</span>
+<span class="keyword">FROM</span> eclipse-temurin:21-jre-alpine
+<span class="keyword">RUN</span> addgroup -g 10001 spring && adduser -u 10000 -G spring spring
+<span class="keyword">COPY</span> <span class="flag">--from=</span>service-builder /workspace/build/libs/*.jar app.jar
+<span class="keyword">HEALTHCHECK</span> CMD wget -qO- http://localhost:8080/actuator/health || exit 1</code></pre>
+
+  <!-- 5.2 Auth Fix -->
+  <h3 id="auth-fix">3.2 Авторизація: POST &rarr; GET для getCurrentUser <span class="badge badge-changed">ЗМІНЕНО</span></h3>
+
+  <p>Ендпоінт отримання поточного користувача змінено з <code>POST</code> на <code>GET</code> для дотримання REST-семантики &mdash; операція читання даних не повинна використовувати метод, що передбачає створення ресурсу.</p>
+
+  <table>
+    <thead>
+      <tr><th>Компонент</th><th>Зміна</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>IdentityServiceClient</code></td><td><code>@PostMapping</code> &rarr; <code>@GetMapping</code> для <code>/api/v1/auth/user</code></td></tr>
+      <tr><td><code>ProviderContractIT</code></td><td>Оновлено: тепер використовує потік magic link автентифікації</td></tr>
+      <tr><td><code>IdentityClientContractIT</code> (documents)</td><td>Контрактний тест оновлено відповідно до нового методу</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box warn">
+    <p><strong>Зверніть увагу:</strong> Це ламаюча зміна (breaking change) для будь-яких зовнішніх клієнтів, що використовують <code>POST /api/v1/auth/user</code>. Усі внутрішні Feign-клієнти та контрактні тести оновлено.</p>
+  </div>
+
+  <!-- 5.3 Docker Compose -->
+  <h3 id="compose">3.3 Інфраструктура: Docker Compose <span class="badge badge-improved">ПОКРАЩЕНО</span></h3>
+
+  <p>Значні зміни у конфігурації Docker Compose для підвищення надійності та підтримки нових сервісів:</p>
+
+  <ul>
+    <li><strong>Залежності на основі здоров'я:</strong> <code>service_started</code> &rarr; <code>service_healthy</code> для Redis та RabbitMQ &mdash; сервіси чекають на фактичну готовність інфраструктури</li>
+    <li><strong>Контекст збірки:</strong> змінено на кореневу директорію <code>server/</code> для підтримки багатоетапних збірок з доступом до спільних бібліотек</li>
+    <li><strong>JWT секрети:</strong> volume mounts для identity-service</li>
+    <li><strong>Rate limiting:</strong> конфігурація обмеження частоти для magic link</li>
+    <li><strong>Telegram Bot:</strong> новий сервіс <code>telegram-bot-service</code> + <code>ngrok</code> + <code>webhook-init</code> у профілі <code>telegram</code></li>
+    <li><strong>Іменування змінних:</strong> виправлено <code>RABBIT_*</code> &rarr; <code>RABBITMQ_*</code></li>
+    <li><strong>Health check шлюзу:</strong> виправлено порт з <code>8080</code> &rarr; <code>8079</code> (management port)</li>
+    <li><strong>.env.example:</strong> створено шаблон з документацією усіх змінних оточення</li>
+  </ul>
+
+  <!-- 5.4 CI/CD -->
+  <h3 id="cicd" class="page-break">3.4 CI/CD: Розширена матриця та сканування вразливостей <span class="badge badge-improved">ПОКРАЩЕНО</span></h3>
+
+  <p>Workflow <code>service-docker.yml</code> суттєво розширено:</p>
+
+  <table>
+    <thead>
+      <tr><th>Можливість</th><th>Деталі</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Тригери</td><td>Додано: зміни у <code>libs/</code>, <code>buildSrc/</code>, конфігах збірки; теги <code>v*.*.*</code></td></tr>
+      <tr><td>Матриця збірки</td><td>Додано: <code>web</code> (фронтенд) та <code>telegram-bot</code></td></tr>
+      <tr><td>Сканування вразливостей</td><td>Trivy з вивантаженням SARIF-звітів до GitHub Security</td></tr>
+      <tr><td>Контекст/Dockerfile</td><td>Динамічне визначення контексту та Dockerfile для кожного типу сервісу</td></tr>
+      <tr><td>Таймаут</td><td>30-хвилинний ліміт виконання job</td></tr>
+      <tr><td>Тегування образів</td><td>Семантичне версіонування (semver) Docker-тегів</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.5 Telegram Bot -->
+  <h3 id="telegram">3.5 Telegram Bot: Новий сервіс <span class="badge badge-new">НОВИЙ</span></h3>
+
+  <p>Повністю новий Spring Boot мікросервіс для оперативного управління feature-прапорцями через Telegram:</p>
+
+  <div class="info-box accent">
+    <p><strong>79 файлів</strong> вихідного коду з повним покриттям юніт-тестами. Підтримка української та англійської мов (i18n).</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Функціональність</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Webhook інтеграція</td><td>Inline-клавіатури для інтерактивної взаємодії з ботом</td></tr>
+      <tr><td>Feature Flags CRUD</td><td>Створення, читання, оновлення та видалення прапорців через Feign-клієнт до environment-service</td></tr>
+      <tr><td>RabbitMQ підписки</td><td>Сповіщення про зміни feature-прапорців через чергу повідомлень</td></tr>
+      <tr><td>Авторизація</td><td>Авторизація на основі chat ID</td></tr>
+      <tr><td>Rate Limiting</td><td>Обмеження частоти запитів для захисту від зловживань</td></tr>
+      <tr><td>Здоров'я</td><td>Health indicator для перевірки доступності Telegram API</td></tr>
+      <tr><td>Міграції БД</td><td>3 Flyway-міграції для ініціалізації схеми</td></tr>
+      <tr><td>i18n</td><td>Локалізація: українська (uk) та англійська (en)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.6 Monitoring -->
+  <h3 id="monitoring">3.6 Моніторинг: Grafana <span class="badge badge-new">НОВИЙ</span></h3>
+
+  <p>Додано автоматичне провізіонування Grafana з попередньо налаштованими дашбордами:</p>
+
+  <table>
+    <thead>
+      <tr><th>Дашборд</th><th>Призначення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Services Overview</strong></td><td>Загальний стан усіх мікросервісів, HTTP-метрики, JVM</td></tr>
+      <tr><td><strong>PostgreSQL</strong></td><td>Метрики баз даних: з'єднання, транзакції, розмір</td></tr>
+      <tr><td><strong>RabbitMQ</strong></td><td>Черги, повідомлення, швидкість обробки, споживачі</td></tr>
+      <tr><td><strong>Feature Flags</strong></td><td>Статус прапорців, історія змін, використання</td></tr>
+    </tbody>
+  </table>
+
+  <p>Конфігурація включає провізіонування джерел даних (Prometheus) та автоматичне виявлення дашбордів.</p>
+
+  <!-- 5.7 Documentation -->
+  <h3 id="docs">3.7 Документація <span class="badge badge-new">НОВИЙ</span></h3>
+
+  <ul>
+    <li><strong>CLAUDE.md</strong> &mdash; інженерний операційний стандарт: агенти, навички, правила, формат пропозицій змін</li>
+    <li><strong>docs/claude/</strong> &mdash; 10 довідкових файлів:
+      <ul>
+        <li><code>architecture.md</code> &mdash; топологія сервісів, бібліотеки, інфраструктура</li>
+        <li><code>testing.md</code> &mdash; TDD-протокол, тестова інфраструктура</li>
+        <li><code>docker.md</code> &mdash; Docker-робочі процеси, відомі проблеми</li>
+        <li><code>build.md</code> &mdash; команди збірки, ланцюжок залежностей</li>
+        <li><code>agents.md</code>, <code>skills.md</code> &mdash; специфікації агентів та навичок</li>
+        <li><code>interaction-standards.md</code>, <code>ios-atmosphere.md</code> &mdash; стандарти UI/UX</li>
+        <li>та інші</li>
+      </ul>
+    </li>
+    <li><strong>REVIEW_REPORT.md</strong> &mdash; аудит з 48 знахідками (UI/UX, доступність, продуктивність, безпека)</li>
+    <li><strong>Оновлені плани задач:</strong> 19 нових файлів замість 14 старих, включаючи специфікації редизайну</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- 6. NEW MODULES                                                -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="new-modules">4. Нові бібліотеки та модулі</h2>
+
+  <table>
+    <thead>
+      <tr><th>Модуль / Бібліотека</th><th>Тип</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>selection-committee-telegram-bot-service</code></td>
+        <td><span class="badge badge-new">СЕРВІС</span></td>
+        <td>Spring Boot мікросервіс для Telegram-інтеграції з управлінням feature-прапорцями</td>
+      </tr>
+      <tr>
+        <td>Gradle buildSrc conventions</td>
+        <td><span class="badge badge-new">ЗБІРКА</span></td>
+        <td><code>sc.java-conventions</code>, <code>sc.spring-boot-service</code>, <code>sc.testing-conventions</code>, <code>sc.jacoco-conventions</code></td>
+      </tr>
+      <tr>
+        <td>Root <code>package.json</code></td>
+        <td><span class="badge badge-new">ІНСТРУМЕНТ</span></td>
+        <td>shadcn CLI для управління UI-компонентами фронтенду</td>
+      </tr>
+      <tr>
+        <td>Trivy Scanner</td>
+        <td><span class="badge badge-new">БЕЗПЕКА</span></td>
+        <td>Сканування вразливостей Docker-образів у CI з вивантаженням SARIF-звітів</td>
+      </tr>
+      <tr>
+        <td>ngrok</td>
+        <td><span class="badge badge-new">ІНТЕГРАЦІЯ</span></td>
+        <td>Тунелювання для Telegram webhook у локальному середовищі розробки</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- 7. CURRENT ARCHITECTURE                                       -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="architecture">5. Як тепер працює система</h2>
+
+  <p>Після релізу v1.2.0 система складається з 7 мікросервісів, API-шлюзу, веб-фронтенду та повного стеку інфраструктури:</p>
+
+  <h3>Мікросервіси</h3>
+  <div class="arch-grid">
+    <div class="arch-item">
+      <div class="name">Identity Service</div>
+      <div class="desc">Автентифікація, magic link, JWT</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Admission Service</div>
+      <div class="desc">Заяви абітурієнтів, конкурс</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Documents Service</div>
+      <div class="desc">Зберігання документів, MinIO</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Environment Service</div>
+      <div class="desc">Feature flags, конфігурація</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Notifications Service</div>
+      <div class="desc">Email-сповіщення, Mailpit</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Telegram Bot Service</div>
+      <div class="desc">Telegram-бот, feature flags</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Gateway</div>
+      <div class="desc">API-шлюз, порт 8080</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Web (Next.js)</div>
+      <div class="desc">Фронтенд, SPA</div>
+    </div>
+  </div>
+
+  <h3>Інфраструктура</h3>
+  <div class="arch-grid">
+    <div class="arch-item">
+      <div class="name">PostgreSQL 16</div>
+      <div class="desc">Основна СУБД</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Redis 7</div>
+      <div class="desc">Кешування, сесії</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">RabbitMQ 3</div>
+      <div class="desc">Брокер повідомлень</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">MinIO</div>
+      <div class="desc">Об'єктне сховище</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Mailpit</div>
+      <div class="desc">Тестовий SMTP</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Zipkin</div>
+      <div class="desc">Розподілене трасування</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Prometheus</div>
+      <div class="desc">Збір метрик</div>
+    </div>
+    <div class="arch-item">
+      <div class="name">Grafana</div>
+      <div class="desc">Візуалізація, дашборди</div>
+    </div>
+  </div>
+
+  <h3>Архітектурні принципи v1.2.0</h3>
+  <ul>
+    <li>Усі сервіси використовують <strong>багатоетапні Docker-збірки</strong> з попередньою публікацією спільних бібліотек</li>
+    <li><strong>Координація залежностей на основі здоров'я</strong> (<code>service_healthy</code>) для всіх сервісів</li>
+    <li><strong>Magic link автентифікація</strong> &mdash; без паролів, лише email-посилання</li>
+    <li>Feature flags керуються через <strong>environment-service</strong> та доступні через <strong>Telegram-бот</strong></li>
+    <li><strong>Grafana дашборди</strong> для операційного моніторингу провізіонуються автоматично</li>
+    <li>Кожен сервіс має <strong>HEALTHCHECK</strong> у Dockerfile та <code>/actuator/health</code> ендпоінт</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8. HOW TO RUN                                                 -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="how-to-run">6. Як запускати</h2>
+
+  <h3>Підготовка середовища</h3>
+  <pre><code><span class="comment"># Скопіюйте шаблон змінних оточення та заповніть значення</span>
+<span class="keyword">cp</span> infra/.env.example infra/.env</code></pre>
+
+  <h3>Запуск інфраструктури</h3>
+  <pre><code><span class="comment"># Запуск PostgreSQL, Redis, RabbitMQ, MinIO, Mailpit, Zipkin, Prometheus, Grafana</span>
+<span class="keyword">cd</span> infra && <span class="keyword">docker compose</span> up <span class="flag">-d</span></code></pre>
+
+  <h3>Запуск сервісів</h3>
+  <pre><code><span class="comment"># Запуск усіх основних мікросервісів</span>
+<span class="keyword">docker compose</span> <span class="flag">-f</span> docker-compose.services.yml up <span class="flag">-d</span></code></pre>
+
+  <h3>Запуск з Telegram Bot (опціонально)</h3>
+  <pre><code><span class="comment"># Включає telegram-bot-service + ngrok + webhook-init</span>
+<span class="keyword">docker compose</span> <span class="flag">-f</span> docker-compose.services.yml <span class="flag">--profile</span> telegram up <span class="flag">-d</span></code></pre>
+
+  <div class="info-box">
+    <p><strong>Передумови:</strong> Docker та Docker Compose мають бути встановлені. Усі сервіси запускаються у мережі <code>sc-net</code>. Перша збірка може тривати 5-10 хвилин через завантаження залежностей.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 9. HOW TO DEPLOY                                              -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2 id="how-to-deploy">7. Як деплоїти</h2>
+
+  <table>
+    <thead>
+      <tr><th>Тригер</th><th>Дія</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Push до <code>main</code></td><td>Запускає Docker CI &mdash; збірка та публікація образів із змінених сервісів</td></tr>
+      <tr><td>Тег <code>v*.*.*</code></td><td>Повна перезбірка усіх сервісів з тегуванням за semver</td></tr>
+      <tr><td>Публікація образів</td><td><code>ghcr.io/fice-selection-committee/sc-*</code></td></tr>
+      <tr><td>Сканування Trivy</td><td>Виконується на кожній збірці, результати у GitHub Security (SARIF)</td></tr>
+    </tbody>
+  </table>
+
+  <p>Процес деплою:</p>
+  <ol>
+    <li>Зміни проходять code review та CI-перевірки у pull request</li>
+    <li>Після merge до <code>main</code> автоматично збираються Docker-образи змінених сервісів</li>
+    <li>Trivy сканує кожен образ на вразливості та завантажує SARIF-звіт</li>
+    <li>Для релізу створюється тег <code>v*.*.*</code>, що тригерить повну перезбірку</li>
+    <li>Семантичні теги (<code>latest</code>, <code>v1.2.0</code>, <code>v1.2</code>, <code>v1</code>) застосовуються до образів</li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<!-- 10. HOW TO MONITOR                                            -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="how-to-monitor">8. Як моніторити</h2>
+
+  <table>
+    <thead>
+      <tr><th>Інструмент</th><th>URL</th><th>Призначення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Grafana</strong></td><td><code>http://localhost:3001</code></td><td>Візуалізація метрик (логін: <code>admin/admin</code>)</td></tr>
+      <tr><td><strong>Zipkin</strong></td><td><code>http://localhost:9411</code></td><td>Розподілене трасування запитів між сервісами</td></tr>
+      <tr><td><strong>Prometheus</strong></td><td><code>http://localhost:9090</code></td><td>Збір та запити метрик</td></tr>
+      <tr><td><strong>Actuator</strong></td><td><code>/actuator/health</code></td><td>Перевірка здоров'я кожного сервісу</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Grafana дашборди</h3>
+  <ol>
+    <li><strong>Services Overview</strong> &mdash; HTTP-метрики, час відповіді, JVM-статистика усіх сервісів</li>
+    <li><strong>PostgreSQL</strong> &mdash; кількість з'єднань, транзакцій, розмір баз даних</li>
+    <li><strong>RabbitMQ</strong> &mdash; стан черг, швидкість обробки повідомлень, кількість споживачів</li>
+    <li><strong>Feature Flags</strong> &mdash; поточний статус прапорців, історія змін</li>
+  </ol>
+
+  <div class="info-box accent">
+    <p>Усі дашборди провізіонуються автоматично при першому запуску Grafana. Джерело даних Prometheus налаштовується через <code>infra/grafana/provisioning/</code>.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 11. HOW TO TEST                                               -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2 id="how-to-test">9. Як тестувати</h2>
+
+  <table>
+    <thead>
+      <tr><th>Рівень тестування</th><th>Команда</th><th>Вимоги</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Unit-тести</strong></td>
+        <td><code>./gradlew test</code></td>
+        <td>Запускаються для кожного сервісу окремо</td>
+      </tr>
+      <tr>
+        <td><strong>Integration-тести</strong></td>
+        <td><code>./gradlew integrationTest</code></td>
+        <td>Потребують Docker (Testcontainers)</td>
+      </tr>
+      <tr>
+        <td><strong>Contract-тести</strong></td>
+        <td>Частина <code>integrationTest</code></td>
+        <td>У <code>src/integrationTest/**/contract/</code></td>
+      </tr>
+      <tr>
+        <td><strong>E2E-тести</strong></td>
+        <td>Playwright</td>
+        <td>У <code>selection-committee-e2e-tests</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Telegram Bot тести</h3>
+  <p>Сервіс Telegram Bot включає 79 файлів з повним покриттям юніт-тестами. Тести перевіряють:</p>
+  <ul>
+    <li>Обробку webhook-запитів та inline-клавіатур</li>
+    <li>CRUD-операції з feature-прапорцями через Feign-клієнт</li>
+    <li>Обробку RabbitMQ-повідомлень</li>
+    <li>Авторизацію на основі chat ID</li>
+    <li>Rate limiting</li>
+    <li>i18n (українська та англійська локалізації)</li>
+  </ul>
+
+  <h3>Контрактні тести (оновлені)</h3>
+  <ul>
+    <li><code>ProviderContractIT</code> &mdash; оновлено для magic link потоку автентифікації</li>
+    <li><code>IdentityClientContractIT</code> (documents-service) &mdash; оновлено для <code>GET /api/v1/auth/user</code></li>
+    <li><code>EnvClientContractIT</code> &mdash; видалено (застарілий)</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- 12. COMPARISON TABLE                                          -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="comparison">10. Порівняння &laquo;Було / Стало&raquo;</h2>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Аспект</th>
+        <th>v1.1.0 (Було)</th>
+        <th>v1.2.0 (Стало)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Docker-збірки</td>
+        <td>Одноетапні (gradle:jdk21-ubi-minimal)</td>
+        <td>Багатоетапні, 3 стадії (eclipse-temurin:21-alpine)</td>
+      </tr>
+      <tr>
+        <td>Залежності здоров'я</td>
+        <td>service_started</td>
+        <td>service_healthy</td>
+      </tr>
+      <tr>
+        <td>Auth API</td>
+        <td>POST /api/v1/auth/user</td>
+        <td>GET /api/v1/auth/user</td>
+      </tr>
+      <tr>
+        <td>Кількість сервісів</td>
+        <td>6 + gateway</td>
+        <td>7 + gateway</td>
+      </tr>
+      <tr>
+        <td>CI тригери</td>
+        <td>server/services/** тільки</td>
+        <td>libs, buildSrc, теги, web, telegram-bot</td>
+      </tr>
+      <tr>
+        <td>Сканування вразливостей</td>
+        <td>Відсутнє</td>
+        <td>Trivy SARIF до GitHub Security</td>
+      </tr>
+      <tr>
+        <td>Дашборди моніторингу</td>
+        <td>Ручне налаштування</td>
+        <td>4 провізійовані Grafana дашборди</td>
+      </tr>
+      <tr>
+        <td>Онбордінг розробника</td>
+        <td>Без .env шаблону</td>
+        <td>.env.example з документацією</td>
+      </tr>
+      <tr>
+        <td>Інженерна документація</td>
+        <td>Відсутня</td>
+        <td>CLAUDE.md + 10 довідкових файлів</td>
+      </tr>
+      <tr>
+        <td>Планування задач</td>
+        <td>14 загальних фаз</td>
+        <td>19 специфічних планів + специфікації редизайну</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- 13. CONCLUSIONS                                               -->
+<!-- ============================================================ -->
+<div class="section page-break">
+  <h2 id="conclusions">11. Висновки та подальші кроки</h2>
+
+  <h3>Ключові досягнення v1.2.0</h3>
+
+  <ul>
+    <li><strong>Багатоетапні Docker-збірки</strong> зменшують розмір образів та покращують відтворюваність збірок. Виключення JDK та Gradle з runtime-образу значно зменшує поверхню атаки.</li>
+    <li><strong>Залежності на основі здоров'я</strong> запобігають стартовим гонкам (race conditions) &mdash; сервіси не починають роботу, поки інфраструктура не підтвердить свою готовність.</li>
+    <li><strong>Виправлення Auth API</strong> приводить контракт у відповідність до REST-семантики, що спрощує інтеграцію для зовнішніх клієнтів.</li>
+    <li><strong>Telegram Bot</strong> додає зручний операційний інтерфейс для управління feature-прапорцями без необхідності доступу до адмін-панелі.</li>
+    <li><strong>Grafana дашборди</strong> забезпечують миттєву спостережуваність системи з першого запуску.</li>
+    <li><strong>Trivy у CI</strong> встановлює безперервний контроль вразливостей як частину процесу збірки.</li>
+    <li><strong>Інженерна документація</strong> формалізує стандарти роботи, що підвищує передбачуваність та якість змін.</li>
+  </ul>
+
+  <h3>Подальші кроки</h3>
+
+  <table>
+    <thead>
+      <tr><th>Пріоритет</th><th>Задача</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-changed">ВИСОКИЙ</span></td>
+        <td>PR Review та Merge</td>
+        <td>Ревью та злиття поточної гілки з усіма змінами v1.2.0</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-changed">ВИСОКИЙ</span></td>
+        <td>Тегування v1.2.0</td>
+        <td>Створення git-тегу <code>v1.2.0</code> після merge для публікації Docker-образів</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-improved">СЕРЕДНІЙ</span></td>
+        <td>Редизайн фронтенду</td>
+        <td>Виконання планів redesign-01 &ndash; redesign-07 для оновлення UI</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-improved">СЕРЕДНІЙ</span></td>
+        <td>Виправлення доступності</td>
+        <td>Реалізація знахідок з REVIEW_REPORT.md щодо accessibility</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-new">ПЛАНОВИЙ</span></td>
+        <td>E2E покриття Telegram Bot</td>
+        <td>Інтеграційні тести з реальним Telegram API (тестове оточення)</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-new">ПЛАНОВИЙ</span></td>
+        <td>Кешування Docker-шарів</td>
+        <td>Оптимізація CI через кешування між етапами збірки</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box accent" style="margin-top: 2em;">
+    <p><strong>Реліз v1.2.0</strong> значно підвищує операційну зрілість платформи FICE Selection Committee. Інфраструктурні покращення створюють надійний фундамент для подальшого розвитку функціональності та масштабування системи.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                        -->
+<!-- ============================================================ -->
+<div style="margin-top: 60px; padding-top: 24px; border-top: 2px solid var(--gray-200); text-align: center; color: var(--gray-400); font-size: 0.85em;">
+  <p>FICE Selection Committee &mdash; Технічний звіт v1.2.0 &mdash; 30 березня 2026</p>
+  <p>Release Engineering Team &bull; Конфіденційно</p>
+</div>
+
+</body>
+</html>
