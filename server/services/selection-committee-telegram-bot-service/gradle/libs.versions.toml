@@ -67,7 +67,7 @@ allure-adapter = "2.30.0"
 jacoco = "0.8.11"
 
 # ── FICE SC shared libraries ─────────────────────────────
-sc-libs = "1.1.0"
+sc-libs = "1.2.0"
 
 [libraries]
 # ── Spring Boot starters ──────────────────────────────────
