@@ -7,6 +7,7 @@ server/services/selection-committee-notifications-service/
 server/services/selection-committee-environment-service/
 server/services/selection-committee-computer-vision/
 server/services/selection-committee-telegram-bot-service/
+server/services/selection-committee-e2e-tests/
 /client/
 /tests/
 
