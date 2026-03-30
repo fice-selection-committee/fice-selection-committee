@@ -18,7 +18,7 @@ class IdentityClientContractIT extends AbstractIntegrationTest {
       new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
   @Nested
-  @DisplayName("POST /api/v1/auth/user response compatibility")
+  @DisplayName("GET /api/v1/auth/user response compatibility")
   class AuthUserEndpointContract {
 
     @Test
@@ -85,7 +85,8 @@ class IdentityClientContractIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Response with all fields present deserializes correctly (required fields present)")
+    @DisplayName(
+        "Response with all fields present deserializes correctly (required fields present)")
     void allFieldsPresent_deserializesCorrectly() {
       String jsonFull =
           """
@@ -167,8 +168,7 @@ class IdentityClientContractIT extends AbstractIntegrationTest {
                 assertThat(user.email()).isNotBlank();
                 assertThat(user.role()).isNotBlank();
                 assertThat(user.permissions())
-                    .containsExactlyInAnyOrder(
-                        "checking_documents", "working_with_contracts");
+                    .containsExactlyInAnyOrder("checking_documents", "working_with_contracts");
               })
           .doesNotThrowAnyException();
     }
