@@ -6,10 +6,19 @@ on:
     branches: [main]
     paths:
       - 'server/services/**'
+      - 'server/libs/**'
+      - 'server/buildSrc/**'
+      - 'server/build.gradle.kts'
+      - 'server/settings.gradle.kts'
+      - 'server/version.properties'
+      - 'client/web/**'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: read
   packages: write
+  security-events: write
 
 jobs:
   detect-changes:
@@ -24,7 +33,7 @@ jobs:
 
       - name: Detect changed paths
         id: filter
-        if: github.event_name != 'workflow_dispatch'
+        if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
         uses: dorny/paths-filter@v3
         with:
           filters: |
@@ -40,11 +49,24 @@ jobs:
               - 'server/services/selection-committee-environment-service/**'
             notifications:
               - 'server/services/selection-committee-notifications-service/**'
+            telegram-bot:
+              - 'server/services/selection-committee-telegram-bot-service/**'
+            web:
+              - 'client/web/**'
+            shared:
+              - 'server/libs/**'
+              - 'server/buildSrc/**'
+              - 'server/build.gradle.kts'
+              - 'server/settings.gradle.kts'
+              - 'server/version.properties'
 
       - name: Build service matrix
         id: build-matrix
         run: |
-          ALL='${{ github.event_name == 'workflow_dispatch' }}'
+          # Build all services on: workflow_dispatch, tag push, or shared lib changes
+          IS_TAG='${{ startsWith(github.ref, 'refs/tags/') }}'
+          ALL='${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.shared == 'true' }}'
+          if [ "$IS_TAG" = "true" ]; then ALL="true"; fi
 
           services='[]'
           add() {
@@ -69,6 +91,12 @@ jobs:
           if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.notifications }}" = "true" ]; then
             add "selection-committee-notifications-service" "notifications"
           fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.telegram-bot }}" = "true" ]; then
+            add "selection-committee-telegram-bot-service" "telegram-bot"
+          fi
+          if [ "$ALL" = "true" ] || [ "${{ steps.filter.outputs.web }}" = "true" ]; then
+            add "web" "web"
+          fi
 
           echo "matrix={\"include\":$services}" >> "$GITHUB_OUTPUT"
           echo "Selected services: $services"
@@ -78,6 +106,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.matrix != '{"include":[]}'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     strategy:
       fail-fast: false
@@ -90,11 +119,22 @@ jobs:
       - name: Check Dockerfile availability
         id: check-source
         run: |
-          if [ -f "server/services/${{ matrix.service }}/Dockerfile" ] && \
-             [ -d "server/services/${{ matrix.service }}/src/main" ]; then
+          if [ "${{ matrix.service }}" = "web" ]; then
+            # Web frontend has a different directory structure
+            if [ -f "client/web/docker/Dockerfile" ]; then
+              echo "buildable=true" >> "$GITHUB_OUTPUT"
+              echo "context=client/web" >> "$GITHUB_OUTPUT"
+              echo "dockerfile=client/web/docker/Dockerfile" >> "$GITHUB_OUTPUT"
+            else
+              echo "buildable=false" >> "$GITHUB_OUTPUT"
+            fi
+          elif [ -f "server/services/${{ matrix.service }}/Dockerfile" ] && \
+               [ -d "server/services/${{ matrix.service }}/src/main" ]; then
             echo "buildable=true" >> "$GITHUB_OUTPUT"
+            echo "context=server" >> "$GITHUB_OUTPUT"
+            echo "dockerfile=server/services/${{ matrix.service }}/Dockerfile" >> "$GITHUB_OUTPUT"
           else
-            echo "::notice::Skipping ${{ matrix.service }} — Dockerfile or source code not in monorepo (managed as separate repository)"
+            echo "::notice::Skipping ${{ matrix.service }} — Dockerfile or source code not in monorepo"
             echo "buildable=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -119,14 +159,34 @@ jobs:
           tags: |
             type=sha,prefix=
             type=raw,value=latest
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
 
       - name: Build and push
         if: steps.check-source.outputs.buildable == 'true'
+        id: build
         uses: docker/build-push-action@v5
         with:
-          context: server/services/${{ matrix.service }}
+          context: ${{ steps.check-source.outputs.context }}
+          file: ${{ steps.check-source.outputs.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Run Trivy vulnerability scanner
+        if: steps.check-source.outputs.buildable == 'true'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/${{ github.repository_owner }}/sc-${{ matrix.short-name }}:latest
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+
+      - name: Upload Trivy scan results
+        if: steps.check-source.outputs.buildable == 'true' && always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'

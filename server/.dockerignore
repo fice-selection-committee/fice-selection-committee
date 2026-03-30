@@ -1,0 +1,16 @@
+**/.gradle/
+**/.idea/
+**/*.iml
+**/build/
+**/.git/
+**/src/test/
+**/src/integrationTest/
+**/src/performanceTest/
+services/selection-committee-e2e-tests/
+services/selection-committee-computer-vision/
+**/*.md
+**/ajcore.*
+**/docker-compose*.yml
+**/docker-compose*.yaml
+**/.env
+**/.env.*

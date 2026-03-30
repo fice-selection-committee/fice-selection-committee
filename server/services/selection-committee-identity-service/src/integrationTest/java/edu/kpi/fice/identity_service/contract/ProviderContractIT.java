@@ -9,99 +9,72 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kpi.fice.identity_service.AbstractIntegrationTest;
-import edu.kpi.fice.identity_service.web.auth.persistence.entity.VerificationToken;
-import edu.kpi.fice.identity_service.web.auth.persistence.repository.VerificationTokenRepository;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-@DisplayName("Identity Service Provider Contract IT — response shape matches consumer expectations")
+@DisplayName(
+    "Identity Service Provider Contract IT -- response shape matches consumer expectations")
 class ProviderContractIT extends AbstractIntegrationTest {
 
   private static final String TEST_EMAIL = "provider-contract@example.com";
-  private static final String TEST_PASSWORD = "StrongPass1";
 
   @Autowired private MockMvc mockMvc;
 
   @Autowired private ObjectMapper objectMapper;
 
-  @Autowired private VerificationTokenRepository verificationTokenRepository;
+  @Autowired private JdbcTemplate jdbcTemplate;
 
   @Nested
-  @DisplayName("POST /api/v1/auth/user — UserDto response shape")
+  @DisplayName("GET /api/v1/auth/user -- UserDto response shape")
   class AuthUserEndpointShape {
 
     @Test
     @DisplayName("Response for authenticated user contains all fields that consumers depend on")
     @DirtiesContext
     void authenticatedUser_responseContainsExpectedFields() throws Exception {
-      // Step 1: Register a user
-      String registerBody =
-          """
-              {
-                "firstName": "Contract",
-                "lastName": "Test",
-                "email": "%s",
-                "password": "%s"
-              }
-              """
-              .formatted(TEST_EMAIL, TEST_PASSWORD);
+      // Step 1: Authenticate via magic link (auto-creates user)
+      String rawToken = UUID.randomUUID().toString();
+      String tokenHash = sha256Hex(rawToken);
+      Instant expiry = Instant.now().plus(15, ChronoUnit.MINUTES);
 
-      mockMvc
-          .perform(
-              post("/api/v1/auth/register")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(registerBody))
-          .andExpect(status().isCreated());
+      jdbcTemplate.update(
+          "INSERT INTO identity.magic_link_tokens (token_hash, email, expiry_date, used) VALUES (?, ?, ?, false)",
+          tokenHash,
+          TEST_EMAIL,
+          java.sql.Timestamp.from(expiry));
 
-      // Step 2: Verify email
-      VerificationToken vt =
-          verificationTokenRepository.findAll().stream()
-              .findFirst()
-              .orElseThrow(() -> new AssertionError("Verification token not found"));
-
-      mockMvc
-          .perform(
-              post("/api/v1/auth/verify")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content("{\"token\": \"%s\"}".formatted(vt.getToken())))
-          .andExpect(status().isOk());
-
-      // Step 3: Login to get access token
-      MvcResult loginResult =
+      MvcResult authResult =
           mockMvc
               .perform(
-                  post("/api/v1/auth/login")
+                  post("/api/v1/auth/verify-magic-link")
                       .contentType(MediaType.APPLICATION_JSON)
-                      .content(
-                          """
-                              {
-                                "email": "%s",
-                                "password": "%s"
-                              }
-                              """
-                              .formatted(TEST_EMAIL, TEST_PASSWORD)))
+                      .content("{\"token\": \"%s\"}".formatted(rawToken)))
               .andExpect(status().isOk())
               .andReturn();
 
-      String loginBody = loginResult.getResponse().getContentAsString();
-      JsonNode loginJson = objectMapper.readTree(loginBody);
-      String accessToken = loginJson.get("accessToken").asText();
+      String authBody = authResult.getResponse().getContentAsString();
+      JsonNode authJson = objectMapper.readTree(authBody);
+      String accessToken = authJson.get("accessToken").asText();
 
-      // Step 4: Call POST /api/v1/auth/user with the access token and verify response shape.
+      // Step 2: Call GET /api/v1/auth/user with the access token and verify response shape.
       // Admission service and Documents service both call this endpoint and expect:
       // id, email, role (with id and name), firstName, middleName, lastName, extraPermissions
       MvcResult result =
           mockMvc
-              .perform(
-                  post("/api/v1/auth/user")
-                      .header("Authorization", "Bearer " + accessToken))
+              .perform(get("/api/v1/auth/user").header("Authorization", "Bearer " + accessToken))
               .andExpect(status().isOk())
               .andExpect(jsonPath("$.id").exists())
               .andExpect(jsonPath("$.email").value(TEST_EMAIL))
@@ -120,7 +93,7 @@ class ProviderContractIT extends AbstractIntegrationTest {
       assertThat(userJson.has("email")).isTrue();
       assertThat(userJson.get("email").asText()).isEqualTo(TEST_EMAIL);
 
-      // role must be an object with id and name — not a plain string
+      // role must be an object with id and name -- not a plain string
       assertThat(userJson.has("role")).isTrue();
       assertThat(userJson.get("role").isObject()).isTrue();
       assertThat(userJson.get("role").has("id")).isTrue();
@@ -129,7 +102,7 @@ class ProviderContractIT extends AbstractIntegrationTest {
   }
 
   @Nested
-  @DisplayName("GET /api/v1/admin/users/by-role — List<UserDto> response shape")
+  @DisplayName("GET /api/v1/admin/users/by-role -- List<UserDto> response shape")
   class UsersByRoleEndpointShape {
 
     @Test
@@ -142,10 +115,7 @@ class ProviderContractIT extends AbstractIntegrationTest {
       // It deserializes the response as List<UserDto> and depends on id, email, role fields
       MvcResult result =
           mockMvc
-              .perform(
-                  get("/api/v1/admin/users/by-role")
-                      .param("roleName", "APPLICANT")
-                      .header("Authorization", "Bearer test-token"))
+              .perform(get("/api/v1/admin/users/by-role").param("roleName", "APPLICANT"))
               .andExpect(status().isOk())
               .andReturn();
 
@@ -164,6 +134,22 @@ class ProviderContractIT extends AbstractIntegrationTest {
             assertThat(userNode.get("role").has("id")).isTrue();
             assertThat(userNode.get("role").has("name")).isTrue();
           });
+    }
+  }
+
+  private static String sha256Hex(String input) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+      StringBuilder hexString = new StringBuilder();
+      for (byte b : hash) {
+        String hex = Integer.toHexString(0xff & b);
+        if (hex.length() == 1) hexString.append('0');
+        hexString.append(hex);
+      }
+      return hexString.toString();
+    } catch (java.security.NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
     }
   }
 }

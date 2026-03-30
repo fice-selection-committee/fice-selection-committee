@@ -1,0 +1,214 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "HikariCP Active Connections",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "hikaricp_connections_active{application=~\"$service\"}",
+          "legendFormat": "{{ application }} active",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "title": "HikariCP Idle Connections",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "hikaricp_connections_idle{application=~\"$service\"}",
+          "legendFormat": "{{ application }} idle",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 },
+          "color": { "mode": "fixed", "fixedColor": "blue" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "title": "HikariCP Total Connections",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "hikaricp_connections{application=~\"$service\"}",
+          "legendFormat": "{{ application }} total",
+          "refId": "A"
+        },
+        {
+          "expr": "hikaricp_connections_max{application=~\"$service\"}",
+          "legendFormat": "{{ application }} max",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "title": "HikariCP Connection Pending",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "hikaricp_connections_pending{application=~\"$service\"}",
+          "legendFormat": "{{ application }} pending",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 },
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 10 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "title": "HikariCP Connection Acquisition Time",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "rate(hikaricp_connections_acquire_seconds_sum{application=~\"$service\"}[5m]) / rate(hikaricp_connections_acquire_seconds_count{application=~\"$service\"}[5m])",
+          "legendFormat": "{{ application }} avg acquire",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "title": "HikariCP Connection Usage Time",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "expr": "rate(hikaricp_connections_usage_seconds_sum{application=~\"$service\"}[5m]) / rate(hikaricp_connections_usage_seconds_count{application=~\"$service\"}[5m])",
+          "legendFormat": "{{ application }} avg usage",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "title": "HikariCP Connection Creation Time",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "targets": [
+        {
+          "expr": "rate(hikaricp_connections_creation_seconds_sum{application=~\"$service\"}[5m]) / rate(hikaricp_connections_creation_seconds_count{application=~\"$service\"}[5m])",
+          "legendFormat": "{{ application }} avg creation",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "title": "HikariCP Connection Timeout Rate",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "targets": [
+        {
+          "expr": "rate(hikaricp_connections_timeout_total{application=~\"$service\"}[5m])",
+          "legendFormat": "{{ application }} timeouts/s",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 },
+          "color": { "mode": "fixed", "fixedColor": "red" }
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["fice", "postgresql", "hikari"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values(hikaricp_connections, application)",
+        "includeAll": true,
+        "multi": true,
+        "name": "service",
+        "query": "label_values(hikaricp_connections, application)",
+        "refresh": 2,
+        "type": "query"
+      },
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "query": "prometheus"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "FICE PostgreSQL / HikariCP",
+  "uid": "fice-postgresql"
+}
