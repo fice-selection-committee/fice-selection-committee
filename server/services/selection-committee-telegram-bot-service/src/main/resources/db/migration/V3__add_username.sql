@@ -1,1 +1,0 @@
-ALTER TABLE bot_users ADD COLUMN username VARCHAR(100);
