@@ -1,9 +1,8 @@
-version: "3.9"
-
 services:
   identity-service:
     build:
-      context: ../server/services/selection-committee-identity-service
+      context: ../server
+      dockerfile: services/selection-committee-identity-service/Dockerfile
     container_name: sc-identity
     restart: unless-stopped
     networks:
@@ -12,8 +11,10 @@ services:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+      mailpit:
         condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: local
@@ -31,6 +32,19 @@ services:
       RABBITMQ_PASSWORD: ${RABBIT_PASS}
       ZIPKIN_URL: http://zipkin:9411/api/v2/spans
       feature-flags-config.env-service-url: http://environment-service:8085
+      JWT_PRIVATE_KEY_PATH: /run/secrets/private_key.pem
+      JWT_PUBLIC_KEY_PATH: /run/secrets/public_key.pem
+      spring.mail.host: mailpit
+      spring.mail.port: 1025
+      security.rate-limit.endpoints[0].path: /api/v1/auth/magic-link
+      security.rate-limit.endpoints[0].max-attempts: 100
+      security.rate-limit.endpoints[0].window-seconds: 60
+      security.rate-limit.endpoints[1].path: /api/v1/auth/verify-magic-link
+      security.rate-limit.endpoints[1].max-attempts: 100
+      security.rate-limit.endpoints[1].window-seconds: 60
+    volumes:
+      - ./secrets/jwtRS256.pk8.pem:/run/secrets/private_key.pem:ro
+      - ./secrets/jwtRS256.key.pub:/run/secrets/public_key.pem:ro
     ports:
       - "${IDENTITY_SERVICE_PORT:-8081}:8081"
     healthcheck:
@@ -42,7 +56,8 @@ services:
 
   environment-service:
     build:
-      context: ../server/services/selection-committee-environment-service
+      context: ../server
+      dockerfile: services/selection-committee-environment-service/Dockerfile
     container_name: sc-environment
     restart: unless-stopped
     networks:
@@ -51,9 +66,9 @@ services:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgres
@@ -64,12 +79,13 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-      RABBIT_HOST: rabbitmq
-      RABBIT_PORT: 5672
-      RABBIT_USER: ${RABBIT_USER}
-      RABBIT_PASS: ${RABBIT_PASS}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBIT_USER}
+      RABBITMQ_PASSWORD: ${RABBIT_PASS}
       ENVIRONMENT_SERVICE_PORT: 8085
       ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+      spring.datasource.url: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
     ports:
       - "${ENVIRONMENT_SERVICE_PORT:-8085}:8085"
     healthcheck:
@@ -81,7 +97,8 @@ services:
 
   admission-service:
     build:
-      context: ../server/services/selection-committee-admission-service
+      context: ../server
+      dockerfile: services/selection-committee-admission-service/Dockerfile
     container_name: sc-admission
     restart: unless-stopped
     networks:
@@ -90,9 +107,9 @@ services:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
       identity-service:
         condition: service_healthy
     environment:
@@ -125,7 +142,8 @@ services:
 
   documents-service:
     build:
-      context: ../server/services/selection-committee-documents-service
+      context: ../server
+      dockerfile: services/selection-committee-documents-service/Dockerfile
     container_name: sc-documents
     restart: unless-stopped
     networks:
@@ -133,8 +151,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      minio:
-        condition: service_started
+      minio-init:
+        condition: service_completed_successfully
       identity-service:
         condition: service_healthy
     environment:
@@ -153,6 +171,7 @@ services:
       service.admission-service-url: http://admission-service:8083
       sc.auth.identity-service-url: http://identity-service:8081
       ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+      spring.datasource.url: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
     ports:
       - "${DOCUMENTS_SERVICE_PORT:-8084}:8084"
     healthcheck:
@@ -164,14 +183,15 @@ services:
 
   notifications-service:
     build:
-      context: ../server/services/selection-committee-notifications-service
+      context: ../server
+      dockerfile: services/selection-committee-notifications-service/Dockerfile
     container_name: sc-notifications
     restart: unless-stopped
     networks:
       - sc-net
     depends_on:
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
       mailpit:
         condition: service_started
     environment:
@@ -197,14 +217,15 @@ services:
 
   gateway:
     build:
-      context: ../server/services/selection-committee-gateway
+      context: ../server
+      dockerfile: services/selection-committee-gateway/Dockerfile
     container_name: sc-gateway
     restart: unless-stopped
     networks:
       - sc-net
     depends_on:
       redis:
-        condition: service_started
+        condition: service_healthy
       identity-service:
         condition: service_healthy
       admission-service:
@@ -235,7 +256,7 @@ services:
     ports:
       - "${GATEWAY_PORT:-8080}:8080"
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8079/actuator/health"]
       interval: 15s
       timeout: 5s
       retries: 10
@@ -257,11 +278,97 @@ services:
     ports:
       - "3000:3000"
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000"]
       interval: 15s
       timeout: 5s
       retries: 5
       start_period: 20s
+
+  telegram-bot-service:
+    build:
+      context: ../server
+      dockerfile: services/selection-committee-telegram-bot-service/Dockerfile
+    container_name: sc-telegram-bot
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgres
+      PGPORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBIT_USER}
+      RABBITMQ_PASSWORD: ${RABBIT_PASS}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_ENABLED: ${TELEGRAM_ENABLED:-false}
+      TELEGRAM_ALLOWED_CHAT_IDS: ${TELEGRAM_ALLOWED_CHAT_IDS:-}
+      ENVIRONMENT_SERVICE_URL: http://environment-service:8085
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+    ports:
+      - "${TELEGRAM_BOT_SERVICE_PORT:-8087}:8087"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8087/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── Telegram Bot Webhook (ngrok tunnel + auto-registration) ──
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: sc-ngrok
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      telegram-bot-service:
+        condition: service_healthy
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:-}
+    command: ["http", "sc-telegram-bot:8087", "--log=stdout"]
+    ports:
+      - "4040:4040"
+    profiles:
+      - telegram
+
+  telegram-webhook-init:
+    image: curlimages/curl:latest
+    container_name: sc-telegram-webhook-init
+    networks:
+      - sc-net
+    depends_on:
+      ngrok:
+        condition: service_started
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Waiting for ngrok tunnel..."
+        for i in $$(seq 1 30); do
+          URL=$$(curl -s http://ngrok:4040/api/tunnels 2>/dev/null | grep -o '"public_url":"https://[^"]*"' | head -1 | cut -d'"' -f4)
+          if [ -n "$$URL" ]; then
+            echo "ngrok tunnel: $$URL"
+            RESULT=$$(curl -s "https://api.telegram.org/bot$${TELEGRAM_BOT_TOKEN}/setWebhook?url=$${URL}/api/v1/telegram/webhook")
+            echo "Webhook registration: $$RESULT"
+            exit 0
+          fi
+          echo "  attempt $$i/30 — tunnel not ready yet"
+          sleep 2
+        done
+        echo "ERROR: ngrok tunnel not available after 60s"
+        exit 1
+    profiles:
+      - telegram
 
 networks:
   sc-net: {}
