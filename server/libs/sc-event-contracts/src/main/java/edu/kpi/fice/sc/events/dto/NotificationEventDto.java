@@ -11,6 +11,7 @@ public record NotificationEventDto(
     TemplateType templateType,
     String userEmail,
     Long telegramId,
+    Long userId,
     Map<String, Object> payload,
     List<ChannelType> channels,
     String language) {}
