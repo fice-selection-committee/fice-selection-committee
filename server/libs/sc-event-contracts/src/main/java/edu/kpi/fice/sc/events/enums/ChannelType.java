@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ChannelType {
   EMAIL("mail"),
-  TELEGRAM("telegram");
+  TELEGRAM("telegram"),
+  IN_APP("in_app");
 
   private final String type;
 }

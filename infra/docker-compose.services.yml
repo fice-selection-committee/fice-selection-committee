@@ -151,6 +151,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
       minio-init:
         condition: service_completed_successfully
       identity-service:
@@ -162,6 +164,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBIT_USER}
+      RABBITMQ_PASSWORD: ${RABBIT_PASS}
       MINIO_INTERNAL_ENDPOINT: http://minio:9000
       MINIO_EXTERNAL_ENDPOINT: http://localhost:${MINIO_PORT:-9000}
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -190,13 +196,23 @@ services:
     networks:
       - sc-net
     depends_on:
+      postgres:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
       mailpit:
         condition: service_started
+      identity-service:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${NOTIF_DB:-sc_notifications}
+      POSTGRES_USER: ${NOTIF_USER:-scnotifications}
+      POSTGRES_PASSWORD: ${NOTIF_PASS:-scnotifications}
+      PGPORT: 5432
       RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: ${RABBIT_USER}
       RABBITMQ_PASSWORD: ${RABBIT_PASS}
       MAIL_USER_EMAIL: test@localhost
@@ -205,6 +221,8 @@ services:
       spring.mail.port: 1025
       spring.mail.properties.mail.smtp.auth: "false"
       spring.mail.properties.mail.smtp.starttls.enable: "false"
+      IDENTITY_SERVICE_HOST: identity-service
+      IDENTITY_SERVICE_PORT: 8081
       ZIPKIN_URL: http://zipkin:9411/api/v2/spans
     ports:
       - "${NOTIFICATIONS_SERVICE_PORT:-8086}:8086"
