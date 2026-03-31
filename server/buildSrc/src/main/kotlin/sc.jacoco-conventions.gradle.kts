@@ -34,6 +34,17 @@ tasks.named<JacocoReport>("jacocoTestReport") {
 }
 
 afterEvaluate {
+    // Ensure JaCoCo tasks run after integrationTest when both are in the task graph,
+    // so integrationTest.exec is fully written before JaCoCo reads jacoco/*.exec.
+    tasks.findByName("integrationTest")?.let { intTest ->
+        tasks.named<JacocoReport>("jacocoTestReport") {
+            mustRunAfter(intTest)
+        }
+        tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+            mustRunAfter(intTest)
+        }
+    }
+
     tasks.named<JacocoReport>("jacocoTestReport") {
         val excludePatterns = project.extensions.extraProperties.let {
             if (it.has("filesExcludedFromCoverage")) {
