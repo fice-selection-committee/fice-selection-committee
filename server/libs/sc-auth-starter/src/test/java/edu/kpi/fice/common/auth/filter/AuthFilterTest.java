@@ -143,6 +143,25 @@ class AuthFilterTest {
   }
 
   @Test
+  void shouldNotFilterReturnsFalseWhenBothPathListsAreEmpty() throws Exception {
+    authProperties.setSkipFilterPaths(List.of());
+    authProperties.setPublicPaths(new java.util.ArrayList<>());
+    authFilter = new AuthFilter(identityServiceClient, authProperties);
+
+    when(request.getRequestURI()).thenReturn("/api/v1/users");
+
+    assertThat(authFilter.shouldNotFilter(request)).isFalse();
+  }
+
+  @Test
+  void shouldNotSkipForPrefixCollisionOnSkipFilterPaths() throws Exception {
+    // /api/v1/webhooks is a skip path, but /api/v1/webhooksmalicious should NOT match
+    when(request.getRequestURI()).thenReturn("/api/v1/webhooksmalicious");
+
+    assertThat(authFilter.shouldNotFilter(request)).isFalse();
+  }
+
+  @Test
   void shouldSkipWhenAlreadyAuthenticated() throws Exception {
     // Set up an existing authentication
     UserDto user =
