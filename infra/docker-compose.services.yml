@@ -236,7 +236,7 @@ services:
       interval: 15s
       timeout: 5s
       retries: 10
-      start_period: 30s
+      start_period: 45s
 
   gateway:
     build:
@@ -297,7 +297,7 @@ services:
       gateway:
         condition: service_healthy
     environment:
-      NEXT_PUBLIC_API_BASE: http://gateway:8080
+      API_PROXY_TARGET: http://gateway:8080
     ports:
       - "3000:3000"
     healthcheck:
