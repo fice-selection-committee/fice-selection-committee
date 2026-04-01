@@ -3,142 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FICE Selection Committee — Технічний звіт v1.2.0</title>
+  <title>FICE-REL-2026-003 — Повний звіт про релізи v1.0.0–v1.2.0</title>
   <style>
     /* ===== Reset & Base ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --primary: #1a56db;
-      --primary-light: #e8eefb;
-      --primary-dark: #133ea0;
-      --accent: #059669;
-      --accent-light: #ecfdf5;
-      --accent-dark: #047857;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-400: #9ca3af;
-      --gray-500: #6b7280;
-      --gray-600: #4b5563;
-      --gray-700: #374151;
-      --gray-800: #1f2937;
-      --gray-900: #111827;
-      --danger: #dc2626;
-      --warning: #d97706;
-      --radius: 8px;
+      --navy: #1B2A4A;
+      --navy-light: #2D3F5E;
+      --slate: #475569;
+      --slate-light: #64748B;
+      --accent-link: #2563EB;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-300: #CBD5E1;
+      --gray-400: #94A3B8;
+      --gray-500: #64748B;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1E293B;
+      --gray-900: #0F172A;
+      --border: #CBD5E1;
+    }
+
+    @page {
+      margin: 20mm 18mm 25mm 18mm;
+      @bottom-left {
+        content: "FICE-REL-2026-003";
+        font-size: 9pt;
+        color: #475569;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      }
+      @bottom-center {
+        content: "ВНУТРІШНІЙ ДОКУМЕНТ";
+        font-size: 8pt;
+        color: #94A3B8;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      @bottom-right {
+        content: "Сторінка " counter(page) " з " counter(pages);
+        font-size: 9pt;
+        color: #475569;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      }
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      font-size: 15px;
-      line-height: 1.7;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
       color: var(--gray-800);
       background: #fff;
-      max-width: 960px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 40px 32px;
     }
 
     /* ===== Typography ===== */
-    h1, h2, h3, h4 { color: var(--gray-900); font-weight: 700; line-height: 1.3; }
-    h1 { font-size: 2.2em; margin-bottom: 0.4em; }
-    h2 { font-size: 1.6em; margin: 1.8em 0 0.6em; padding-bottom: 0.35em; border-bottom: 3px solid var(--primary); }
-    h3 { font-size: 1.25em; margin: 1.4em 0 0.5em; color: var(--primary-dark); }
-    h4 { font-size: 1.05em; margin: 1em 0 0.4em; }
-    p { margin-bottom: 0.9em; }
+    h1, h2, h3, h4 { color: var(--navy); font-weight: 600; line-height: 1.35; }
+    h1 { font-size: 1.9em; margin-bottom: 0.4em; }
+    h2 {
+      font-size: 1.35em;
+      margin: 1.8em 0 0.6em;
+      padding-bottom: 0.3em;
+      border-bottom: 2px solid var(--navy);
+    }
+    h3 { font-size: 1.1em; margin: 1.4em 0 0.5em; color: var(--navy-light); }
+    h4 { font-size: 1em; margin: 1em 0 0.4em; }
+    p { margin-bottom: 0.85em; }
     ul, ol { margin: 0.5em 0 1em 1.6em; }
-    li { margin-bottom: 0.35em; }
+    li { margin-bottom: 0.3em; }
     strong { color: var(--gray-900); }
-    a { color: var(--primary); text-decoration: none; }
+    a { color: var(--accent-link); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     /* ===== Title Page ===== */
     .title-page {
       text-align: center;
-      padding: 100px 20px 80px;
+      padding: 60px 20px 50px;
       page-break-after: always;
     }
-    .title-page .logo-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #fff;
-      font-size: 1.1em;
-      font-weight: 700;
-      letter-spacing: 2px;
-      padding: 12px 28px;
-      border-radius: 50px;
-      margin-bottom: 40px;
+    .title-page .classification {
+      font-size: 0.8em;
+      font-weight: 600;
+      letter-spacing: 3px;
       text-transform: uppercase;
+      color: var(--slate);
+      border: 2px solid var(--slate);
+      display: inline-block;
+      padding: 6px 20px;
+      margin-bottom: 50px;
+    }
+    .title-page .org-name {
+      font-size: 1em;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .title-page hr.formal {
+      border: none;
+      border-top: 3px solid var(--navy);
+      width: 100%;
+      margin: 30px 0;
+    }
+    .title-page hr.thin {
+      border: none;
+      border-top: 1px solid var(--gray-300);
+      width: 100%;
+      margin: 20px 0;
     }
     .title-page h1 {
-      font-size: 2.8em;
-      margin-bottom: 0.15em;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .title-page .version-badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      font-size: 1.3em;
+      font-size: 2.2em;
+      color: var(--navy);
+      margin-bottom: 0.1em;
       font-weight: 700;
-      padding: 8px 24px;
-      border-radius: 6px;
-      margin: 16px 0 40px;
     }
-    .title-page .meta {
+    .title-page .version {
+      font-size: 1.4em;
+      font-weight: 600;
+      color: var(--slate);
+      margin: 10px 0 0;
+    }
+    .title-page .doc-number {
+      font-size: 0.95em;
       color: var(--gray-500);
-      font-size: 1.05em;
+      margin: 6px 0 0;
+      letter-spacing: 1px;
+    }
+    .title-page .meta-block {
+      text-align: left;
+      max-width: 420px;
+      margin: 0 auto;
+      color: var(--gray-600);
+      font-size: 0.95em;
       line-height: 2;
     }
-    .title-page .meta strong { color: var(--gray-700); }
-    .title-page .divider {
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      border-radius: 2px;
-      margin: 30px auto;
-    }
+    .title-page .meta-block strong { color: var(--gray-800); }
 
     /* ===== Table of Contents ===== */
     .toc { page-break-after: always; }
-    .toc ul { list-style: none; margin: 0; padding: 0; }
-    .toc > ul > li {
-      border-bottom: 1px solid var(--gray-200);
-      padding: 10px 0;
-    }
-    .toc > ul > li > a {
-      font-weight: 600;
-      font-size: 1.05em;
+    .toc-entry {
       display: flex;
-      justify-content: space-between;
       align-items: baseline;
+      padding: 4px 0;
+      text-decoration: none;
+      color: var(--gray-800);
     }
-    .toc > ul > li > a .num { color: var(--primary); margin-right: 10px; }
-    .toc ul ul { margin: 6px 0 0 24px; }
-    .toc ul ul li { padding: 3px 0; border: none; }
-    .toc ul ul a { font-weight: 400; font-size: 0.95em; color: var(--gray-600); }
-    .toc ul ul a:hover { color: var(--primary); }
+    .toc-entry:hover { color: var(--accent-link); }
+    .toc-entry:hover .toc-dots { border-bottom-color: var(--accent-link); }
+    .toc-num {
+      flex-shrink: 0;
+      font-weight: 700;
+      color: var(--navy);
+      min-width: 44px;
+    }
+    .toc-title {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .toc-dots {
+      flex-grow: 1;
+      border-bottom: 1px dotted var(--gray-400);
+      margin: 0 6px;
+      min-width: 20px;
+      position: relative;
+      top: -3px;
+    }
+    .toc-page {
+      flex-shrink: 0;
+      color: var(--gray-500);
+      font-size: 0.9em;
+    }
+    .toc-level-1 { font-weight: 600; font-size: 0.98em; padding: 6px 0; border-bottom: 1px solid var(--gray-200); }
+    .toc-level-1 .toc-num { min-width: 44px; }
+    .toc-level-2 { font-weight: 400; font-size: 0.92em; padding: 3px 0; margin-left: 24px; color: var(--gray-600); }
+    .toc-level-2 .toc-num { min-width: 48px; font-weight: 600; }
+    .toc-part-header {
+      font-weight: 700;
+      font-size: 1.02em;
+      padding: 10px 0 4px;
+      color: var(--navy);
+      border-bottom: 2px solid var(--navy);
+      margin-top: 12px;
+    }
 
     /* ===== Info Boxes ===== */
     .info-box {
-      background: var(--primary-light);
-      border-left: 4px solid var(--primary);
-      padding: 16px 20px;
-      border-radius: 0 var(--radius) var(--radius) 0;
+      background: var(--gray-50);
+      border-left: 3px solid var(--navy);
+      padding: 14px 18px;
       margin: 1.2em 0;
-    }
-    .info-box.accent {
-      background: var(--accent-light);
-      border-left-color: var(--accent);
+      font-size: 0.95em;
     }
     .info-box.warn {
-      background: #fffbeb;
-      border-left-color: var(--warning);
+      background: #FFFBEB;
+      border-left-color: #B45309;
     }
     .info-box p:last-child { margin-bottom: 0; }
 
@@ -147,72 +211,34 @@
       width: 100%;
       border-collapse: collapse;
       margin: 1.2em 0;
-      font-size: 0.93em;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--gray-200);
+      font-size: 0.92em;
+      border: 1px solid var(--border);
     }
     thead th {
-      background: var(--primary);
-      color: #fff;
+      background: var(--gray-100);
+      color: var(--navy);
       font-weight: 600;
       text-align: left;
-      padding: 12px 16px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
       white-space: nowrap;
     }
     tbody td {
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--gray-200);
+      padding: 9px 14px;
+      border: 1px solid var(--gray-200);
       vertical-align: top;
     }
     tbody tr:nth-child(even) { background: var(--gray-50); }
-    tbody tr:hover { background: var(--primary-light); }
 
-    /* ===== Code Blocks ===== */
-    code {
-      font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
-      font-size: 0.88em;
-      background: var(--gray-100);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--primary-dark);
+    /* ===== Marker Tags ===== */
+    .marker {
+      font-size: 0.82em;
+      font-weight: 700;
+      color: var(--slate);
+      letter-spacing: 0.5px;
     }
-    pre {
-      background: var(--gray-900);
-      color: #e5e7eb;
-      padding: 20px 24px;
-      border-radius: var(--radius);
-      overflow-x: auto;
-      margin: 1em 0 1.4em;
-      line-height: 1.6;
-      font-size: 0.88em;
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      color: inherit;
-      font-size: 1em;
-    }
-    pre .comment { color: #6b7280; }
-    pre .string { color: #34d399; }
-    pre .keyword { color: #818cf8; }
-    pre .flag { color: #fbbf24; }
 
-    /* ===== Badges & Tags ===== */
-    .badge {
-      display: inline-block;
-      font-size: 0.78em;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-      vertical-align: middle;
-    }
-    .badge-new { background: var(--accent-light); color: var(--accent-dark); }
-    .badge-changed { background: #eff6ff; color: var(--primary); }
-    .badge-removed { background: #fef2f2; color: var(--danger); }
-    .badge-improved { background: #fffbeb; color: var(--warning); }
-
-    /* ===== Comparison Table ===== */
+    /* ===== Compare Table ===== */
     .compare-table td:first-child {
       font-weight: 600;
       color: var(--gray-700);
@@ -222,262 +248,801 @@
     .compare-table td:nth-child(2) {
       color: var(--gray-500);
       text-decoration: line-through;
-      text-decoration-color: var(--danger);
     }
     .compare-table td:nth-child(3) {
-      color: var(--accent-dark);
+      color: var(--navy);
       font-weight: 500;
     }
 
-    /* ===== Stage Diagram ===== */
-    .stages {
-      display: flex;
-      gap: 12px;
-      margin: 1.2em 0;
-      flex-wrap: wrap;
-    }
-    .stage {
-      flex: 1;
-      min-width: 200px;
-      background: var(--gray-50);
+    /* ===== Code Blocks ===== */
+    code {
+      font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+      font-size: 0.87em;
+      background: var(--gray-100);
+      padding: 2px 5px;
       border: 1px solid var(--gray-200);
-      border-radius: var(--radius);
-      padding: 16px;
-      position: relative;
+      color: var(--navy);
     }
-    .stage::after {
-      content: "→";
-      position: absolute;
-      right: -18px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.4em;
-      color: var(--primary);
-      font-weight: 700;
+    pre {
+      background: var(--gray-900);
+      color: #E2E8F0;
+      padding: 18px 22px;
+      overflow-x: auto;
+      margin: 1em 0 1.4em;
+      line-height: 1.6;
+      font-size: 0.87em;
+      border: 1px solid var(--gray-700);
     }
-    .stage:last-child::after { display: none; }
-    .stage .stage-num {
-      display: inline-block;
-      background: var(--primary);
-      color: #fff;
-      width: 28px;
-      height: 28px;
-      text-align: center;
-      line-height: 28px;
-      border-radius: 50%;
-      font-size: 0.85em;
-      font-weight: 700;
-      margin-bottom: 8px;
+    pre code {
+      background: none;
+      padding: 0;
+      border: none;
+      color: inherit;
+      font-size: 1em;
     }
-    .stage .stage-title { font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
-    .stage .stage-desc { font-size: 0.88em; color: var(--gray-600); }
+    pre .comment { color: #6B7280; }
+    pre .string { color: #34D399; }
+    pre .keyword { color: #818CF8; }
+    pre .flag { color: #FBBF24; }
 
-    /* ===== Architecture List ===== */
-    .arch-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      margin: 1em 0;
-    }
-    .arch-item {
-      background: var(--gray-50);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius);
-      padding: 14px;
-      text-align: center;
-    }
-    .arch-item .icon { font-size: 1.6em; margin-bottom: 6px; }
-    .arch-item .name { font-weight: 600; font-size: 0.92em; }
-    .arch-item .desc { font-size: 0.82em; color: var(--gray-500); margin-top: 2px; }
-
-    /* ===== Section Dividers ===== */
-    .section { page-break-inside: avoid; }
+    /* ===== Page Breaks ===== */
     .page-break { page-break-before: always; }
 
-    /* ===== Stats Row ===== */
-    .stats {
-      display: flex;
-      gap: 16px;
-      margin: 1.4em 0;
-      flex-wrap: wrap;
-    }
-    .stat {
-      flex: 1;
-      min-width: 140px;
-      background: linear-gradient(135deg, var(--primary-light), #fff);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius);
-      padding: 18px;
+    /* ===== Screen Footer ===== */
+    .screen-footer {
+      margin-top: 60px;
+      padding-top: 16px;
+      border-top: 2px solid var(--navy);
       text-align: center;
-    }
-    .stat .stat-value {
-      font-size: 2em;
-      font-weight: 800;
-      color: var(--primary);
-      line-height: 1.1;
-    }
-    .stat .stat-label {
-      font-size: 0.82em;
       color: var(--gray-500);
-      margin-top: 4px;
+      font-size: 0.82em;
+      line-height: 1.8;
+    }
+
+    /* ===== Part Divider ===== */
+    .part-divider {
+      text-align: center;
+      padding: 80px 20px;
+      page-break-before: always;
+      page-break-after: always;
+    }
+    .part-divider .part-label {
+      font-size: 0.95em;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+    }
+    .part-divider h1 {
+      font-size: 1.8em;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .part-divider .part-desc {
+      font-size: 1em;
+      color: var(--slate);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ===== Was-Now Detail ===== */
+    .was-now-detail {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      padding: 20px 24px;
+      margin: 1.2em 0;
+      page-break-inside: avoid;
+    }
+    .was-now-detail h4 {
+      color: var(--navy);
+      font-size: 1.05em;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .was-now-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .was-now-row .was {
+      color: var(--gray-500);
+    }
+    .was-now-row .was s { text-decoration-color: #DC2626; }
+    .was-now-row .now {
+      color: var(--navy);
+      font-weight: 500;
+    }
+    .explanation, .why {
+      margin-top: 10px;
+      font-size: 0.93em;
+      line-height: 1.65;
+      color: var(--gray-700);
+    }
+    .why { color: var(--slate-light); font-style: italic; }
+
+    /* ===== Status Markers ===== */
+    .status-done { color: #166534; font-weight: 600; }
+    .status-progress { color: #B45309; font-weight: 600; }
+    .status-pending { color: var(--gray-500); font-weight: 600; }
+
+    /* ===== Repo Group Header ===== */
+    .repo-group {
+      background: var(--gray-100);
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .repo-group td {
+      padding: 8px 14px;
+      border: 1px solid var(--gray-200);
     }
 
     /* ===== Print ===== */
     @media print {
-      body { padding: 0; font-size: 12pt; max-width: 100%; }
-      .title-page { padding: 120px 20px 80px; }
+      body { padding: 0; font-size: 11pt; max-width: 100%; }
+      .title-page { padding: 80px 20px 60px; }
       pre { white-space: pre-wrap; word-break: break-all; }
-      .stages { flex-direction: column; }
-      .stage::after { display: none; }
-      a { color: var(--primary) !important; }
+      a { color: var(--navy) !important; }
       table { page-break-inside: avoid; }
       h2, h3 { page-break-after: avoid; }
+      .screen-footer { display: none; }
+      .part-divider { padding: 100px 20px; }
+      .was-now-row { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
 <!-- ============================================================ -->
-<!-- 1. TITLE PAGE                                                 -->
+<!-- TITLE PAGE                                                    -->
 <!-- ============================================================ -->
 <div class="title-page">
-  <div class="logo-badge">FICE Selection Committee</div>
-  <h1>Технічний звіт</h1>
-  <div class="version-badge">v1.2.0</div>
-  <div class="divider"></div>
-  <div class="meta">
-    <strong>Дата:</strong> 30 березня 2026<br>
+  <div class="classification">ВНУТРІШНІЙ ДОКУМЕНТ</div>
+
+  <hr class="formal">
+
+  <div class="org-name">FICE Selection Committee</div>
+
+  <h1>Повний звіт про релізи</h1>
+  <div class="version">Версії 1.0.0 &ndash; 1.2.0</div>
+  <div class="doc-number">FICE-REL-2026-003</div>
+
+  <hr class="thin">
+
+  <div class="meta-block">
+    <strong>Охоплений період:</strong> 25 &ndash; 30 березня 2026 р.<br>
+    <strong>Поточна версія:</strong> v1.2.0<br>
+    <strong>Дата документа:</strong> 30 березня 2026 р.<br>
     <strong>Підготовлено:</strong> Release Engineering Team<br>
-    <strong>Попередня версія:</strong> v1.1.0
+    <strong>Статус документа:</strong> Затверджено<br>
+    <strong>Класифікація:</strong> Внутрішній<br>
+    <strong>Версія документа:</strong> 4.0
   </div>
+
+  <hr class="formal">
 </div>
 
 <!-- ============================================================ -->
-<!-- 2. TABLE OF CONTENTS                                          -->
+<!-- TABLE OF CONTENTS                                             -->
 <!-- ============================================================ -->
-<div class="toc">
+<div class="toc page-break">
   <h2 id="toc">Зміст</h2>
+
+  <div class="toc-part-header">Частина А: Нетехнічний огляд</div>
+
+  <a href="#a1" class="toc-entry toc-level-1"><span class="toc-num">А.1</span><span class="toc-title">Вступ</span><span class="toc-dots"></span></a>
+  <a href="#a2" class="toc-entry toc-level-1"><span class="toc-num">А.2</span><span class="toc-title">Загальний огляд платформи</span><span class="toc-dots"></span></a>
+  <a href="#a3" class="toc-entry toc-level-1"><span class="toc-num">А.3</span><span class="toc-title">Що нового у кожній версії</span><span class="toc-dots"></span></a>
+  <a href="#a3-1" class="toc-entry toc-level-2"><span class="toc-num">А.3.1</span><span class="toc-title">v1.0.0 &mdash; Фундамент</span><span class="toc-dots"></span></a>
+  <a href="#a3-2" class="toc-entry toc-level-2"><span class="toc-num">А.3.2</span><span class="toc-title">v1.1.0 &mdash; Інфраструктура</span><span class="toc-dots"></span></a>
+  <a href="#a3-3" class="toc-entry toc-level-2"><span class="toc-num">А.3.3</span><span class="toc-title">v1.2.0 &mdash; Зрілість</span><span class="toc-dots"></span></a>
+  <a href="#a4" class="toc-entry toc-level-1"><span class="toc-num">А.4</span><span class="toc-title">Нові можливості для користувачів</span><span class="toc-dots"></span></a>
+  <a href="#a5" class="toc-entry toc-level-1"><span class="toc-num">А.5</span><span class="toc-title">Хронологія та статистика</span><span class="toc-dots"></span></a>
+  <a href="#a6" class="toc-entry toc-level-1"><span class="toc-num">А.6</span><span class="toc-title">Подальші плани</span><span class="toc-dots"></span></a>
+
+  <div class="toc-part-header">Частина Б: Технічна документація</div>
+
+  <a href="#b1" class="toc-entry toc-level-1"><span class="toc-num">Б.1</span><span class="toc-title">Визначення та скорочення</span><span class="toc-dots"></span></a>
+  <a href="#b2" class="toc-entry toc-level-1"><span class="toc-num">Б.2</span><span class="toc-title">Організація GitHub &mdash; повний перелік репозиторіїв</span><span class="toc-dots"></span></a>
+  <a href="#b3" class="toc-entry toc-level-1"><span class="toc-num">Б.3</span><span class="toc-title">Технічний стек</span><span class="toc-dots"></span></a>
+  <a href="#b4" class="toc-entry toc-level-1"><span class="toc-num">Б.4</span><span class="toc-title">Хронологія релізів</span><span class="toc-dots"></span></a>
+  <a href="#b5" class="toc-entry toc-level-1"><span class="toc-num">Б.5</span><span class="toc-title">Версія 1.0.0 &mdash; Фундамент проєкту</span><span class="toc-dots"></span></a>
+  <a href="#b5-1" class="toc-entry toc-level-2"><span class="toc-num">Б.5.1</span><span class="toc-title">Цілі та обсяг</span><span class="toc-dots"></span></a>
+  <a href="#b5-2" class="toc-entry toc-level-2"><span class="toc-num">Б.5.2</span><span class="toc-title">Перелік змін</span><span class="toc-dots"></span></a>
+  <a href="#b5-3" class="toc-entry toc-level-2"><span class="toc-num">Б.5.3</span><span class="toc-title">Архітектура монорепозиторію</span><span class="toc-dots"></span></a>
+  <a href="#b5-4" class="toc-entry toc-level-2"><span class="toc-num">Б.5.4</span><span class="toc-title">Спільні бібліотеки</span><span class="toc-dots"></span></a>
+  <a href="#b6" class="toc-entry toc-level-1"><span class="toc-num">Б.6</span><span class="toc-title">Версія 1.1.0 &mdash; Інфраструктура та тестування</span><span class="toc-dots"></span></a>
+  <a href="#b6-1" class="toc-entry toc-level-2"><span class="toc-num">Б.6.1</span><span class="toc-title">Цілі та обсяг</span><span class="toc-dots"></span></a>
+  <a href="#b6-2" class="toc-entry toc-level-2"><span class="toc-num">Б.6.2</span><span class="toc-title">Перелік змін</span><span class="toc-dots"></span></a>
+  <a href="#b6-3" class="toc-entry toc-level-2"><span class="toc-num">Б.6.3</span><span class="toc-title">Docker Compose та сервіси</span><span class="toc-dots"></span></a>
+  <a href="#b6-4" class="toc-entry toc-level-2"><span class="toc-num">Б.6.4</span><span class="toc-title">CI/CD конвеєр</span><span class="toc-dots"></span></a>
+  <a href="#b6-5" class="toc-entry toc-level-2"><span class="toc-num">Б.6.5</span><span class="toc-title">Тестова інфраструктура</span><span class="toc-dots"></span></a>
+  <a href="#b6-6" class="toc-entry toc-level-2"><span class="toc-num">Б.6.6</span><span class="toc-title">OpenAPI та фронтенд-інтеграція</span><span class="toc-dots"></span></a>
+  <a href="#b7" class="toc-entry toc-level-1"><span class="toc-num">Б.7</span><span class="toc-title">Версія 1.2.0 &mdash; Зрілість Docker та розширення</span><span class="toc-dots"></span></a>
+  <a href="#b7-1" class="toc-entry toc-level-2"><span class="toc-num">Б.7.1</span><span class="toc-title">Цілі та обсяг</span><span class="toc-dots"></span></a>
+  <a href="#b7-2" class="toc-entry toc-level-2"><span class="toc-num">Б.7.2</span><span class="toc-title">Перелік змін</span><span class="toc-dots"></span></a>
+  <a href="#b7-3" class="toc-entry toc-level-2"><span class="toc-num">Б.7.3</span><span class="toc-title">Багатоетапні Docker-збірки</span><span class="toc-dots"></span></a>
+  <a href="#b7-4" class="toc-entry toc-level-2"><span class="toc-num">Б.7.4</span><span class="toc-title">Виправлення Auth API (POST &rarr; GET)</span><span class="toc-dots"></span></a>
+  <a href="#b7-5" class="toc-entry toc-level-2"><span class="toc-num">Б.7.5</span><span class="toc-title">Docker Compose: повна переробка</span><span class="toc-dots"></span></a>
+  <a href="#b7-6" class="toc-entry toc-level-2"><span class="toc-num">Б.7.6</span><span class="toc-title">CI/CD: розширення та сканування вразливостей</span><span class="toc-dots"></span></a>
+  <a href="#b7-7" class="toc-entry toc-level-2"><span class="toc-num">Б.7.7</span><span class="toc-title">Telegram Bot: новий сервіс</span><span class="toc-dots"></span></a>
+  <a href="#b7-8" class="toc-entry toc-level-2"><span class="toc-num">Б.7.8</span><span class="toc-title">Моніторинг та спостережуваність</span><span class="toc-dots"></span></a>
+  <a href="#b7-9" class="toc-entry toc-level-2"><span class="toc-num">Б.7.9</span><span class="toc-title">Інженерна документація</span><span class="toc-dots"></span></a>
+  <a href="#b8" class="toc-entry toc-level-1"><span class="toc-num">Б.8</span><span class="toc-title">Frontend &mdash; selection-committee-web</span><span class="toc-dots"></span></a>
+  <a href="#b8-1" class="toc-entry toc-level-2"><span class="toc-num">Б.8.1</span><span class="toc-title">Огляд</span><span class="toc-dots"></span></a>
+  <a href="#b8-2" class="toc-entry toc-level-2"><span class="toc-num">Б.8.2</span><span class="toc-title">Перелік змін</span><span class="toc-dots"></span></a>
+  <a href="#b8-3" class="toc-entry toc-level-2"><span class="toc-num">Б.8.3</span><span class="toc-title">Ключові функціональності</span><span class="toc-dots"></span></a>
+  <a href="#b9" class="toc-entry toc-level-1"><span class="toc-num">Б.9</span><span class="toc-title">Ламаючі зміни та міграція</span><span class="toc-dots"></span></a>
+  <a href="#b10" class="toc-entry toc-level-1"><span class="toc-num">Б.10</span><span class="toc-title">Поточна архітектура системи</span><span class="toc-dots"></span></a>
+  <a href="#b11" class="toc-entry toc-level-1"><span class="toc-num">Б.11</span><span class="toc-title">Як запускати / деплоїти / моніторити / тестувати</span><span class="toc-dots"></span></a>
+  <a href="#b12" class="toc-entry toc-level-1"><span class="toc-num">Б.12</span><span class="toc-title">Детальне порівняння &laquo;Було &rarr; Стало&raquo;</span><span class="toc-dots"></span></a>
+  <a href="#b13" class="toc-entry toc-level-1"><span class="toc-num">Б.13</span><span class="toc-title">Ризики та подальші кроки</span><span class="toc-dots"></span></a>
+  <a href="#b14" class="toc-entry toc-level-1"><span class="toc-num">Б.14</span><span class="toc-title">Контроль документа</span><span class="toc-dots"></span></a>
+  <a href="#app-a" class="toc-entry toc-level-1"><span class="toc-num">А.</span><span class="toc-title">Додаток А: Повний журнал комітів</span><span class="toc-dots"></span></a>
+</div>
+
+<!-- ============================================================ -->
+<!-- PART A DIVIDER                                                -->
+<!-- ============================================================ -->
+<div class="part-divider">
+  <div class="part-label">Частина А</div>
+  <h1>Нетехнічний огляд</h1>
+  <p class="part-desc">Загальний опис платформи, нові можливості для користувачів, хронологія розвитку та плани на майбутнє &mdash; без технічної термінології.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- A.1 INTRODUCTION                                              -->
+<!-- ============================================================ -->
+<div>
+  <h2 id="a1">А.1 Вступ</h2>
+
+  <p>Цей документ описує еволюцію платформи FICE Selection Committee від створення до версії 1.2.0. Він розділений на дві частини: Частина А містить загальний огляд зрозумілою мовою без технічних деталей, Частина Б &mdash; повну технічну документацію для інженерної команди.</p>
+
+  <p>Платформа розроблялася протягом 6 днів (25&ndash;30 березня 2026 р.) і пройшла шлях від порожнього проєкту до повнофункціональної системи з автоматизованою збіркою, моніторингом, тестуванням та інженерними стандартами.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- A.2 PLATFORM OVERVIEW                                         -->
+<!-- ============================================================ -->
+<div>
+  <h2 id="a2">А.2 Загальний огляд платформи</h2>
+
+  <p>FICE Selection Committee &mdash; платформа для управління процесом вступу до навчальних закладів. Система автоматизує ключові процеси приймальної комісії та забезпечує зручну взаємодію з абітурієнтами.</p>
+
+  <p><strong>Основні функції платформи:</strong></p>
   <ul>
-    <li><a href="#summary"><span class="num">1.</span> Загальний огляд</a></li>
-    <li><a href="#before"><span class="num">2.</span> Що було до змін (v1.1.0)</a></li>
-    <li>
-      <a href="#changes"><span class="num">3.</span> Що саме змінено</a>
-      <ul>
-        <li><a href="#docker-builds">3.1 Docker: Перехід на багатоетапні збірки</a></li>
-        <li><a href="#auth-fix">3.2 Авторизація: POST &rarr; GET для getCurrentUser</a></li>
-        <li><a href="#compose">3.3 Інфраструктура: Docker Compose</a></li>
-        <li><a href="#cicd">3.4 CI/CD: Розширена матриця та сканування вразливостей</a></li>
-        <li><a href="#telegram">3.5 Telegram Bot: Новий сервіс</a></li>
-        <li><a href="#monitoring">3.6 Моніторинг: Grafana</a></li>
-        <li><a href="#docs">3.7 Документація</a></li>
-      </ul>
-    </li>
-    <li><a href="#new-modules"><span class="num">4.</span> Нові бібліотеки та модулі</a></li>
-    <li><a href="#architecture"><span class="num">5.</span> Як тепер працює система</a></li>
-    <li><a href="#how-to-run"><span class="num">6.</span> Як запускати</a></li>
-    <li><a href="#how-to-deploy"><span class="num">7.</span> Як деплоїти</a></li>
-    <li><a href="#how-to-monitor"><span class="num">8.</span> Як моніторити</a></li>
-    <li><a href="#how-to-test"><span class="num">9.</span> Як тестувати</a></li>
-    <li><a href="#comparison"><span class="num">10.</span> Порівняння &laquo;Було / Стало&raquo;</a></li>
-    <li><a href="#conclusions"><span class="num">11.</span> Висновки та подальші кроки</a></li>
+    <li><strong>Автентифікація користувачів</strong> &mdash; безпечний вхід через одноразові email-посилання без необхідності запам'ятовувати паролі.</li>
+    <li><strong>Управління документами</strong> &mdash; завантаження, зберігання та обробка документів абітурієнтів.</li>
+    <li><strong>Обробка заявок на вступ</strong> &mdash; прийом та опрацювання заяв абітурієнтів.</li>
+    <li><strong>Сповіщення</strong> &mdash; автоматичне інформування користувачів через email.</li>
+    <li><strong>Управління функціональністю</strong> &mdash; можливість вмикати та вимикати окремі функції системи через месенджер, без необхідності зупиняти роботу платформи.</li>
+    <li><strong>Моніторинг</strong> &mdash; автоматичне відстеження стану всіх компонентів системи з візуальними панелями.</li>
   </ul>
 </div>
 
 <!-- ============================================================ -->
-<!-- 3. EXECUTIVE SUMMARY                                          -->
+<!-- A.3 WHAT'S NEW IN EACH VERSION                                -->
 <!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="summary">1. Загальний огляд</h2>
+<div>
+  <h2 id="a3">А.3 Що нового у кожній версії</h2>
 
-  <div class="info-box">
-    <p><strong>Реліз v1.2.0</strong> &mdash; це масштабне оновлення інфраструктури та операційної зрілості платформи FICE Selection Committee. Основний фокус: надійність збірок, коректність контрактів, розширення функціональності та спостережуваність системи.</p>
-  </div>
+  <h3 id="a3-1">А.3.1 Версія 1.0.0 (25&ndash;26 березня): Фундамент</h3>
 
-  <p>Цей реліз приносить ключові покращення в кількох напрямках:</p>
-  <ul>
-    <li><strong>Багатоетапні Docker-збірки</strong> &mdash; триетапний процес побудови образів, що забезпечує відтворюваність та мінімальний розмір runtime-образу.</li>
-    <li><strong>Виправлення Auth API</strong> &mdash; зміна HTTP-методу <code>getCurrentUser</code> з <code>POST</code> на <code>GET</code> для семантичної коректності.</li>
-    <li><strong>Новий Telegram Bot сервіс</strong> &mdash; управління feature-прапорцями через Telegram з підтримкою webhook, inline-клавіатур та i18n.</li>
-    <li><strong>Розширений CI/CD</strong> &mdash; нова матриця збірок, сканування вразливостей Trivy, семантичне тегування Docker-образів.</li>
-    <li><strong>Моніторинг Grafana</strong> &mdash; 4 попередньо налаштовані дашборди для операційного моніторингу.</li>
-    <li><strong>Інженерна документація</strong> &mdash; CLAUDE.md та 10 довідкових файлів як стандарт інженерної роботи.</li>
-  </ul>
+  <p>Перша версія заклала основу проєкту. Розрізнені компоненти системи, що існували окремо, були об'єднані в єдиний проєкт із спільною структурою. Створено перевикористовувані компоненти, щоб уникнути дублювання роботи між різними частинами системи. Налаштовано механізм публікації готових компонентів для подальшого використання.</p>
 
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-value">7+1</div>
-      <div class="stat-label">мікросервісів + шлюз</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">79</div>
-      <div class="stat-label">файлів у Telegram Bot</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">4</div>
-      <div class="stat-label">Grafana дашборди</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">3</div>
-      <div class="stat-label">етапи Docker-збірки</div>
-    </div>
-  </div>
+  <h3 id="a3-2">А.3.2 Версія 1.1.0 (26&ndash;28 березня): Інфраструктура</h3>
+
+  <p>Друга версія додала операційну інфраструктуру. З'явилося автоматичне тестування, що перевіряє коректність роботи системи при кожній зміні. Створено панелі моніторингу для відстеження здоров'я системи у реальному часі. Налаштовано повне локальне середовище розробки, де весь стек можна запустити однією командою. Впроваджено автоматичний конвеєр збірки та публікації.</p>
+
+  <h3 id="a3-3">А.3.3 Версія 1.2.0 (30 березня): Зрілість</h3>
+
+  <p>Третя версія сфокусована на зрілості та безпеці. Додано автоматичне сканування на вразливості при кожній збірці. Створено бот у месенджері Telegram для оперативного управління системою. Повністю перероблено зовнішній вигляд платформи з новою системою входу через email-посилання (без паролів). Додано юридичні сторінки. Покращено процес контейнеризації для зменшення розміру та підвищення безпеки.</p>
 </div>
 
 <!-- ============================================================ -->
-<!-- 4. BEFORE STATE                                               -->
+<!-- A.4 USER-FACING FEATURES                                      -->
 <!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="before">2. Що було до змін (v1.1.0)</h2>
+<div>
+  <h2 id="a4">А.4 Нові можливості для користувачів</h2>
 
-  <p>Стан системи до релізу v1.2.0 характеризувався наступними обмеженнями та особливостями:</p>
+  <ul>
+    <li><strong>Вхід через email-посилання</strong> &mdash; замість запам'ятовування пароля користувач отримує одноразове посилання на електронну пошту. Один клік &mdash; і ви в системі.</li>
+    <li><strong>Оновлений дизайн головної сторінки</strong> &mdash; нова панельна розкладка з поділом екрану на інформаційну та функціональну частини.</li>
+    <li><strong>Триетапний онбордінг</strong> &mdash; покроковий процес реєстрації з обов'язковим ознайомленням із юридичними документами (правилами використання та угодою про конфіденційність).</li>
+    <li><strong>Панель управління (Dashboard)</strong> &mdash; персональний кабінет користувача з доступом до основних функцій.</li>
+    <li><strong>Юридичні сторінки</strong> &mdash; правила використання платформи та угода про конфіденційність, доступні для перегляду у будь-який час.</li>
+    <li><strong>Управління функціональністю через Telegram</strong> &mdash; адміністратори можуть вмикати та вимикати функції платформи безпосередньо з месенджера Telegram.</li>
+    <li><strong>Покращена доступність (WCAG)</strong> &mdash; інтерфейс адаптовано для людей з обмеженими можливостями: навігація клавіатурою, підтримка програм зчитування з екрану, покращений контраст кольорів.</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- A.5 TIMELINE AND STATS                                        -->
+<!-- ============================================================ -->
+<div>
+  <h2 id="a5">А.5 Хронологія та статистика</h2>
 
   <table>
     <thead>
-      <tr><th>Аспект</th><th>Стан у v1.1.0</th></tr>
+      <tr><th>Дата</th><th>Подія</th></tr>
     </thead>
     <tbody>
-      <tr><td>Мікросервіси</td><td>6 сервісів (identity, admission, documents, environment, notifications, gateway) + Next.js фронтенд</td></tr>
-      <tr><td>Dockerfile</td><td>Одноетапні збірки на базі <code>gradle:jdk21-ubi-minimal</code>, Gradle-скрипти копіювались у директорію кожного сервісу</td></tr>
-      <tr><td>Docker Compose</td><td><code>service_started</code> для некритичних залежностей (Redis, RabbitMQ) &mdash; без перевірки здоров'я</td></tr>
-      <tr><td>CI/CD</td><td>Тригери лише на <code>server/services/**</code>, без сканування вразливостей</td></tr>
-      <tr><td>Auth API</td><td><code>POST /api/v1/auth/user</code> &mdash; семантично некоректний метод для читання даних</td></tr>
-      <tr><td>Telegram</td><td>Інтеграція відсутня</td></tr>
-      <tr><td>Моніторинг</td><td>Без провізійованих Grafana дашбордів</td></tr>
-      <tr><td>Онбордінг розробника</td><td>Без <code>.env.example</code> шаблону</td></tr>
-      <tr><td>Інженерна документація</td><td>Відсутня &mdash; немає стандартів та довідкових файлів</td></tr>
-      <tr><td>Планування задач</td><td>14 загальних фаз (phase-01-scaffolding &ndash; phase-14-polish)</td></tr>
+      <tr><td>25 березня 2026</td><td>Створення проєкту, початок об'єднання компонентів</td></tr>
+      <tr><td>26 березня 2026</td><td>Випуск v1.0.0 &mdash; фундамент готовий</td></tr>
+      <tr><td>26&ndash;28 березня 2026</td><td>Розробка інфраструктури, тестів, моніторингу</td></tr>
+      <tr><td>28 березня 2026</td><td>Випуск v1.1.0 &mdash; інфраструктура готова</td></tr>
+      <tr><td>30 березня 2026</td><td>Випуск v1.2.0 &mdash; зрілість та безпека</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Ключові числа:</strong></p>
+  <ul>
+    <li>8 серверних компонентів (включаючи шлюз та Telegram-бот)</li>
+    <li>1 клієнтський застосунок (веб-інтерфейс)</li>
+    <li>13 репозиторіїв у організації GitHub</li>
+    <li>4 панелі моніторингу (автоматично створюються при першому запуску)</li>
+    <li>Автоматичне сканування безпеки при кожній збірці</li>
+    <li>Повний стек запускається однією командою</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- A.6 NEXT STEPS                                                -->
+<!-- ============================================================ -->
+<div>
+  <h2 id="a6">А.6 Подальші плани</h2>
+
+  <p>Розвиток платформи продовжується за кількома напрямками:</p>
+
+  <ul>
+    <li><strong>Продовження оновлення інтерфейсу</strong> &mdash; реалізація запланованих покращень дизайну для підвищення зручності використання.</li>
+    <li><strong>Покращення доступності</strong> &mdash; подальша адаптація інтерфейсу для людей з обмеженими можливостями відповідно до міжнародних стандартів.</li>
+    <li><strong>Підготовка до розгортання</strong> &mdash; створення документації та конфігурацій для запуску платформи у промисловому середовищі.</li>
+    <li><strong>Оптимізація швидкодії</strong> &mdash; зменшення часу збірки та прискорення роботи системи.</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- PART B DIVIDER                                                -->
+<!-- ============================================================ -->
+<div class="part-divider">
+  <div class="part-label">Частина Б</div>
+  <h1>Технічна документація</h1>
+  <p class="part-desc">Архітектура, технічний стек, деталі кожного релізу, порівняння змін, ризики та інструкції з запуску &mdash; для інженерної команди.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.1 DEFINITIONS                                               -->
+<!-- ============================================================ -->
+<div>
+  <h2 id="b1">Б.1 Визначення та скорочення</h2>
+
+  <table>
+    <thead>
+      <tr><th>Термін / Скорочення</th><th>Визначення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Biome</td><td>Інструмент для лінтингу та форматування JavaScript/TypeScript коду (заміна ESLint + Prettier)</td></tr>
+      <tr><td>buildSrc convention plugin</td><td>Gradle-плагін у директорії buildSrc/, що визначає спільні конвенції збірки для всіх модулів проєкту</td></tr>
+      <tr><td>CI/CD</td><td>Continuous Integration / Continuous Delivery &mdash; безперервна інтеграція та доставка</td></tr>
+      <tr><td>CRUD</td><td>Create, Read, Update, Delete &mdash; базові операції над даними</td></tr>
+      <tr><td>E2E</td><td>End-to-End &mdash; наскрізне тестування всього потоку від UI до бази даних</td></tr>
+      <tr><td>Feign</td><td>Декларативний HTTP-клієнт для міжсервісної комунікації у Spring Cloud</td></tr>
+      <tr><td>Feature Flag</td><td>Механізм увімкнення/вимкнення функціональності системи без повторного розгортання</td></tr>
+      <tr><td>Flyway</td><td>Інструмент версіонування та міграції схем баз даних</td></tr>
+      <tr><td>GHCR</td><td>GitHub Container Registry &mdash; реєстр контейнерних образів GitHub</td></tr>
+      <tr><td>Grafana</td><td>Платформа візуалізації метрик та моніторингу з провізійованими дашбордами</td></tr>
+      <tr><td>i18n</td><td>Internationalization &mdash; інтернаціоналізація (підтримка кількох мов)</td></tr>
+      <tr><td>JDK / JRE</td><td>Java Development Kit / Java Runtime Environment</td></tr>
+      <tr><td>JWT</td><td>JSON Web Token &mdash; токен автентифікації</td></tr>
+      <tr><td>Magic Link</td><td>Метод автентифікації через одноразове посилання, надіслане на email</td></tr>
+      <tr><td>MinIO</td><td>S3-сумісне об'єктне сховище для зберігання файлів та документів</td></tr>
+      <tr><td>Multi-stage build</td><td>Багатоетапна Docker-збірка, де кожен етап використовує окремий базовий образ для зменшення фінального розміру</td></tr>
+      <tr><td>ngrok</td><td>Інструмент для створення публічного тунелю до локального сервера (використовується для Telegram webhook)</td></tr>
+      <tr><td>OpenAPI</td><td>Специфікація для опису REST API у машинозчитуваному форматі</td></tr>
+      <tr><td>Playwright</td><td>Фреймворк для наскрізного тестування веб-застосунків</td></tr>
+      <tr><td>Prometheus</td><td>Система збору та зберігання часових рядів метрик від мікросервісів</td></tr>
+      <tr><td>RabbitMQ</td><td>Брокер повідомлень для асинхронної комунікації між мікросервісами</td></tr>
+      <tr><td>REST</td><td>Representational State Transfer &mdash; архітектурний стиль API</td></tr>
+      <tr><td>SARIF</td><td>Static Analysis Results Interchange Format &mdash; формат звітів статичного аналізу</td></tr>
+      <tr><td>Semver</td><td>Semantic Versioning &mdash; семантичне версіонування (MAJOR.MINOR.PATCH)</td></tr>
+      <tr><td>Spring Cloud Contract</td><td>Фреймворк для контрактного тестування міжсервісних API (provider та consumer сторони)</td></tr>
+      <tr><td>TanStack Query</td><td>Бібліотека для управління серверним станом у React (кешування, рефетчинг, інвалідація)</td></tr>
+      <tr><td>Testcontainers</td><td>Бібліотека для запуску контейнерних залежностей під час тестування</td></tr>
+      <tr><td>Trivy</td><td>Open-source сканер вразливостей для контейнерних образів від Aqua Security</td></tr>
+      <tr><td>Zipkin</td><td>Система розподіленого трасування для відстеження запитів між мікросервісами</td></tr>
+      <tr><td>Zustand</td><td>Легка бібліотека управління клієнтським станом у React</td></tr>
     </tbody>
   </table>
 </div>
 
 <!-- ============================================================ -->
-<!-- 5. WHAT CHANGED                                               -->
+<!-- Б.2 GITHUB ORGANIZATION                                       -->
 <!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="changes">3. Що саме змінено</h2>
+<div class="page-break">
+  <h2 id="b2">Б.2 Організація GitHub &mdash; повний перелік репозиторіїв</h2>
 
-  <!-- 5.1 Docker Multi-stage -->
-  <h3 id="docker-builds">3.1 Docker: Перехід на багатоетапні збірки <span class="badge badge-changed">ЗМІНЕНО</span></h3>
+  <table>
+    <thead>
+      <tr><th>Репозиторій</th><th>Опис</th><th>Гілка</th></tr>
+    </thead>
+    <tbody>
+      <tr class="repo-group"><td colspan="3">Монорепозиторій (backend)</td></tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/fice-selection-committee"><code>fice-selection-committee</code></a></td>
+        <td>Backend: мікросервіси, бібліотеки, інфраструктура</td>
+        <td><code>main</code></td>
+      </tr>
+      <tr class="repo-group"><td colspan="3">Оригінальні сервіси (до міграції в монорепозиторій)</td></tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-identity-service"><code>selection-committee-identity-service</code></a></td>
+        <td>Автентифікація, JWT, magic link</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-admission-service"><code>selection-committee-admission-service</code></a></td>
+        <td>Заяви абітурієнтів</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-documents-service"><code>selection-committee-documents-service</code></a></td>
+        <td>Зберігання документів, MinIO</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-environment-service"><code>selection-committee-environment-service</code></a></td>
+        <td>Feature flags, конфігурація</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-notifications-service"><code>selection-committee-notifications-service</code></a></td>
+        <td>Email-сповіщення</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-gateway"><code>selection-committee-gateway</code></a></td>
+        <td>API-шлюз</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr class="repo-group"><td colspan="3">Frontend</td></tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-web"><code>selection-committee-web</code></a></td>
+        <td>Next.js 16, TypeScript, shadcn/ui</td>
+        <td><code>develop</code></td>
+      </tr>
+      <tr class="repo-group"><td colspan="3">Додано у v1.2.0</td></tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-telegram-bot-service"><code>selection-committee-telegram-bot-service</code></a></td>
+        <td>Telegram-бот для feature flags</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr class="repo-group"><td colspan="3">Інфраструктура та інструменти</td></tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-infra"><code>selection-committee-infra</code></a></td>
+        <td>Інфраструктурні конфігурації</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-bootstrap"><code>selection-committee-bootstrap</code></a></td>
+        <td>Ініціалізація середовища</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-e2e-tests"><code>selection-committee-e2e-tests</code></a></td>
+        <td>Playwright E2E тести (мігровано з монорепо у v1.2.0)</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/fice-selection-committee/selection-committee-computer-vision"><code>selection-committee-computer-vision</code></a></td>
+        <td>Комп'ютерний зір</td>
+        <td>&mdash;</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.3 TECH STACK                                                -->
+<!-- ============================================================ -->
+<div>
+  <h2 id="b3">Б.3 Технічний стек</h2>
+
+  <table>
+    <thead>
+      <tr><th>Параметр</th><th>Значення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Організація</td><td>fice-selection-committee (GitHub)</td></tr>
+      <tr><td>Backend структура</td><td>Gradle multi-module монорепозиторій</td></tr>
+      <tr><td>Мова серверної частини</td><td>Java 21 (Spring Boot 3.x, Spring Cloud)</td></tr>
+      <tr><td>Мова клієнтської частини</td><td>TypeScript (Next.js 16+, React, Tailwind v4, shadcn/ui)</td></tr>
+      <tr><td>Система збірки (backend)</td><td>Gradle 8.14, buildSrc convention plugins</td></tr>
+      <tr><td>Система збірки (frontend)</td><td>pnpm, Next.js 16, Biome, Vitest, Playwright</td></tr>
+      <tr><td>Інфраструктура</td><td>Docker Compose, PostgreSQL 16, Redis 7, RabbitMQ 3, MinIO, Mailpit, Zipkin, Prometheus, Grafana</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.4 RELEASE TIMELINE                                          -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="b4">Б.4 Хронологія релізів</h2>
+
+  <table>
+    <thead>
+      <tr><th>Версія</th><th>Дати</th><th>Тема</th><th>Комітів</th><th>Файлів</th><th>Рядків (+/&minus;)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>v1.0.0</strong></td>
+        <td>25&ndash;26.03.2026</td>
+        <td>Фундамент: монорепозиторій, міграція сервісів, спільні бібліотеки</td>
+        <td>9</td>
+        <td>67</td>
+        <td>+17 080</td>
+      </tr>
+      <tr>
+        <td><strong>v1.1.0</strong></td>
+        <td>26&ndash;28.03.2026</td>
+        <td>Інфраструктура: Docker Compose, CI/CD, тестування, OpenAPI</td>
+        <td>18</td>
+        <td>55</td>
+        <td>+7 817</td>
+      </tr>
+      <tr>
+        <td><strong>v1.2.0</strong></td>
+        <td>30.03.2026</td>
+        <td>Зрілість: multi-stage Docker, Telegram Bot, Trivy, документація</td>
+        <td>12</td>
+        <td>90</td>
+        <td>+14 354 / &minus;5 309</td>
+      </tr>
+      <tr style="font-weight: 600;">
+        <td>Всього</td>
+        <td>25&ndash;30.03.2026</td>
+        <td>&mdash;</td>
+        <td>39</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <p>Усі три релізи відбулися протягом 6 днів. Проєкт рухався від порожнього репозиторію до повнофункціональної мікросервісної платформи з CI/CD, моніторингом, контрактними тестами та інженерними стандартами.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.5 VERSION 1.0.0                                             -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="b5">Б.5 Версія 1.0.0 &mdash; Фундамент проєкту (25&ndash;26 березня 2026)</h2>
+
+  <h3 id="b5-1">Б.5.1 Цілі та обсяг</h3>
+
+  <p>Перший реліз створив фундамент платформи: Gradle multi-module монорепозиторій, міграція 6 існуючих мікросервісів, розробка спільних бібліотек та налаштування публікації до GitHub Packages.</p>
+
+  <p><strong>Ключові цілі:</strong></p>
+  <ul>
+    <li>Об'єднати розрізнені репозиторії сервісів у єдиний монорепозиторій з централізованою збіркою.</li>
+    <li>Створити спільні бібліотеки для уникнення дублювання коду між сервісами.</li>
+    <li>Встановити інфраструктуру публікації артефактів (GitHub Packages).</li>
+    <li>Забезпечити скрипти локального розгортання та стартового набору розробника.</li>
+  </ul>
+
+  <h3 id="b5-2">Б.5.2 Перелік змін</h3>
+
+  <table>
+    <thead>
+      <tr><th>№</th><th>Ref</th><th>Категорія</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/71b7789"><code>71b7789</code></a></td><td>[НОВИЙ]</td><td>Gradle multi-module монорепозиторій: інфраструктура збірки, buildSrc convention plugins</td></tr>
+      <tr><td>2</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/8a8c205"><code>8a8c205</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Додано execute permission для gradlew</td></tr>
+      <tr><td>3</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/6db6b73"><code>6db6b73</code></a></td><td>[НОВИЙ]</td><td>Злиття sc-auth-starter у монорепозиторій як спільну бібліотеку</td></tr>
+      <tr><td>4</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/046d46b"><code>046d46b</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Додано client package для sc-auth-starter, виправлено scope у .gitignore</td></tr>
+      <tr><td>5</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/6701695"><code>6701695</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Unauthorized entry point, нормалізація role authority names</td></tr>
+      <tr><td>6</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/999dc4c"><code>999dc4c</code></a></td><td>[ІНШЕ]</td><td>Скрипт локального запуску та логотип проєкту</td></tr>
+      <tr><td>7</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/d6f74b1"><code>d6f74b1</code></a></td><td>[НОВИЙ]</td><td>Реалізація спільних бібліотек: sc-test-common, sc-observability-starter, sc-s3-starter</td></tr>
+      <tr><td>8</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/bdde5d4"><code>bdde5d4</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Реєстрація S3BucketInitializer як bean у auto-configuration sc-s3-starter</td></tr>
+      <tr><td>9</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/30f2b86"><code>30f2b86</code></a></td><td>[НОВИЙ]</td><td>Публікація спільних бібліотек v1.0.0 до GitHub Packages</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b5-3">Б.5.3 Архітектура монорепозиторію</h3>
+
+  <p>Версія 1.0.0 встановила структуру монорепозиторію, що об'єднує усі компоненти платформи:</p>
+
+  <table>
+    <thead>
+      <tr><th>Директорія</th><th>Призначення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>server/services/</code></td><td>6 мікросервісів: identity, admission, documents, environment, notifications, gateway</td></tr>
+      <tr><td><code>server/libs/</code></td><td>Спільні бібліотеки для перевикористання між сервісами</td></tr>
+      <tr><td><code>server/buildSrc/</code></td><td>Convention plugins: sc.java-conventions, sc.spring-boot-service, sc.testing-conventions, sc.jacoco-conventions</td></tr>
+      <tr><td><code>client/web/</code></td><td>Next.js фронтенд</td></tr>
+      <tr><td><code>infra/</code></td><td>Docker Compose, конфігурація інфраструктури</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b5-4">Б.5.4 Спільні бібліотеки</h3>
+
+  <table>
+    <thead>
+      <tr><th>Бібліотека</th><th>Призначення</th><th>Споживачі</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>sc-auth-starter</code></td><td>JWT автентифікація, Spring Security фільтри, Feign-інтерсептори</td><td>Усі сервіси</td></tr>
+      <tr><td><code>sc-test-common</code></td><td>Базові класи для інтеграційних тестів, Testcontainers конфігурація</td><td>Усі сервіси (test scope)</td></tr>
+      <tr><td><code>sc-observability-starter</code></td><td>Tracing, metrics, Spring Boot Actuator конфігурація</td><td>Усі сервіси</td></tr>
+      <tr><td><code>sc-s3-starter</code></td><td>MinIO/S3 клієнт, автоматична ініціалізація бакетів</td><td>documents-service</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <p><strong>Принцип:</strong> зміна у будь-якій спільній бібліотеці вимагає виконання <code>./gradlew publishToMavenLocal</code> з кореня <code>server/</code> перед збіркою залежних сервісів. Це обов'язкова умова ланцюжка збірки.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.6 VERSION 1.1.0                                             -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="b6">Б.6 Версія 1.1.0 &mdash; Інфраструктура та тестування (26&ndash;28 березня 2026)</h2>
+
+  <h3 id="b6-1">Б.6.1 Цілі та обсяг</h3>
+
+  <p>Другий реліз додав операційну інфраструктуру: Docker Compose overlay для повного локального стеку, CI/CD конвеєр із 6 ітеративними hotfixes, контрактні та E2E тести, OpenAPI TypeScript-генерацію та Grafana дашборди.</p>
+
+  <p><strong>Ключові цілі:</strong></p>
+  <ul>
+    <li>Забезпечити повний локальний запуск усіх сервісів через Docker Compose.</li>
+    <li>Встановити CI/CD конвеєр для автоматичної збірки, тестування та публікації Docker-образів.</li>
+    <li>Створити тестову інфраструктуру: контрактні тести (Feign), E2E тести (Playwright).</li>
+    <li>Додати OpenAPI-генерацію TypeScript-клієнтів для фронтенду.</li>
+    <li>Налаштувати моніторинг через Grafana дашборди.</li>
+  </ul>
+
+  <h3 id="b6-2">Б.6.2 Перелік змін</h3>
+
+  <table>
+    <thead>
+      <tr><th>№</th><th>Ref</th><th>Категорія</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/ecd4c7a"><code>ecd4c7a</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Виправлення JaCoCo classDirectories finalization error на Gradle 8.14</td></tr>
+      <tr><td>2</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/df37ce3"><code>df37ce3</code></a></td><td>[ІНШЕ]</td><td>Додано .kotlin/ до .gitignore, видалено міграційний скрипт</td></tr>
+      <tr><td>3</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/187bd6b"><code>187bd6b</code></a></td><td>[НОВИЙ]</td><td>TypeScript client generation з OpenAPI специфікацій</td></tr>
+      <tr><td>4</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/47b0912"><code>47b0912</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Виправлення портів сервісів, додано Gateway Dockerfile</td></tr>
+      <tr><td>5</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/0465686"><code>0465686</code></a></td><td>[НОВИЙ]</td><td>Docker Compose services overlay для повного локального розгортання</td></tr>
+      <tr><td>6</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/f5c49a0"><code>f5c49a0</code></a></td><td>[НОВИЙ]</td><td>CI workflows: збірка/тестування сервісів, Docker-образи</td></tr>
+      <tr><td>7</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/7bdc266"><code>7bdc266</code></a></td><td>[НОВИЙ]</td><td>Consumer та provider контрактні тести для міжсервісних API</td></tr>
+      <tr><td>8</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/94b20d0"><code>94b20d0</code></a></td><td>[НОВИЙ]</td><td>Grafana: провізійовані дашборди для здоров'я сервісів, JVM, HTTP, circuit breakers</td></tr>
+      <tr><td>9</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/24167b2"><code>24167b2</code></a></td><td>[НОВИЙ]</td><td>E2E тести: environment, notification delivery, negative flows (Playwright)</td></tr>
+      <tr><td>10</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/a3e5cb5"><code>a3e5cb5</code></a></td><td>[НОВИЙ]</td><td>Фронтенд: task plans та web service у docker-compose</td></tr>
+      <tr><td>11</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/08ccfb9"><code>08ccfb9</code></a></td><td>[ВИПРАВЛЕНО]</td><td>CI: пропуск збірки сервісів, коли вихідний код відсутній у монорепозиторії</td></tr>
+      <tr><td>12</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/aa34a1a"><code>aa34a1a</code></a></td><td>[ВИПРАВЛЕНО]</td><td>CI: додано workflow_dispatch для ручного перезапуску</td></tr>
+      <tr><td>13</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/09740c9"><code>09740c9</code></a></td><td>[ВИПРАВЛЕНО]</td><td>CI: динамічна матриця для уникнення помилок парсингу виразів</td></tr>
+      <tr><td>14</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/20720f6"><code>20720f6</code></a></td><td>[ВИПРАВЛЕНО]</td><td>CI: compact jq output для GITHUB_OUTPUT сумісності</td></tr>
+      <tr><td>15</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/5df3fc5"><code>5df3fc5</code></a></td><td>[ВИПРАВЛЕНО]</td><td>CI: перевірка наявності src у Docker build availability check</td></tr>
+      <tr><td>16</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/1091f12"><code>1091f12</code></a></td><td>[ВИПРАВЛЕНО]</td><td>CI: перевірка src/main замість src/ у Docker availability check</td></tr>
+      <tr><td>17</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/8b089d5"><code>8b089d5</code></a></td><td>[НОВИЙ]</td><td>Events: MAGIC_LINK template type для magic link автентифікації</td></tr>
+      <tr><td>18</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/ebf103c"><code>ebf103c</code></a></td><td>[РЕЛІЗ]</td><td>Bump version to 1.1.0</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b6-3">Б.6.3 Docker Compose та сервіси</h3>
+
+  <p>Створено <code>docker-compose.services.yml</code> &mdash; overlay поверх інфраструктурного compose, що дозволяє запускати повний стек локально одною командою.</p>
+
+  <table>
+    <thead>
+      <tr><th>Компонент</th><th>Деталі</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Overlay підхід</td><td>Сервіси визначені окремо від інфраструктури, об'єднуються при запуску</td></tr>
+      <tr><td>Gateway Dockerfile</td><td>Додано Dockerfile для API-шлюзу (був відсутній у v1.0.0)</td></tr>
+      <tr><td>Порти</td><td>Виправлено конфлікти портів між сервісами</td></tr>
+      <tr><td>Web-сервіс</td><td>Next.js фронтенд додано до compose</td></tr>
+      <tr><td>Мережа</td><td>Усі сервіси працюють у мережі <code>sc-net</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b6-4">Б.6.4 CI/CD конвеєр</h3>
+
+  <p>Створено GitHub Actions workflows для автоматизації збірки та публікації. Процес налаштування вимагав 6 ітеративних hotfixes (коміти 11&ndash;16) для стабілізації:</p>
+
+  <ul>
+    <li><strong>service-build-test.yml</strong> &mdash; збірка та тестування кожного сервісу при зміні його вихідного коду</li>
+    <li><strong>service-docker.yml</strong> &mdash; збірка Docker-образів та публікація до GHCR</li>
+    <li>Динамічна матриця визначає, які сервіси змінилися, та збирає лише їх</li>
+    <li>Додано <code>workflow_dispatch</code> для ручного перезапуску workflows</li>
+  </ul>
+
+  <h3 id="b6-5">Б.6.5 Тестова інфраструктура</h3>
+
+  <p>Версія 1.1.0 встановила три рівні тестування:</p>
+
+  <table>
+    <thead>
+      <tr><th>Рівень</th><th>Інструмент</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Контрактні тести</td><td>Spring Cloud Contract</td><td>Consumer та provider тести для Feign-клієнтів між сервісами</td></tr>
+      <tr><td>E2E тести</td><td>Playwright</td><td>Наскрізні тести: environment, notification delivery, negative flows</td></tr>
+      <tr><td>Grafana дашборди</td><td>Provisioning</td><td>4 дашборди: service health, JVM, HTTP metrics, circuit breakers</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b6-6">Б.6.6 OpenAPI та фронтенд-інтеграція</h3>
+
+  <p>Додано інструментарій для автоматичної генерації TypeScript-клієнтів з OpenAPI специфікацій сервісів. Це забезпечує типобезпечну інтеграцію фронтенду з бекендом та автоматичне виявлення контрактних змін під час компіляції.</p>
+
+  <p>Також у v1.1.0 додано підтримку <code>MAGIC_LINK</code> template type для нової системи автентифікації через одноразові email-посилання.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.7 VERSION 1.2.0                                             -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="b7">Б.7 Версія 1.2.0 &mdash; Зрілість Docker та розширення (30 березня 2026)</h2>
+
+  <h3 id="b7-1">Б.7.1 Цілі та обсяг</h3>
+
+  <p>Третій реліз зосереджений на операційній зрілості: багатоетапні Docker-збірки, виправлення Auth API контракту, повна переробка Docker Compose, новий Telegram Bot сервіс, сканування вразливостей Trivy та формалізація інженерних стандартів.</p>
+
+  <p><strong>Ключові цілі:</strong></p>
+  <ul>
+    <li>Перевести усі Dockerfile на багатоетапну збірку для зменшення розміру образів та поверхні атаки.</li>
+    <li>Виправити семантичну помилку Auth API (POST &rarr; GET).</li>
+    <li>Переробити Docker Compose з health-based залежностями та підтримкою нових сервісів.</li>
+    <li>Додати Telegram Bot для операційного управління feature-прапорцями.</li>
+    <li>Впровадити сканування вразливостей у CI/CD конвеєр.</li>
+    <li>Формалізувати інженерні стандарти через CLAUDE.md та довідкові файли.</li>
+  </ul>
+
+  <h3 id="b7-2">Б.7.2 Перелік змін</h3>
+
+  <table>
+    <thead>
+      <tr><th>№</th><th>Ref</th><th>Категорія</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/2b9deaf"><code>2b9deaf</code></a></td><td>[ІНШЕ]</td><td>Оновлення .gitignore, видалення застарілих файлів</td></tr>
+      <tr><td>2</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/3692b7a"><code>3692b7a</code></a></td><td>[НОВИЙ]</td><td>Переписання Dockerfile усіх сервісів на багатоетапні збірки</td></tr>
+      <tr><td>3</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/8706dd1"><code>8706dd1</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Auth API: getCurrentUser змінено з POST на GET, оновлено контрактні тести</td></tr>
+      <tr><td>4</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/bfad1f2"><code>bfad1f2</code></a></td><td>[ЗМІНЕНО]</td><td>Docker Compose: health checks, Telegram Bot, моніторинг, .env.example</td></tr>
+      <tr><td>5</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/38ff1db"><code>38ff1db</code></a></td><td>[ЗМІНЕНО]</td><td>CI/CD: tag triggers, Trivy scanning, розширена матриця збірок</td></tr>
+      <tr><td>6</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/211f2cb"><code>211f2cb</code></a></td><td>[НОВИЙ]</td><td>Telegram Bot Service: 79 файлів, feature flag management через Telegram</td></tr>
+      <tr><td>7</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/ca722e2"><code>ca722e2</code></a></td><td>[НОВИЙ]</td><td>Інженерна документація: CLAUDE.md, 10 довідкових файлів, review report</td></tr>
+      <tr><td>8</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/e6a333f"><code>e6a333f</code></a></td><td>[ІНШЕ]</td><td>Telegram buildSrc, оновлені task plans, root tooling deps</td></tr>
+      <tr><td>9</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/7e33af9"><code>7e33af9</code></a></td><td>[РЕЛІЗ]</td><td>Bump version to 1.2.0</td></tr>
+      <tr><td>10</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/2d2aa65"><code>2d2aa65</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Telegram: оновлення версії спільної бібліотеки до 1.2.0</td></tr>
+      <tr><td>11</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/fb69309"><code>fb69309</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Repo: видалення force-committed service files, виправлення .gitignore</td></tr>
+      <tr><td>12</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/01a3708"><code>01a3708</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Repo: E2E тести перенесено до окремого репозиторію</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b7-3">Б.7.3 Багатоетапні Docker-збірки</h3>
 
   <p>Усі сервіси переведено на триетапну Docker-збірку, що забезпечує ізоляцію етапів, мінімальний runtime-образ та правильний порядок побудови спільних бібліотек.</p>
 
-  <div class="stages">
-    <div class="stage">
-      <div class="stage-num">1</div>
-      <div class="stage-title">lib-builder</div>
-      <div class="stage-desc"><code>eclipse-temurin:21-jdk-alpine</code><br>Побудова спільних бібліотек (<code>publishToMavenLocal</code>)</div>
-    </div>
-    <div class="stage">
-      <div class="stage-num">2</div>
-      <div class="stage-title">service-builder</div>
-      <div class="stage-desc">Збірка JAR сервісу з використанням бібліотек з етапу 1</div>
-    </div>
-    <div class="stage">
-      <div class="stage-num">3</div>
-      <div class="stage-title">runtime</div>
-      <div class="stage-desc"><code>eclipse-temurin:21-jre-alpine</code><br>Мінімальний образ + <code>HEALTHCHECK</code></div>
-    </div>
-  </div>
+  <table>
+    <thead>
+      <tr><th>Етап</th><th>Назва</th><th>Базовий образ</th><th>Призначення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>lib-builder</td><td><code>eclipse-temurin:21-jdk-alpine</code></td><td>Побудова спільних бібліотек (<code>publishToMavenLocal</code>)</td></tr>
+      <tr><td>2</td><td>service-builder</td><td><code>eclipse-temurin:21-jdk-alpine</code></td><td>Збірка JAR сервісу з використанням бібліотек з етапу 1</td></tr>
+      <tr><td>3</td><td>runtime</td><td><code>eclipse-temurin:21-jre-alpine</code></td><td>Мінімальний образ + <code>HEALTHCHECK</code></td></tr>
+    </tbody>
+  </table>
 
   <p>Ключові рішення:</p>
   <ul>
@@ -487,7 +1052,6 @@
     <li>Вбудований <code>HEALTHCHECK</code> для кожного контейнера</li>
   </ul>
 
-  <p>Приклад структури Dockerfile:</p>
   <pre><code><span class="comment"># Етап 1: Побудова спільних бібліотек</span>
 <span class="keyword">FROM</span> eclipse-temurin:21-jdk-alpine <span class="keyword">AS</span> lib-builder
 <span class="keyword">WORKDIR</span> /workspace
@@ -506,8 +1070,7 @@
 <span class="keyword">COPY</span> <span class="flag">--from=</span>service-builder /workspace/build/libs/*.jar app.jar
 <span class="keyword">HEALTHCHECK</span> CMD wget -qO- http://localhost:8080/actuator/health || exit 1</code></pre>
 
-  <!-- 5.2 Auth Fix -->
-  <h3 id="auth-fix">3.2 Авторизація: POST &rarr; GET для getCurrentUser <span class="badge badge-changed">ЗМІНЕНО</span></h3>
+  <h3 id="b7-4">Б.7.4 Виправлення Auth API (POST &rarr; GET)</h3>
 
   <p>Ендпоінт отримання поточного користувача змінено з <code>POST</code> на <code>GET</code> для дотримання REST-семантики &mdash; операція читання даних не повинна використовувати метод, що передбачає створення ресурсу.</p>
 
@@ -523,11 +1086,10 @@
   </table>
 
   <div class="info-box warn">
-    <p><strong>Зверніть увагу:</strong> Це ламаюча зміна (breaking change) для будь-яких зовнішніх клієнтів, що використовують <code>POST /api/v1/auth/user</code>. Усі внутрішні Feign-клієнти та контрактні тести оновлено.</p>
+    <p><strong>Увага:</strong> Це ламаюча зміна (breaking change) для будь-яких зовнішніх клієнтів, що використовують <code>POST /api/v1/auth/user</code>. Усі внутрішні Feign-клієнти та контрактні тести оновлено у цьому ж релізі.</p>
   </div>
 
-  <!-- 5.3 Docker Compose -->
-  <h3 id="compose">3.3 Інфраструктура: Docker Compose <span class="badge badge-improved">ПОКРАЩЕНО</span></h3>
+  <h3 id="b7-5">Б.7.5 Docker Compose: повна переробка</h3>
 
   <p>Значні зміни у конфігурації Docker Compose для підвищення надійності та підтримки нових сервісів:</p>
 
@@ -542,8 +1104,7 @@
     <li><strong>.env.example:</strong> створено шаблон з документацією усіх змінних оточення</li>
   </ul>
 
-  <!-- 5.4 CI/CD -->
-  <h3 id="cicd" class="page-break">3.4 CI/CD: Розширена матриця та сканування вразливостей <span class="badge badge-improved">ПОКРАЩЕНО</span></h3>
+  <h3 id="b7-6">Б.7.6 CI/CD: розширення та сканування вразливостей</h3>
 
   <p>Workflow <code>service-docker.yml</code> суттєво розширено:</p>
 
@@ -561,14 +1122,9 @@
     </tbody>
   </table>
 
-  <!-- 5.5 Telegram Bot -->
-  <h3 id="telegram">3.5 Telegram Bot: Новий сервіс <span class="badge badge-new">НОВИЙ</span></h3>
+  <h3 id="b7-7">Б.7.7 Telegram Bot: новий сервіс</h3>
 
-  <p>Повністю новий Spring Boot мікросервіс для оперативного управління feature-прапорцями через Telegram:</p>
-
-  <div class="info-box accent">
-    <p><strong>79 файлів</strong> вихідного коду з повним покриттям юніт-тестами. Підтримка української та англійської мов (i18n).</p>
-  </div>
+  <p>Повністю новий Spring Boot мікросервіс для оперативного управління feature-прапорцями через Telegram. Обсяг: 79 файлів вихідного коду з повним покриттям юніт-тестами. Підтримка української та англійської мов (i18n).</p>
 
   <table>
     <thead>
@@ -586,27 +1142,25 @@
     </tbody>
   </table>
 
-  <!-- 5.6 Monitoring -->
-  <h3 id="monitoring">3.6 Моніторинг: Grafana <span class="badge badge-new">НОВИЙ</span></h3>
+  <h3 id="b7-8">Б.7.8 Моніторинг та спостережуваність</h3>
 
-  <p>Додано автоматичне провізіонування Grafana з попередньо налаштованими дашбордами:</p>
+  <p>Grafana провізіонування розширено до 4 дашбордів:</p>
 
   <table>
     <thead>
       <tr><th>Дашборд</th><th>Призначення</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Services Overview</strong></td><td>Загальний стан усіх мікросервісів, HTTP-метрики, JVM</td></tr>
-      <tr><td><strong>PostgreSQL</strong></td><td>Метрики баз даних: з'єднання, транзакції, розмір</td></tr>
-      <tr><td><strong>RabbitMQ</strong></td><td>Черги, повідомлення, швидкість обробки, споживачі</td></tr>
-      <tr><td><strong>Feature Flags</strong></td><td>Статус прапорців, історія змін, використання</td></tr>
+      <tr><td>Services Overview</td><td>Загальний стан усіх мікросервісів, HTTP-метрики, JVM</td></tr>
+      <tr><td>PostgreSQL</td><td>Метрики баз даних: з'єднання, транзакції, розмір</td></tr>
+      <tr><td>RabbitMQ</td><td>Черги, повідомлення, швидкість обробки, споживачі</td></tr>
+      <tr><td>Feature Flags</td><td>Статус прапорців, історія змін, використання</td></tr>
     </tbody>
   </table>
 
-  <p>Конфігурація включає провізіонування джерел даних (Prometheus) та автоматичне виявлення дашбордів.</p>
+  <p>Конфігурація включає автоматичне провізіонування джерел даних (Prometheus) та виявлення дашбордів при першому запуску Grafana.</p>
 
-  <!-- 5.7 Documentation -->
-  <h3 id="docs">3.7 Документація <span class="badge badge-new">НОВИЙ</span></h3>
+  <h3 id="b7-9">Б.7.9 Інженерна документація</h3>
 
   <ul>
     <li><strong>CLAUDE.md</strong> &mdash; інженерний операційний стандарт: агенти, навички, правила, формат пропозицій змін</li>
@@ -618,372 +1172,546 @@
         <li><code>build.md</code> &mdash; команди збірки, ланцюжок залежностей</li>
         <li><code>agents.md</code>, <code>skills.md</code> &mdash; специфікації агентів та навичок</li>
         <li><code>interaction-standards.md</code>, <code>ios-atmosphere.md</code> &mdash; стандарти UI/UX</li>
-        <li>та інші</li>
       </ul>
     </li>
     <li><strong>REVIEW_REPORT.md</strong> &mdash; аудит з 48 знахідками (UI/UX, доступність, продуктивність, безпека)</li>
     <li><strong>Оновлені плани задач:</strong> 19 нових файлів замість 14 старих, включаючи специфікації редизайну</li>
   </ul>
+
+  <p>Також у рамках v1.2.0 E2E тести перенесено до окремого репозиторію <code>selection-committee-e2e-tests</code> для ізоляції та спрощення CI.</p>
 </div>
 
 <!-- ============================================================ -->
-<!-- 6. NEW MODULES                                                -->
+<!-- Б.8 FRONTEND                                                  -->
 <!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="new-modules">4. Нові бібліотеки та модулі</h2>
+<div class="page-break">
+  <h2 id="b8">Б.8 Frontend &mdash; selection-committee-web</h2>
+
+  <h3 id="b8-1">Б.8.1 Огляд</h3>
+
+  <p>Фронтенд-застосунок платформи FICE Selection Committee розроблений як окремий репозиторій <code>selection-committee-web</code> з гілкою за замовчуванням <code>develop</code>. За період v1.2.0 створено повнофункціональний клієнтський додаток з автентифікацією, онбордінгом, дашбордом та юридичними сторінками.</p>
 
   <table>
     <thead>
-      <tr><th>Модуль / Бібліотека</th><th>Тип</th><th>Опис</th></tr>
+      <tr><th>Параметр</th><th>Значення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Фреймворк</td><td>Next.js 16.2 (App Router)</td></tr>
+      <tr><td>Мова</td><td>TypeScript (strict mode)</td></tr>
+      <tr><td>UI-бібліотека</td><td>shadcn/ui + Tailwind CSS v4 (lavender theme)</td></tr>
+      <tr><td>Серверний стан</td><td>TanStack Query</td></tr>
+      <tr><td>Клієнтський стан</td><td>Zustand</td></tr>
+      <tr><td>Форми</td><td>React Hook Form + Zod</td></tr>
+      <tr><td>HTTP-клієнт</td><td>Axios з JWT-інтерсепторами</td></tr>
+      <tr><td>Лінтинг / форматування</td><td>Biome</td></tr>
+      <tr><td>Unit-тести</td><td>Vitest</td></tr>
+      <tr><td>E2E-тести</td><td>Playwright</td></tr>
+      <tr><td>Пакетний менеджер</td><td>pnpm</td></tr>
+      <tr><td>Комітів</td><td>12 (включно з 1 merge)</td></tr>
+      <tr><td>Pull Requests</td><td>#1, #2</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b8-2">Б.8.2 Перелік змін</h3>
+
+  <table>
+    <thead>
+      <tr><th>№</th><th>Ref</th><th>Категорія</th><th>Опис</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/6d2d5b1"><code>6d2d5b1</code></a></td><td>[ІНШЕ]</td><td>Початковий scaffolding Next.js 16</td></tr>
+      <tr><td>2</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/59ded10"><code>59ded10</code></a></td><td>[НОВИЙ]</td><td>Production-ready Next.js 16 frontend starter</td></tr>
+      <tr><td>3</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/4faf411"><code>4faf411</code></a></td><td>[НОВИЙ]</td><td>Заміна login/register на magic link автентифікацію (PR #1)</td></tr>
+      <tr><td>4</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/fc7872b"><code>fc7872b</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Phase 8: критичні виправлення безпеки, доступності та продуктивності [SEC-1..6, A11Y-1..5, PERF-1..2]</td></tr>
+      <tr><td>5</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/9fa5dda"><code>9fa5dda</code></a></td><td>[ЗМІНЕНО]</td><td>Phase 9: покращення UX, доступності, продуктивності та архітектури [UX-1..2, ARCH-2..4, A11Y-6..12, PERF-3..6, SEC-9]</td></tr>
+      <tr><td>6</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/e67b691"><code>e67b691</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Phase 10: фінальне шліфування та оптимізація [UX-3..4, A11Y-11, ARCH-5..6]</td></tr>
+      <tr><td>7</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/ab37894"><code>ab37894</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Центрування іконки листа у check-email card, повернення getUser до GET</td></tr>
+      <tr><td>8</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/ad56897"><code>ad56897</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Вимкнення retry React Query для 4xx/5xx серверних помилок</td></tr>
+      <tr><td>9</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/ab381fe"><code>ab381fe</code></a></td><td>[ВИПРАВЛЕНО]</td><td>Перенесення auth state на рівень модуля для виживання HMR</td></tr>
+      <tr><td>10</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/26841ef"><code>26841ef</code></a></td><td>[НОВИЙ]</td><td>Редизайн головної сторінки та онбордінгу зі split-panel layout</td></tr>
+      <tr><td>11</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/a749816"><code>a749816</code></a></td><td>[НОВИЙ]</td><td>v1.2.0: покращення дашборду, юридичні сторінки, UI для feature flags</td></tr>
+      <tr><td>12</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/bb1bf1c"><code>bb1bf1c</code></a></td><td>[ЗЛИТТЯ]</td><td>Merge PR #2: feature/v1.2.0-ui-updates</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="b8-3">Б.8.3 Ключові функціональності</h3>
+
+  <h4>Magic link автентифікація</h4>
+  <p>Повна заміна класичного login/register потоку на автентифікацію через одноразові email-посилання. Інтеграція з backend identity-service через Axios з JWT-інтерсепторами. Маршрутизація захищена через Next.js middleware.</p>
+
+  <h4>Редизайн головної сторінки та онбордінгу</h4>
+  <p>Впроваджено split-panel layout для головної сторінки. Триетапний онбордінг: прийняття умов (з обов'язковим переглядом обох документів), заповнення профілю, підтвердження. Адаптивний дизайн з lavender темою shadcn/ui.</p>
+
+  <h4>Dashboard, юридичні сторінки, feature flags UI</h4>
+  <p>Створено повноцінний дашборд користувача, юридичні сторінки (умови використання, політика конфіденційності) та інтерфейс управління feature flags для адміністраторів (v1.2.0).</p>
+
+  <h4>Security hardening (Phase 8)</h4>
+  <ul>
+    <li>Захист від XSS та CSRF</li>
+    <li>Санітизація вхідних даних</li>
+    <li>CSP headers конфігурація</li>
+    <li>Безпечне зберігання токенів</li>
+  </ul>
+
+  <h4>Accessibility (Phases 8&ndash;10)</h4>
+  <ul>
+    <li>WCAG-сумісність інтерфейсу</li>
+    <li>Навігація клавіатурою для всіх інтерактивних елементів</li>
+    <li>Підтримка screen reader (ARIA-атрибути, семантична розмітка)</li>
+    <li>Контрастність кольорів відповідно до стандартів</li>
+  </ul>
+
+  <h4>Performance optimization</h4>
+  <ul>
+    <li>Вимкнення retry React Query для 4xx/5xx помилок &mdash; уникнення зайвих запитів</li>
+    <li>Перенесення auth state на module-level для виживання HMR</li>
+    <li>Оптимізація бандлу та завантаження ресурсів</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.9 BREAKING CHANGES                                          -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="b9">Б.9 Ламаючі зміни та міграція</h2>
+
+  <p>Нижче наведено повний перелік ламаючих змін (breaking changes) через усі версії:</p>
+
+  <table>
+    <thead>
+      <tr><th>Версія</th><th>Зміна</th><th>Вплив</th><th>Міграція</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td><code>selection-committee-telegram-bot-service</code></td>
-        <td><span class="badge badge-new">СЕРВІС</span></td>
-        <td>Spring Boot мікросервіс для Telegram-інтеграції з управлінням feature-прапорцями</td>
+        <td>v1.0.0</td>
+        <td>Міграція з окремих репозиторіїв у монорепозиторій</td>
+        <td>Усі сервіси змінили шляхи збірки</td>
+        <td>Оновити CI/CD та скрипти збірки. Використовувати <code>server/</code> як корінь.</td>
       </tr>
       <tr>
-        <td>Gradle buildSrc conventions</td>
-        <td><span class="badge badge-new">ЗБІРКА</span></td>
-        <td><code>sc.java-conventions</code>, <code>sc.spring-boot-service</code>, <code>sc.testing-conventions</code>, <code>sc.jacoco-conventions</code></td>
+        <td>v1.0.0</td>
+        <td>Спільні бібліотеки через mavenLocal</td>
+        <td>Збірка сервісів вимагає попередньої публікації бібліотек</td>
+        <td>Виконувати <code>./gradlew publishToMavenLocal</code> перед <code>bootJar</code>.</td>
       </tr>
       <tr>
-        <td>Root <code>package.json</code></td>
-        <td><span class="badge badge-new">ІНСТРУМЕНТ</span></td>
-        <td>shadcn CLI для управління UI-компонентами фронтенду</td>
+        <td>v1.1.0</td>
+        <td>Зміна портів сервісів</td>
+        <td>Клієнти зі старими портами не зможуть підключитися</td>
+        <td>Оновити конфігурацію клієнтів відповідно до docker-compose.services.yml.</td>
       </tr>
       <tr>
-        <td>Trivy Scanner</td>
-        <td><span class="badge badge-new">БЕЗПЕКА</span></td>
-        <td>Сканування вразливостей Docker-образів у CI з вивантаженням SARIF-звітів</td>
+        <td>v1.2.0</td>
+        <td><code>POST /api/v1/auth/user</code> &rarr; <code>GET</code></td>
+        <td>Зовнішні клієнти, що використовують POST, отримають 405 Method Not Allowed</td>
+        <td>Замінити <code>POST</code> на <code>GET</code> у викликах до <code>/api/v1/auth/user</code>.</td>
       </tr>
       <tr>
-        <td>ngrok</td>
-        <td><span class="badge badge-new">ІНТЕГРАЦІЯ</span></td>
-        <td>Тунелювання для Telegram webhook у локальному середовищі розробки</td>
+        <td>v1.2.0</td>
+        <td>Dockerfile: одноетапні &rarr; багатоетапні</td>
+        <td>Зміна контексту збірки на <code>server/</code>. Старі скрипти збірки не працюватимуть.</td>
+        <td>Використовувати <code>docker compose build</code> з оновленого compose-файлу.</td>
+      </tr>
+      <tr>
+        <td>v1.2.0</td>
+        <td>Змінні оточення: <code>RABBIT_*</code> &rarr; <code>RABBITMQ_*</code></td>
+        <td>Сервіси з старими назвами змінних не підключаться до RabbitMQ</td>
+        <td>Оновити <code>.env</code> відповідно до <code>.env.example</code>.</td>
+      </tr>
+      <tr>
+        <td>v1.2.0</td>
+        <td>E2E тести перенесено до окремого репозиторію</td>
+        <td>E2E тести більше не запускаються з основного репозиторію</td>
+        <td>Клонувати <code>selection-committee-e2e-tests</code> окремо.</td>
       </tr>
     </tbody>
   </table>
 </div>
 
 <!-- ============================================================ -->
-<!-- 7. CURRENT ARCHITECTURE                                       -->
+<!-- Б.10 CURRENT ARCHITECTURE                                     -->
 <!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="architecture">5. Як тепер працює система</h2>
-
-  <p>Після релізу v1.2.0 система складається з 7 мікросервісів, API-шлюзу, веб-фронтенду та повного стеку інфраструктури:</p>
+<div class="page-break">
+  <h2 id="b10">Б.10 Поточна архітектура системи (post-v1.2.0)</h2>
 
   <h3>Мікросервіси</h3>
-  <div class="arch-grid">
-    <div class="arch-item">
-      <div class="name">Identity Service</div>
-      <div class="desc">Автентифікація, magic link, JWT</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Admission Service</div>
-      <div class="desc">Заяви абітурієнтів, конкурс</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Documents Service</div>
-      <div class="desc">Зберігання документів, MinIO</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Environment Service</div>
-      <div class="desc">Feature flags, конфігурація</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Notifications Service</div>
-      <div class="desc">Email-сповіщення, Mailpit</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Telegram Bot Service</div>
-      <div class="desc">Telegram-бот, feature flags</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Gateway</div>
-      <div class="desc">API-шлюз, порт 8080</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Web (Next.js)</div>
-      <div class="desc">Фронтенд, SPA</div>
-    </div>
-  </div>
+  <table>
+    <thead>
+      <tr><th>Компонент</th><th>Технологія</th><th>Призначення</th><th>Порт</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Identity Service</td><td>Spring Boot 3.x</td><td>Автентифікація, magic link, JWT, управління користувачами</td><td>8081</td></tr>
+      <tr><td>Admission Service</td><td>Spring Boot 3.x</td><td>Заяви абітурієнтів, конкурсний відбір</td><td>8082</td></tr>
+      <tr><td>Documents Service</td><td>Spring Boot 3.x</td><td>Зберігання та управління документами (MinIO)</td><td>8083</td></tr>
+      <tr><td>Environment Service</td><td>Spring Boot 3.x</td><td>Feature flags, конфігурація середовища</td><td>8084</td></tr>
+      <tr><td>Notifications Service</td><td>Spring Boot 3.x</td><td>Email-сповіщення, шаблони (magic link, тощо)</td><td>8085</td></tr>
+      <tr><td>Telegram Bot Service</td><td>Spring Boot 3.x</td><td>Telegram-бот для управління feature flags</td><td>8086</td></tr>
+      <tr><td>Gateway</td><td>Spring Cloud Gateway</td><td>API-шлюз, маршрутизація, єдина точка входу</td><td>8080</td></tr>
+      <tr><td>Web (Next.js)</td><td>Next.js 16+</td><td>Фронтенд, SPA, Tailwind v4, shadcn/ui</td><td>3000</td></tr>
+    </tbody>
+  </table>
 
   <h3>Інфраструктура</h3>
-  <div class="arch-grid">
-    <div class="arch-item">
-      <div class="name">PostgreSQL 16</div>
-      <div class="desc">Основна СУБД</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Redis 7</div>
-      <div class="desc">Кешування, сесії</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">RabbitMQ 3</div>
-      <div class="desc">Брокер повідомлень</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">MinIO</div>
-      <div class="desc">Об'єктне сховище</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Mailpit</div>
-      <div class="desc">Тестовий SMTP</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Zipkin</div>
-      <div class="desc">Розподілене трасування</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Prometheus</div>
-      <div class="desc">Збір метрик</div>
-    </div>
-    <div class="arch-item">
-      <div class="name">Grafana</div>
-      <div class="desc">Візуалізація, дашборди</div>
-    </div>
-  </div>
+  <table>
+    <thead>
+      <tr><th>Компонент</th><th>Версія</th><th>Призначення</th><th>Порт</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>PostgreSQL</td><td>16</td><td>Основна СУБД (окрема БД для кожного сервісу)</td><td>5432</td></tr>
+      <tr><td>Redis</td><td>7</td><td>Кешування, сесії</td><td>6379</td></tr>
+      <tr><td>RabbitMQ</td><td>3</td><td>Брокер повідомлень (events між сервісами)</td><td>5672 / 15672</td></tr>
+      <tr><td>MinIO</td><td>latest</td><td>S3-сумісне об'єктне сховище</td><td>9000 / 9001</td></tr>
+      <tr><td>Mailpit</td><td>latest</td><td>Тестовий SMTP-сервер</td><td>1025 / 8025</td></tr>
+      <tr><td>Zipkin</td><td>latest</td><td>Розподілене трасування</td><td>9411</td></tr>
+      <tr><td>Prometheus</td><td>latest</td><td>Збір метрик</td><td>9090</td></tr>
+      <tr><td>Grafana</td><td>latest</td><td>Візуалізація, 4 провізійовані дашборди</td><td>3001</td></tr>
+    </tbody>
+  </table>
 
-  <h3>Архітектурні принципи v1.2.0</h3>
+  <h3>Архітектурні принципи</h3>
   <ul>
-    <li>Усі сервіси використовують <strong>багатоетапні Docker-збірки</strong> з попередньою публікацією спільних бібліотек</li>
-    <li><strong>Координація залежностей на основі здоров'я</strong> (<code>service_healthy</code>) для всіх сервісів</li>
-    <li><strong>Magic link автентифікація</strong> &mdash; без паролів, лише email-посилання</li>
-    <li>Feature flags керуються через <strong>environment-service</strong> та доступні через <strong>Telegram-бот</strong></li>
-    <li><strong>Grafana дашборди</strong> для операційного моніторингу провізіонуються автоматично</li>
-    <li>Кожен сервіс має <strong>HEALTHCHECK</strong> у Dockerfile та <code>/actuator/health</code> ендпоінт</li>
+    <li><strong>Bounded contexts:</strong> кожен сервіс володіє своїм доменом, базою даних та схемою. Міжсервісний доступ лише через Feign HTTP або RabbitMQ events.</li>
+    <li><strong>Gateway як єдина точка входу:</strong> порт 8080. Жоден сервіс не експонує ендпоінти напряму зовнішнім споживачам.</li>
+    <li><strong>Health-based залежності:</strong> <code>service_healthy</code> для усіх сервісів у Docker Compose.</li>
+    <li><strong>Багатоетапні Docker-збірки:</strong> 3 етапи (lib-builder &rarr; service-builder &rarr; runtime) для мінімального образу.</li>
+    <li><strong>Magic link автентифікація:</strong> без паролів, лише email-посилання через notifications-service.</li>
+    <li><strong>Feature flags через Telegram:</strong> оперативне управління без доступу до адмін-панелі.</li>
+    <li><strong>Автоматичний моніторинг:</strong> Grafana дашборди провізіонуються при першому запуску.</li>
+    <li><strong>Кожен сервіс має HEALTHCHECK:</strong> вбудований у Dockerfile + <code>/actuator/health</code> ендпоінт.</li>
+    <li><strong>Фронтенд як окремий репозиторій:</strong> <code>selection-committee-web</code> (гілка <code>develop</code>) &mdash; Next.js 16, TypeScript, shadcn/ui, незалежний цикл розробки та деплою.</li>
   </ul>
 </div>
 
 <!-- ============================================================ -->
-<!-- 8. HOW TO RUN                                                 -->
+<!-- Б.11 HOW TO RUN / DEPLOY / MONITOR / TEST                    -->
 <!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="how-to-run">6. Як запускати</h2>
+<div class="page-break">
+  <h2 id="b11">Б.11 Як запускати / деплоїти / моніторити / тестувати</h2>
 
-  <h3>Підготовка середовища</h3>
-  <pre><code><span class="comment"># Скопіюйте шаблон змінних оточення та заповніть значення</span>
-<span class="keyword">cp</span> infra/.env.example infra/.env</code></pre>
+  <h3>Б.11.1 Запуск</h3>
 
-  <h3>Запуск інфраструктури</h3>
-  <pre><code><span class="comment"># Запуск PostgreSQL, Redis, RabbitMQ, MinIO, Mailpit, Zipkin, Prometheus, Grafana</span>
-<span class="keyword">cd</span> infra && <span class="keyword">docker compose</span> up <span class="flag">-d</span></code></pre>
+  <pre><code><span class="comment"># 1. Скопіювати шаблон змінних оточення</span>
+<span class="keyword">cp</span> infra/.env.example infra/.env
 
-  <h3>Запуск сервісів</h3>
-  <pre><code><span class="comment"># Запуск усіх основних мікросервісів</span>
-<span class="keyword">docker compose</span> <span class="flag">-f</span> docker-compose.services.yml up <span class="flag">-d</span></code></pre>
+<span class="comment"># 2. Запустити інфраструктуру (PostgreSQL, Redis, RabbitMQ, MinIO, ...)</span>
+<span class="keyword">cd</span> infra && <span class="keyword">docker compose</span> up <span class="flag">-d</span>
 
-  <h3>Запуск з Telegram Bot (опціонально)</h3>
-  <pre><code><span class="comment"># Включає telegram-bot-service + ngrok + webhook-init</span>
+<span class="comment"># 3. Запустити мікросервіси</span>
+<span class="keyword">docker compose</span> <span class="flag">-f</span> docker-compose.services.yml up <span class="flag">-d</span>
+
+<span class="comment"># 4. (Опціонально) Запуск з Telegram Bot</span>
 <span class="keyword">docker compose</span> <span class="flag">-f</span> docker-compose.services.yml <span class="flag">--profile</span> telegram up <span class="flag">-d</span></code></pre>
 
   <div class="info-box">
-    <p><strong>Передумови:</strong> Docker та Docker Compose мають бути встановлені. Усі сервіси запускаються у мережі <code>sc-net</code>. Перша збірка може тривати 5-10 хвилин через завантаження залежностей.</p>
+    <p><strong>Передумови:</strong> Docker та Docker Compose мають бути встановлені. Усі сервіси запускаються у мережі <code>sc-net</code>. Перша збірка може тривати 5&ndash;10 хвилин через завантаження залежностей.</p>
   </div>
-</div>
 
-<!-- ============================================================ -->
-<!-- 9. HOW TO DEPLOY                                              -->
-<!-- ============================================================ -->
-<div class="section">
-  <h2 id="how-to-deploy">7. Як деплоїти</h2>
+  <h3>Б.11.2 Деплой</h3>
 
   <table>
     <thead>
       <tr><th>Тригер</th><th>Дія</th></tr>
     </thead>
     <tbody>
-      <tr><td>Push до <code>main</code></td><td>Запускає Docker CI &mdash; збірка та публікація образів із змінених сервісів</td></tr>
-      <tr><td>Тег <code>v*.*.*</code></td><td>Повна перезбірка усіх сервісів з тегуванням за semver</td></tr>
-      <tr><td>Публікація образів</td><td><code>ghcr.io/fice-selection-committee/sc-*</code></td></tr>
-      <tr><td>Сканування Trivy</td><td>Виконується на кожній збірці, результати у GitHub Security (SARIF)</td></tr>
+      <tr><td>Push до <code>main</code></td><td>Збірка та публікація Docker-образів змінених сервісів до GHCR</td></tr>
+      <tr><td>Тег <code>v*.*.*</code></td><td>Повна перезбірка усіх сервісів із семантичним тегуванням</td></tr>
+      <tr><td>Кожна збірка</td><td>Trivy сканує образ на вразливості, результати у GitHub Security (SARIF)</td></tr>
     </tbody>
   </table>
 
-  <p>Процес деплою:</p>
-  <ol>
-    <li>Зміни проходять code review та CI-перевірки у pull request</li>
-    <li>Після merge до <code>main</code> автоматично збираються Docker-образи змінених сервісів</li>
-    <li>Trivy сканує кожен образ на вразливості та завантажує SARIF-звіт</li>
-    <li>Для релізу створюється тег <code>v*.*.*</code>, що тригерить повну перезбірку</li>
-    <li>Семантичні теги (<code>latest</code>, <code>v1.2.0</code>, <code>v1.2</code>, <code>v1</code>) застосовуються до образів</li>
-  </ol>
-</div>
+  <p>Процес: code review &rarr; CI перевірки &rarr; merge до main &rarr; автоматична збірка Docker-образів &rarr; Trivy scan &rarr; публікація до GHCR. Для релізу &mdash; git tag <code>v*.*.*</code> тригерить повну перезбірку з семантичними тегами (<code>latest</code>, <code>v1.2.0</code>, <code>v1.2</code>, <code>v1</code>).</p>
 
-<!-- ============================================================ -->
-<!-- 10. HOW TO MONITOR                                            -->
-<!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="how-to-monitor">8. Як моніторити</h2>
+  <h3>Б.11.3 Моніторинг</h3>
 
   <table>
     <thead>
       <tr><th>Інструмент</th><th>URL</th><th>Призначення</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Grafana</strong></td><td><code>http://localhost:3001</code></td><td>Візуалізація метрик (логін: <code>admin/admin</code>)</td></tr>
-      <tr><td><strong>Zipkin</strong></td><td><code>http://localhost:9411</code></td><td>Розподілене трасування запитів між сервісами</td></tr>
-      <tr><td><strong>Prometheus</strong></td><td><code>http://localhost:9090</code></td><td>Збір та запити метрик</td></tr>
-      <tr><td><strong>Actuator</strong></td><td><code>/actuator/health</code></td><td>Перевірка здоров'я кожного сервісу</td></tr>
+      <tr><td>Grafana</td><td><code>http://localhost:3001</code></td><td>Візуалізація метрик (логін: <code>admin/admin</code>)</td></tr>
+      <tr><td>Zipkin</td><td><code>http://localhost:9411</code></td><td>Розподілене трасування запитів між сервісами</td></tr>
+      <tr><td>Prometheus</td><td><code>http://localhost:9090</code></td><td>Збір та запити метрик</td></tr>
+      <tr><td>Actuator</td><td><code>/actuator/health</code></td><td>Перевірка здоров'я кожного сервісу</td></tr>
+      <tr><td>RabbitMQ UI</td><td><code>http://localhost:15672</code></td><td>Управління чергами та обмінниками</td></tr>
+      <tr><td>MinIO Console</td><td><code>http://localhost:9001</code></td><td>Управління об'єктним сховищем</td></tr>
+      <tr><td>Mailpit</td><td><code>http://localhost:8025</code></td><td>Перегляд тестових email-повідомлень</td></tr>
     </tbody>
   </table>
 
-  <h3>Grafana дашборди</h3>
-  <ol>
-    <li><strong>Services Overview</strong> &mdash; HTTP-метрики, час відповіді, JVM-статистика усіх сервісів</li>
-    <li><strong>PostgreSQL</strong> &mdash; кількість з'єднань, транзакцій, розмір баз даних</li>
-    <li><strong>RabbitMQ</strong> &mdash; стан черг, швидкість обробки повідомлень, кількість споживачів</li>
-    <li><strong>Feature Flags</strong> &mdash; поточний статус прапорців, історія змін</li>
-  </ol>
+  <h3>Б.11.4 Тестування</h3>
 
-  <div class="info-box accent">
-    <p>Усі дашборди провізіонуються автоматично при першому запуску Grafana. Джерело даних Prometheus налаштовується через <code>infra/grafana/provisioning/</code>.</p>
+  <table>
+    <thead>
+      <tr><th>Рівень</th><th>Команда</th><th>Вимоги</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Unit-тести</td><td><code>./gradlew test</code></td><td>Запускаються для кожного сервісу окремо</td></tr>
+      <tr><td>Integration-тести</td><td><code>./gradlew integrationTest</code></td><td>Потребують Docker (Testcontainers)</td></tr>
+      <tr><td>Contract-тести</td><td>Частина <code>integrationTest</code></td><td>У <code>src/integrationTest/**/contract/</code></td></tr>
+      <tr><td>E2E-тести</td><td>Playwright</td><td>Окремий репозиторій <code>selection-committee-e2e-tests</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- Б.12 DETAILED WAS-NOW COMPARISON                              -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="b12">Б.12 Детальне порівняння &laquo;Було &rarr; Стало&raquo;</h2>
+
+  <div class="was-now-detail">
+    <h4>1. Структура репозиторію</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Окремі репозиторії для кожного сервісу</s></div>
+      <div class="now"><strong>Стало:</strong> Gradle multi-module монорепозиторій</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Усі мікросервіси, спільні бібліотеки та інфраструктурні конфігурації об'єднані у єдиний репозиторій з централізованою системою збірки. У директорії <code>server/buildSrc/</code> визначено convention plugins: <code>sc.java-conventions</code> задає базові налаштування Java-проєкту, <code>sc.spring-boot-service</code> &mdash; конфігурацію Spring Boot сервісу, <code>sc.testing-conventions</code> &mdash; тестові залежності та налаштування, <code>sc.jacoco-conventions</code> &mdash; покриття коду. Централізоване управління залежностями через version catalogs забезпечує однакові версії бібліотек у всіх модулях. Єдина точка входу <code>./gradlew</code> дозволяє збирати, тестувати та публікувати будь-який компонент.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Єдиний репозиторій унеможливлює версійну неузгодженість між сервісами, спрощує рефакторинг крос-сервісних змін та забезпечує атомарність релізів.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>2. Docker-збірки</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутні або одноетапні Dockerfile</s></div>
+      <div class="now"><strong>Стало:</strong> Багатоетапні 3-стадійні збірки</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Кожен Dockerfile містить три етапи. Етап 1 (lib-builder) на базі <code>eclipse-temurin:21-jdk-alpine</code> копіює спільні бібліотеки та виконує <code>publishToMavenLocal</code>, роблячи їх доступними для наступного етапу. Етап 2 (service-builder) копіює mavenLocal з попереднього етапу та збирає JAR-файл конкретного сервісу через <code>bootJar</code>. Етап 3 (runtime) використовує мінімальний <code>eclipse-temurin:21-jre-alpine</code>, створює non-root користувача <code>spring</code> (UID 10000, GID 10001), копіює лише зібраний JAR та встановлює вбудований <code>HEALTHCHECK</code> через <code>wget</code> до <code>/actuator/health</code>.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Фінальний образ містить лише JRE та JAR-файл, що значно зменшує поверхню атаки. Non-root користувач запобігає ескалації привілеїв всередині контейнера.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>3. CI/CD конвеєр</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутній</s></div>
+      <div class="now"><strong>Стало:</strong> GitHub Actions з двома workflow</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Workflow <code>service-build-test.yml</code> запускається при кожному Pull Request та виконує unit- та integration-тести для змінених сервісів. Workflow <code>service-docker.yml</code> активується при merge до main або створенні semver-тегу: він будує Docker-образи та публікує їх до GHCR. Динамічна матриця автоматично визначає, які сервіси змінилися (аналізуючи шляхи файлів у коміті), та збирає лише їх. Для кожного сервісу динамічно визначається контекст збірки та шлях до Dockerfile.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Автоматизація виключає людський фактор у процесі збірки та публікації. Динамічна матриця економить час, збираючи лише змінені сервіси.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>4. Сканування вразливостей</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутнє</s></div>
+      <div class="now"><strong>Стало:</strong> Trivy у CI/CD конвеєрі</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Trivy &mdash; open-source сканер від Aqua Security, що аналізує шари контейнерного образу на наявність відомих CVE (Common Vulnerabilities and Exposures). Він запускається як крок у <code>service-docker.yml</code> після кожної збірки образу. Trivy перевіряє всі пакети операційної системи та Java-залежності у фінальному образі. Результати генеруються у форматі SARIF (Static Analysis Results Interchange Format) та автоматично завантажуються до вкладки GitHub Security. Таймаут job встановлено на 30 хвилин.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Автоматичне сканування виявляє відомі вразливості ще до деплою, забезпечуючи безперервний контроль безпеки без ручного втручання.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>5. Автентифікація</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Логін/пароль</s></div>
+      <div class="now"><strong>Стало:</strong> Magic link (вхід через email-посилання)</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Користувач вводить email-адресу на сторінці входу. Identity-service генерує JWT-токен з обмеженим терміном дії та вбудовує його у посилання. Notifications-service доставляє лист з посиланням через SMTP (у локальній розробці використовується Mailpit). Користувач натискає посилання, токен валідується на сервері, встановлюється сесійний cookie. Axios-інтерсептори на фронтенді автоматично оновлюють токен при його закінченні. Rate limiting налаштовано для ендпоінту magic link для захисту від зловживань.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Magic link виключає ризик компрометації паролів, фішингу через підроблені форми входу та використання слабких паролів користувачами.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>6. Auth API семантика</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>POST /api/v1/auth/user для getCurrentUser</s></div>
+      <div class="now"><strong>Стало:</strong> GET /api/v1/auth/user для getCurrentUser</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> HTTP-метод POST семантично означає "створити ресурс", тоді як операція getCurrentUser лише зчитує дані. Виправлено <code>@PostMapping</code> на <code>@GetMapping</code> у Feign-інтерфейсі <code>IdentityServiceClient</code>. Оновлено <code>ProviderContractIT</code> для відповідності потоку magic link автентифікації. Оновлено <code>IdentityClientContractIT</code> у documents-service. Видалено застарілий <code>EnvClientContractIT</code>, що більше не відповідав актуальному контракту.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Дотримання REST-семантики забезпечує передбачуваність API, коректну роботу HTTP-кешування та сумісність із проксі-серверами.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>7. Docker Compose</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Базовий compose без health checks</s></div>
+      <div class="now"><strong>Стало:</strong> Health-based compose з повним стеком</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Використовується дворівневий overlay: <code>docker-compose.yml</code> визначає інфраструктуру (PostgreSQL, Redis, RabbitMQ, MinIO, Mailpit, Zipkin, Prometheus, Grafana), а <code>docker-compose.services.yml</code> &mdash; мікросервіси. Залежності використовують <code>condition: service_healthy</code> замість <code>service_started</code>, що гарантує фактичну готовність залежного компонента. JWT-секрети монтуються через volume mounts для identity-service. Файл <code>.env.example</code> документує усі змінні оточення. Telegram-профіль (<code>--profile telegram</code>) додає ngrok + webhook-init + telegram-bot-service.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Health-based залежності виключають стартові гонки, коли сервіс намагається підключитися до ще не готової інфраструктури. Overlay-підхід дозволяє запускати лише потрібні компоненти.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>8. Telegram-інтеграція</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутня</s></div>
+      <div class="now"><strong>Стало:</strong> Повноцінний Telegram Bot сервіс</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Spring Boot сервіс використовує webhook-архітектуру (не polling) &mdash; Telegram надсилає HTTP POST на ендпоінт сервісу при кожному повідомленні від користувача. Для локальної розробки ngrok створює публічний тунель, через який Telegram досягає локальний сервер. Inline-клавіатури забезпечують інтерактивний інтерфейс безпосередньо у месенджері. Сервіс комунікує з environment-service через Feign-клієнт для CRUD-операцій з feature flags. Підписка на RabbitMQ забезпечує отримання сповіщень про зміни прапорців. Авторизація на основі chat ID, per-user rate limiting, 3 Flyway-міграції, i18n: українська (uk) та англійська (en).
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Telegram-бот надає оперативний доступ до управління feature flags без необхідності відкривати адмін-панель або мати доступ до серверної інфраструктури.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>9. Моніторинг</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутній</s></div>
+      <div class="now"><strong>Стало:</strong> Prometheus + Grafana + Zipkin</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Спільна бібліотека <code>sc-observability-starter</code> автоматично конфігурує Micrometer для експорту метрик до Prometheus у кожному сервісі, що її підключає. Grafana має 4 автоматично провізійовані дашборди (services overview, PostgreSQL, RabbitMQ, feature flags) через JSON-файли у <code>infra/grafana/dashboards/</code>. Zipkin забезпечує розподілене трасування &mdash; кожен HTTP-запит отримує унікальний trace ID, що дозволяє відстежити його шлях через усі мікросервіси. Усе провізіонується автоматично при першому <code>docker compose up</code>.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Моніторинг дозволяє виявляти проблеми продуктивності, деградацію здоров'я сервісів та міжсервісні затримки до того, як вони вплинуть на користувачів.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>10. Контрактні тести</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутні</s></div>
+      <div class="now"><strong>Стало:</strong> Spring Cloud Contract (provider + consumer)</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Provider-side тести (<code>ProviderContractIT</code>) визначають контракти через анотації та автоматично генерують HTTP-стаби для кожного ендпоінту. Consumer-side тести (<code>IdentityClientContractIT</code>) перевіряють, що Feign-клієнти відповідають контракту провайдера &mdash; тобто формат запитів та відповідей збігається. Тести розташовані у <code>src/integrationTest/**/contract/</code> та запускаються як частина <code>./gradlew integrationTest</code>. При зміні API-контракту тести автоматично виявляють розбіжності.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Контрактні тести ловлять ламаючі зміни API до деплою, коли виправлення ще дешеве, замість виявлення проблем у production.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>11. E2E тести</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутні</s></div>
+      <div class="now"><strong>Стало:</strong> Playwright у окремому репозиторії</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Спочатку E2E тести знаходилися у монорепозиторії, але у v1.2.0 їх мігровано до окремого репозиторію <code>selection-committee-e2e-tests</code> для ізоляції та спрощення CI. Тести використовують Page Object Model (POM) &mdash; кожна сторінка представлена класом з методами для взаємодії. Покриття включає: управління середовищем, доставку сповіщень, негативні сценарії. Для виконання потрібен повний Docker-стек. Доступний запис відео для дебагу.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> E2E тести верифікують повний користувацький потік від UI до бази даних, виявляючи проблеми інтеграції, які не видно на рівні unit- або contract-тестів.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>12. OpenAPI генерація</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутня</s></div>
+      <div class="now"><strong>Стало:</strong> TypeScript client generation</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Директорія <code>tools/openapi-gen/</code> містить <code>config.yml</code> та скрипти генерації (PowerShell + Bash). Скрипти зчитують OpenAPI-специфікації із запущених сервісів (ендпоінт <code>/v3/api-docs</code>) та генерують TypeScript-типи й код API-клієнта. Згенеровані типи забезпечують типобезпечну інтеграцію фронтенду з бекендом: будь-яка зміна контракту виявляється на етапі компіляції TypeScript, а не під час виконання.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Автоматична генерація виключає ручне дублювання типів та гарантує синхронність контракту між frontend та backend.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>13. Frontend</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутній</s></div>
+      <div class="now"><strong>Стало:</strong> Next.js 16 з повним redesign</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Застосунок побудований на App Router з розподілом на server та client компоненти. Бібліотека shadcn/ui з кастомною lavender-темою на Tailwind CSS v4 забезпечує консистентний дизайн. TanStack Query управляє серверним станом (кешування API-відповідей, автоматичний рефетчинг). Zustand використовується для клієнтського стану. React Hook Form + Zod забезпечують валідацію форм зі схемами. Biome замінює ESLint + Prettier як єдиний інструмент лінтингу та форматування. Split-panel layout для онбордінгу. Security headers (X-Frame-Options, CSP, X-Content-Type-Options) налаштовані у Next.js middleware.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Сучасний стек забезпечує продуктивність розробки, типобезпеку, консистентний UI та захист від поширених web-вразливостей.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>14. Змінні оточення</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>RABBIT_* (нестандартний префікс)</s></div>
+      <div class="now"><strong>Стало:</strong> RABBITMQ_* (стандартний префікс)</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> Префікс змінних оточення стандартизовано для узгодженості з офіційним найменуванням RabbitMQ. Створено файл <code>infra/.env.example</code> як єдине джерело істини для всіх змінних оточення системи. Файл документує кожну змінну з очікуваними значеннями та коментарями. Перед першим запуском <code>.env.example</code> копіюється у <code>.env</code> та заповнюється реальними значеннями.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Стандартне найменування спрощує онбордінг нових розробників та зменшує ризик помилок конфігурації.
+    </div>
+  </div>
+
+  <div class="was-now-detail">
+    <h4>15. Інженерна документація</h4>
+    <div class="was-now-row">
+      <div class="was"><strong>Було:</strong> <s>Відсутня</s></div>
+      <div class="now"><strong>Стало:</strong> CLAUDE.md + 10 довідкових файлів</div>
+    </div>
+    <div class="explanation">
+      <strong>Як це працює:</strong> <code>CLAUDE.md</code> &mdash; інженерний операційний стандарт, що визначає ролі агентів (Solution Architect, Backend/Frontend Engineer, QA та ін.), навички активації, операційні правила, фреймворк прийняття рішень, failure-aware мислення та формат пропозицій змін. 10 довідкових файлів у <code>docs/claude/</code> покривають архітектуру, тестування, Docker, збірку, агенти, навички, стандарти взаємодії та дизайн-систему. <code>REVIEW_REPORT.md</code> містить результати аудиту з 48 знахідками у категоріях UI/UX, доступності, продуктивності та безпеки.
+    </div>
+    <div class="why">
+      <strong>Чому це важливо:</strong> Формалізовані стандарти забезпечують консистентність інженерних рішень та прискорюють онбордінг, перетворюючи знання з "в голові розробника" на "в репозиторії".
+    </div>
   </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- 11. HOW TO TEST                                               -->
+<!-- Б.13 RISKS AND NEXT STEPS                                     -->
 <!-- ============================================================ -->
-<div class="section">
-  <h2 id="how-to-test">9. Як тестувати</h2>
+<div class="page-break">
+  <h2 id="b13">Б.13 Ризики та подальші кроки</h2>
+
+  <h3>Б.13.1 Відомі ризики</h3>
 
   <table>
     <thead>
-      <tr><th>Рівень тестування</th><th>Команда</th><th>Вимоги</th></tr>
+      <tr><th>Ризик</th><th>Опис</th><th>Мітигація</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td><strong>Unit-тести</strong></td>
-        <td><code>./gradlew test</code></td>
-        <td>Запускаються для кожного сервісу окремо</td>
+        <td>Стартові гонки</td>
+        <td>Деякі сервіси можуть спробувати підключитися до інфраструктури до її повної ініціалізації</td>
+        <td>Health-based залежності (<code>service_healthy</code>) мінімізують ризик, але не виключають повністю</td>
       </tr>
       <tr>
-        <td><strong>Integration-тести</strong></td>
-        <td><code>./gradlew integrationTest</code></td>
-        <td>Потребують Docker (Testcontainers)</td>
+        <td>Розмір Docker-образів</td>
+        <td>Перша збірка завантажує всі Gradle залежності, що збільшує час CI</td>
+        <td>Запланувати кешування Docker-шарів у CI</td>
       </tr>
       <tr>
-        <td><strong>Contract-тести</strong></td>
-        <td>Частина <code>integrationTest</code></td>
-        <td>У <code>src/integrationTest/**/contract/</code></td>
+        <td>E2E тести в окремому репозиторії</td>
+        <td>Розрив між кодом сервісів та E2E тестами може призвести до неузгодженості</td>
+        <td>Контрактні тести в основному репозиторії ловлять більшість порушень</td>
       </tr>
       <tr>
-        <td><strong>E2E-тести</strong></td>
-        <td>Playwright</td>
-        <td>У <code>selection-committee-e2e-tests</code></td>
+        <td>Telegram Bot залежність від ngrok</td>
+        <td>Локальна розробка Telegram Bot вимагає ngrok для webhook</td>
+        <td>ngrok налаштовано у профілі <code>telegram</code>, не впливає на основний стек</td>
+      </tr>
+      <tr>
+        <td>Одна БД PostgreSQL</td>
+        <td>Усі сервіси використовують один екземпляр PostgreSQL з різними базами</td>
+        <td>Flyway міграції ізолюють схеми. Для production рекомендовано окремі інстанси.</td>
       </tr>
     </tbody>
   </table>
 
-  <h3>Telegram Bot тести</h3>
-  <p>Сервіс Telegram Bot включає 79 файлів з повним покриттям юніт-тестами. Тести перевіряють:</p>
-  <ul>
-    <li>Обробку webhook-запитів та inline-клавіатур</li>
-    <li>CRUD-операції з feature-прапорцями через Feign-клієнт</li>
-    <li>Обробку RabbitMQ-повідомлень</li>
-    <li>Авторизацію на основі chat ID</li>
-    <li>Rate limiting</li>
-    <li>i18n (українська та англійська локалізації)</li>
-  </ul>
-
-  <h3>Контрактні тести (оновлені)</h3>
-  <ul>
-    <li><code>ProviderContractIT</code> &mdash; оновлено для magic link потоку автентифікації</li>
-    <li><code>IdentityClientContractIT</code> (documents-service) &mdash; оновлено для <code>GET /api/v1/auth/user</code></li>
-    <li><code>EnvClientContractIT</code> &mdash; видалено (застарілий)</li>
-  </ul>
-</div>
-
-<!-- ============================================================ -->
-<!-- 12. COMPARISON TABLE                                          -->
-<!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="comparison">10. Порівняння &laquo;Було / Стало&raquo;</h2>
-
-  <table class="compare-table">
-    <thead>
-      <tr>
-        <th>Аспект</th>
-        <th>v1.1.0 (Було)</th>
-        <th>v1.2.0 (Стало)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Docker-збірки</td>
-        <td>Одноетапні (gradle:jdk21-ubi-minimal)</td>
-        <td>Багатоетапні, 3 стадії (eclipse-temurin:21-alpine)</td>
-      </tr>
-      <tr>
-        <td>Залежності здоров'я</td>
-        <td>service_started</td>
-        <td>service_healthy</td>
-      </tr>
-      <tr>
-        <td>Auth API</td>
-        <td>POST /api/v1/auth/user</td>
-        <td>GET /api/v1/auth/user</td>
-      </tr>
-      <tr>
-        <td>Кількість сервісів</td>
-        <td>6 + gateway</td>
-        <td>7 + gateway</td>
-      </tr>
-      <tr>
-        <td>CI тригери</td>
-        <td>server/services/** тільки</td>
-        <td>libs, buildSrc, теги, web, telegram-bot</td>
-      </tr>
-      <tr>
-        <td>Сканування вразливостей</td>
-        <td>Відсутнє</td>
-        <td>Trivy SARIF до GitHub Security</td>
-      </tr>
-      <tr>
-        <td>Дашборди моніторингу</td>
-        <td>Ручне налаштування</td>
-        <td>4 провізійовані Grafana дашборди</td>
-      </tr>
-      <tr>
-        <td>Онбордінг розробника</td>
-        <td>Без .env шаблону</td>
-        <td>.env.example з документацією</td>
-      </tr>
-      <tr>
-        <td>Інженерна документація</td>
-        <td>Відсутня</td>
-        <td>CLAUDE.md + 10 довідкових файлів</td>
-      </tr>
-      <tr>
-        <td>Планування задач</td>
-        <td>14 загальних фаз</td>
-        <td>19 специфічних планів + специфікації редизайну</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- ============================================================ -->
-<!-- 13. CONCLUSIONS                                               -->
-<!-- ============================================================ -->
-<div class="section page-break">
-  <h2 id="conclusions">11. Висновки та подальші кроки</h2>
-
-  <h3>Ключові досягнення v1.2.0</h3>
-
-  <ul>
-    <li><strong>Багатоетапні Docker-збірки</strong> зменшують розмір образів та покращують відтворюваність збірок. Виключення JDK та Gradle з runtime-образу значно зменшує поверхню атаки.</li>
-    <li><strong>Залежності на основі здоров'я</strong> запобігають стартовим гонкам (race conditions) &mdash; сервіси не починають роботу, поки інфраструктура не підтвердить свою готовність.</li>
-    <li><strong>Виправлення Auth API</strong> приводить контракт у відповідність до REST-семантики, що спрощує інтеграцію для зовнішніх клієнтів.</li>
-    <li><strong>Telegram Bot</strong> додає зручний операційний інтерфейс для управління feature-прапорцями без необхідності доступу до адмін-панелі.</li>
-    <li><strong>Grafana дашборди</strong> забезпечують миттєву спостережуваність системи з першого запуску.</li>
-    <li><strong>Trivy у CI</strong> встановлює безперервний контроль вразливостей як частину процесу збірки.</li>
-    <li><strong>Інженерна документація</strong> формалізує стандарти роботи, що підвищує передбачуваність та якість змін.</li>
-  </ul>
-
-  <h3>Подальші кроки</h3>
+  <h3>Б.13.2 Подальші кроки</h3>
 
   <table>
     <thead>
@@ -991,49 +1719,169 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="badge badge-changed">ВИСОКИЙ</span></td>
-        <td>PR Review та Merge</td>
-        <td>Ревью та злиття поточної гілки з усіма змінами v1.2.0</td>
+        <td>[ВИСОКИЙ]</td>
+        <td>Тегування v1.2.0 <span class="status-done">[ВИКОНАНО]</span></td>
+        <td>Створення git-тегу <code>v1.2.0</code> для публікації Docker-образів з семантичними тегами</td>
       </tr>
       <tr>
-        <td><span class="badge badge-changed">ВИСОКИЙ</span></td>
-        <td>Тегування v1.2.0</td>
-        <td>Створення git-тегу <code>v1.2.0</code> після merge для публікації Docker-образів</td>
+        <td>[ВИСОКИЙ]</td>
+        <td>Редизайн фронтенду <span class="status-progress">[В ПРОЦЕСІ]</span></td>
+        <td>Виконання планів redesign-01 &ndash; redesign-07 для оновлення UI відповідно до ios-atmosphere стандарту. Split-panel redesign завершено, плани redesign-01..07 залишаються.</td>
       </tr>
       <tr>
-        <td><span class="badge badge-improved">СЕРЕДНІЙ</span></td>
-        <td>Редизайн фронтенду</td>
-        <td>Виконання планів redesign-01 &ndash; redesign-07 для оновлення UI</td>
+        <td>[СЕРЕДНІЙ]</td>
+        <td>Виправлення доступності <span class="status-progress">[В ПРОЦЕСІ]</span></td>
+        <td>Реалізація знахідок з REVIEW_REPORT.md щодо accessibility. Фази 8&ndash;10 адресували основні знахідки.</td>
       </tr>
       <tr>
-        <td><span class="badge badge-improved">СЕРЕДНІЙ</span></td>
-        <td>Виправлення доступності</td>
-        <td>Реалізація знахідок з REVIEW_REPORT.md щодо accessibility</td>
+        <td>[СЕРЕДНІЙ]</td>
+        <td>Кешування Docker-шарів</td>
+        <td>Оптимізація CI через кешування Gradle залежностей між збірками</td>
       </tr>
       <tr>
-        <td><span class="badge badge-new">ПЛАНОВИЙ</span></td>
+        <td>[ПЛАНОВИЙ]</td>
         <td>E2E покриття Telegram Bot</td>
         <td>Інтеграційні тести з реальним Telegram API (тестове оточення)</td>
       </tr>
       <tr>
-        <td><span class="badge badge-new">ПЛАНОВИЙ</span></td>
-        <td>Кешування Docker-шарів</td>
-        <td>Оптимізація CI через кешування між етапами збірки</td>
+        <td>[ПЛАНОВИЙ]</td>
+        <td>Production deployment guide</td>
+        <td>Документація для розгортання у production-середовищі з окремими БД та секретами</td>
       </tr>
     </tbody>
   </table>
+</div>
 
-  <div class="info-box accent" style="margin-top: 2em;">
-    <p><strong>Реліз v1.2.0</strong> значно підвищує операційну зрілість платформи FICE Selection Committee. Інфраструктурні покращення створюють надійний фундамент для подальшого розвитку функціональності та масштабування системи.</p>
-  </div>
+<!-- ============================================================ -->
+<!-- Б.14 DOCUMENT CONTROL                                         -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="b14">Б.14 Контроль документа</h2>
+
+  <table>
+    <thead>
+      <tr><th>Параметр</th><th>Значення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Номер документа</td><td>FICE-REL-2026-003</td></tr>
+      <tr><td>Класифікація</td><td>Внутрішній документ</td></tr>
+      <tr><td>Статус</td><td>Затверджено</td></tr>
+      <tr><td>Версія документа</td><td>4.0</td></tr>
+      <tr><td>Дата створення</td><td>30 березня 2026 р.</td></tr>
+      <tr><td>Дата останньої ревізії</td><td>30 березня 2026 р.</td></tr>
+      <tr><td>Автор</td><td>Release Engineering Team</td></tr>
+      <tr><td>Охоплені версії ПЗ</td><td>v1.0.0, v1.1.0, v1.2.0</td></tr>
+      <tr><td>Охоплений період</td><td>25 &ndash; 30 березня 2026 р.</td></tr>
+      <tr><td>Наступна планова ревізія</td><td>При випуску v1.3.0 або при суттєвих архітектурних змінах</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Правила оновлення:</strong> цей документ оновлюється при кожному мажорному або мінорному релізі. Патч-релізи документуються як додаток, якщо містять ламаючі зміни або суттєві виправлення.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- APPENDIX A: FULL COMMIT LOG                                   -->
+<!-- ============================================================ -->
+<div class="page-break">
+  <h2 id="app-a">Додаток А: Повний журнал комітів (39 backend + 12 frontend)</h2>
+
+  <h3>Backend &mdash; fice-selection-committee</h3>
+  <p>39 non-merge комітів у репозиторії <a href="https://github.com/fice-selection-committee/fice-selection-committee"><code>fice-selection-committee/fice-selection-committee</code></a> (гілка <code>main</code>).</p>
+
+  <h3>v1.0.0 &mdash; Фундамент (25&ndash;26 березня 2026)</h3>
+  <table>
+    <thead>
+      <tr><th>№</th><th>SHA</th><th>Тип</th><th>Повідомлення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/71b7789"><code>71b7789</code></a></td><td>feat</td><td>add Gradle multi-module monorepo build infrastructure</td></tr>
+      <tr><td>2</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/8a8c205"><code>8a8c205</code></a></td><td>fix</td><td>add execute permission to gradlew</td></tr>
+      <tr><td>3</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/6db6b73"><code>6db6b73</code></a></td><td>feat</td><td>merge sc-auth-starter into monorepo</td></tr>
+      <tr><td>4</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/046d46b"><code>046d46b</code></a></td><td>fix</td><td>include sc-auth-starter client package and scope gitignore paths</td></tr>
+      <tr><td>5</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/6701695"><code>6701695</code></a></td><td>fix</td><td>add unauthorized entry point and normalize role authority names</td></tr>
+      <tr><td>6</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/999dc4c"><code>999dc4c</code></a></td><td>chore</td><td>add local development startup script and project logo</td></tr>
+      <tr><td>7</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/d6f74b1"><code>d6f74b1</code></a></td><td>feat</td><td>implement shared libraries (sc-test-common, sc-observability-starter, sc-s3-starter)</td></tr>
+      <tr><td>8</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/bdde5d4"><code>bdde5d4</code></a></td><td>fix</td><td>register S3BucketInitializer as bean in auto-configuration (sc-s3-starter)</td></tr>
+      <tr><td>9</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/30f2b86"><code>30f2b86</code></a></td><td>feat</td><td>add GitHub Packages publishing for shared libraries v1.0.0</td></tr>
+    </tbody>
+  </table>
+
+  <h3>v1.1.0 &mdash; Інфраструктура та тестування (26&ndash;28 березня 2026)</h3>
+  <table>
+    <thead>
+      <tr><th>№</th><th>SHA</th><th>Тип</th><th>Повідомлення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>10</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/ecd4c7a"><code>ecd4c7a</code></a></td><td>fix</td><td>resolve jacoco classDirectories finalization error on Gradle 8.14 (buildSrc)</td></tr>
+      <tr><td>11</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/df37ce3"><code>df37ce3</code></a></td><td>chore</td><td>add .kotlin/ to .gitignore and remove migration script</td></tr>
+      <tr><td>12</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/187bd6b"><code>187bd6b</code></a></td><td>feat</td><td>add TypeScript client generation tooling (openapi)</td></tr>
+      <tr><td>13</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/47b0912"><code>47b0912</code></a></td><td>fix</td><td>correct service ports and add Gateway Dockerfile (docker)</td></tr>
+      <tr><td>14</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/0465686"><code>0465686</code></a></td><td>feat</td><td>add services Docker Compose overlay for full-stack local deployment</td></tr>
+      <tr><td>15</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/f5c49a0"><code>f5c49a0</code></a></td><td>ci</td><td>add service build/test and Docker image workflows</td></tr>
+      <tr><td>16</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/7bdc266"><code>7bdc266</code></a></td><td>test</td><td>add consumer and provider contract tests for inter-service APIs</td></tr>
+      <tr><td>17</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/94b20d0"><code>94b20d0</code></a></td><td>feat</td><td>add provisioned dashboards for service health, JVM, HTTP, and circuit breakers (grafana)</td></tr>
+      <tr><td>18</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/24167b2"><code>24167b2</code></a></td><td>test</td><td>add environment, notification delivery, and negative flow E2E tests</td></tr>
+      <tr><td>19</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/a3e5cb5"><code>a3e5cb5</code></a></td><td>feat</td><td>add frontend task plans and web service to docker-compose (infra)</td></tr>
+      <tr><td>20</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/08ccfb9"><code>08ccfb9</code></a></td><td>fix</td><td>skip service builds when source code is not in monorepo (ci)</td></tr>
+      <tr><td>21</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/aa34a1a"><code>aa34a1a</code></a></td><td>fix</td><td>add workflow_dispatch trigger for manual re-runs (ci)</td></tr>
+      <tr><td>22</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/09740c9"><code>09740c9</code></a></td><td>fix</td><td>use dynamic matrix to avoid expression parse errors (ci)</td></tr>
+      <tr><td>23</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/20720f6"><code>20720f6</code></a></td><td>fix</td><td>use compact jq output for GITHUB_OUTPUT compatibility (ci)</td></tr>
+      <tr><td>24</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/5df3fc5"><code>5df3fc5</code></a></td><td>fix</td><td>check for src directory in Docker build availability check (ci)</td></tr>
+      <tr><td>25</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/1091f12"><code>1091f12</code></a></td><td>fix</td><td>check for src/main instead of src/ in Docker availability check (ci)</td></tr>
+      <tr><td>26</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/8b089d5"><code>8b089d5</code></a></td><td>feat</td><td>add MAGIC_LINK template type for magic link auth (events)</td></tr>
+      <tr><td>27</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/ebf103c"><code>ebf103c</code></a></td><td>release</td><td>bump version to 1.1.0</td></tr>
+    </tbody>
+  </table>
+
+  <h3>v1.2.0 &mdash; Зрілість Docker та розширення (30 березня 2026)</h3>
+  <table>
+    <thead>
+      <tr><th>№</th><th>SHA</th><th>Тип</th><th>Повідомлення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>28</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/2b9deaf"><code>2b9deaf</code></a></td><td>chore</td><td>update .gitignore and remove obsolete files</td></tr>
+      <tr><td>29</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/3692b7a"><code>3692b7a</code></a></td><td>feat</td><td>rewrite service Dockerfiles to multi-stage builds (docker)</td></tr>
+      <tr><td>30</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/8706dd1"><code>8706dd1</code></a></td><td>fix</td><td>change getCurrentUser from POST to GET and update contract tests (auth)</td></tr>
+      <tr><td>31</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/bfad1f2"><code>bfad1f2</code></a></td><td>feat</td><td>overhaul docker-compose with health checks, telegram bot, and monitoring (infra)</td></tr>
+      <tr><td>32</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/38ff1db"><code>38ff1db</code></a></td><td>feat</td><td>enhance Docker CI with tag triggers, Trivy scanning, and expanded matrix (ci)</td></tr>
+      <tr><td>33</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/211f2cb"><code>211f2cb</code></a></td><td>feat</td><td>add telegram bot service for feature flag management (telegram)</td></tr>
+      <tr><td>34</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/ca722e2"><code>ca722e2</code></a></td><td>docs</td><td>add engineering standards, Claude Code references, and review report</td></tr>
+      <tr><td>35</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/e6a333f"><code>e6a333f</code></a></td><td>chore</td><td>add telegram buildSrc, updated task plans, and root tooling deps</td></tr>
+      <tr><td>36</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/7e33af9"><code>7e33af9</code></a></td><td>release</td><td>bump version to 1.2.0</td></tr>
+      <tr><td>37</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/2d2aa65"><code>2d2aa65</code></a></td><td>fix</td><td>update shared library version to 1.2.0 (telegram)</td></tr>
+      <tr><td>38</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/fb69309"><code>fb69309</code></a></td><td>fix</td><td>remove force-committed service files, fix .gitignore, add release docs (repo)</td></tr>
+      <tr><td>39</td><td><a href="https://github.com/fice-selection-committee/fice-selection-committee/commit/01a3708"><code>01a3708</code></a></td><td>fix</td><td>move e2e tests to separate repo, add to .gitignore (repo)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Frontend &mdash; selection-committee-web (гілка <code>develop</code>)</h3>
+  <table>
+    <thead>
+      <tr><th>№</th><th>SHA</th><th>Тип</th><th>Повідомлення</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/6d2d5b1"><code>6d2d5b1</code></a></td><td>chore</td><td>initial Next.js 16 scaffolding</td></tr>
+      <tr><td>2</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/59ded10"><code>59ded10</code></a></td><td>feat</td><td>production-ready Next.js 16 frontend starter</td></tr>
+      <tr><td>3</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/4faf411"><code>4faf411</code></a></td><td>feat</td><td>feat(auth): replace login/register with magic link flow (#1)</td></tr>
+      <tr><td>4</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/fc7872b"><code>fc7872b</code></a></td><td>fix</td><td>fix(security,a11y,perf): Phase 8 critical fixes [SEC-1..6, A11Y-1..5, PERF-1..2]</td></tr>
+      <tr><td>5</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/9fa5dda"><code>9fa5dda</code></a></td><td>feat</td><td>feat(ux,a11y,perf,arch): Phase 9 major improvements [UX-1..2, ARCH-2..4, A11Y-6..12, PERF-3..6, SEC-9]</td></tr>
+      <tr><td>6</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/e67b691"><code>e67b691</code></a></td><td>fix</td><td>fix(ux,a11y,arch): Phase 10 polish and optimization [UX-3..4, A11Y-11, ARCH-5..6]</td></tr>
+      <tr><td>7</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/ab37894"><code>ab37894</code></a></td><td>fix</td><td>fix(ux): center mail icon in check-email card, revert getUser to GET</td></tr>
+      <tr><td>8</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/ad56897"><code>ad56897</code></a></td><td>fix</td><td>fix(perf): skip React Query retry on 4xx/5xx server errors</td></tr>
+      <tr><td>9</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/ab381fe"><code>ab381fe</code></a></td><td>fix</td><td>fix(auth): move auth state to module-level to survive HMR</td></tr>
+      <tr><td>10</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/26841ef"><code>26841ef</code></a></td><td>feat</td><td>feat(ui): redesign homepage and onboarding flow with split-panel layout</td></tr>
+      <tr><td>11</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/a749816"><code>a749816</code></a></td><td>feat</td><td>feat(ui): v1.2.0 dashboard improvements, legal pages, feature flags UI</td></tr>
+      <tr><td>12</td><td><a href="https://github.com/fice-selection-committee/selection-committee-web/commit/bb1bf1c"><code>bb1bf1c</code></a></td><td>merge</td><td>Merge pull request #2 from fice-selection-committee/feature/v1.2.0-ui-updates</td></tr>
+    </tbody>
+  </table>
 </div>
 
 <!-- ============================================================ -->
 <!-- FOOTER                                                        -->
 <!-- ============================================================ -->
-<div style="margin-top: 60px; padding-top: 24px; border-top: 2px solid var(--gray-200); text-align: center; color: var(--gray-400); font-size: 0.85em;">
-  <p>FICE Selection Committee &mdash; Технічний звіт v1.2.0 &mdash; 30 березня 2026</p>
-  <p>Release Engineering Team &bull; Конфіденційно</p>
+<div class="screen-footer">
+  <p>FICE Selection Committee &mdash; FICE-REL-2026-003 &mdash; Повний звіт про релізи v1.0.0&ndash;v1.2.0</p>
+  <p>30 березня 2026 р. &mdash; ВНУТРІШНІЙ ДОКУМЕНТ</p>
 </div>
 
 </body>
