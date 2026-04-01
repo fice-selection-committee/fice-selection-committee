@@ -4,8 +4,7 @@ val versionFromFile = file("version.properties")
     .substringAfter("=")
     .trim()
 
-val isRelease = System.getenv("GITHUB_REF_TYPE") == "tag"
-val effectiveVersion = if (isRelease) versionFromFile else "$versionFromFile-SNAPSHOT"
+val effectiveVersion = versionFromFile
 
 allprojects {
     group = "edu.kpi.fice"
