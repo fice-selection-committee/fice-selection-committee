@@ -17,13 +17,39 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
 public class AuthFilter extends OncePerRequestFilter {
+  private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+
   private final IdentityServiceClient identityServiceClient;
   private final AuthProperties authProperties;
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    String uri = request.getRequestURI();
+
+    // Skip for explicitly configured skip-filter paths (e.g. webhook endpoints)
+    for (String skipPath : authProperties.getSkipFilterPaths()) {
+      if (uri.startsWith(skipPath)) {
+        return true;
+      }
+    }
+
+    // Skip for public paths (e.g. SSE streams, actuator health, Swagger)
+    // These are already permitAll() in Spring Security — no need to run auth filter at all.
+    // This prevents "response already committed" errors on async SSE dispatches.
+    for (String publicPath : authProperties.getPublicPaths()) {
+      if (PATH_MATCHER.match(publicPath, uri)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   @Override
   protected void doFilterInternal(
@@ -34,15 +60,6 @@ public class AuthFilter extends OncePerRequestFilter {
     if (existingAuth != null && existingAuth.isAuthenticated()) {
       filterChain.doFilter(request, response);
       return;
-    }
-
-    // Skip filter for configured paths (e.g. webhook endpoints)
-    String uri = request.getRequestURI();
-    for (String skipPath : authProperties.getSkipFilterPaths()) {
-      if (uri.startsWith(skipPath)) {
-        filterChain.doFilter(request, response);
-        return;
-      }
     }
 
     String authHeader = request.getHeader("Authorization");

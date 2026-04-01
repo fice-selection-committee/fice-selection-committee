@@ -99,7 +99,7 @@ Skipping step 1 when shared libraries have changed causes service builds to use 
 - Current component structure in `src/components/` relevant to the change
 - API types in `src/types/` for any data being consumed
 - Query hooks in `src/lib/queries/` for data fetching patterns
-- `src/middleware.ts` if routing, auth, or role-based access is affected
+- `src/proxy.ts` if routing, auth, or role-based access is affected
 - `next.config.ts` if build configuration is affected
 - Existing tests: Vitest unit tests and Playwright E2E tests
 
@@ -114,7 +114,7 @@ Skipping step 1 when shared libraries have changed causes service builds to use 
 
 **Constraints**:
 - MUST NOT place business logic, authorization decisions, or data truth in the frontend
-- MUST NOT bypass middleware route guards — all protected routes require backend JWT validation via `src/middleware.ts`
+- MUST NOT bypass proxy route guards — all protected routes require backend JWT validation via `src/proxy.ts`
 - MUST NOT assume Next.js conventions from versions prior to 16 — read `node_modules/next/dist/docs/` when uncertain about App Router behavior
 - MUST NOT introduce client-side state for data that should come from the API
 - MUST NOT duplicate API types manually — types in `src/types/` must match backend contracts

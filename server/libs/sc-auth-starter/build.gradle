@@ -21,3 +21,7 @@ dependencies {
     testImplementation libs.spring.boot.starter.test
     testRuntimeOnly libs.junit.platform.launcher
 }
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
