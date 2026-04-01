@@ -121,7 +121,7 @@ Explicitly warn when a change is breaking, distributed, or affects runtime topol
 - NEVER place authorization logic not also enforced on the backend. Frontend guards are UX, not security.
 - NEVER store sensitive data (tokens, secrets, PII) in client-side state beyond what the auth cookie provides.
 - NEVER assume backend implementation details — code against the API contract via types in `src/types/`.
-- NEVER bypass Next.js middleware route guards in `src/middleware.ts`.
+- NEVER bypass Next.js proxy route guards in `src/proxy.ts`.
 - Always use existing Axios client with JWT interceptor (`src/lib/api/`).
 - Always define TypeScript types in `src/types/` — never use `any` for API responses.
 - Use TanStack Query for server state, Zustand for client state. Do not mix.

@@ -50,7 +50,7 @@ Read these files to understand the current implementation:
 - `client/web/src/components/ui/loading-button.tsx` — loading button
 
 **Infrastructure:**
-- `client/web/src/middleware.ts` — route protection
+- `client/web/src/proxy.ts` — route protection (Next.js 16 proxy convention)
 - `client/web/src/app/not-found.tsx` — 404 page
 - `client/web/src/app/error.tsx` — error page
 - `client/web/public/` — public assets (check what exists)

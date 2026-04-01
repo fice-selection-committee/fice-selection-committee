@@ -58,7 +58,7 @@ Located in `server/libs/`. Included in the root `server/settings.gradle.kts`. Pu
 | **Framework** | Next.js 16 (App Router, Turbopack) |
 | **Language** | TypeScript (strict mode) |
 | **Routing** | Role-based route groups: `(auth)` for login/register/onboarding, `(dashboard)` for protected pages (applicant, operator, secretary, admin) |
-| **Middleware** | `src/middleware.ts` — guards routes by role, checks JWT validity and onboarding status |
+| **Proxy** | `src/proxy.ts` — guards routes by role, checks JWT validity and onboarding status (Next.js 16 proxy convention) |
 | **Server state** | TanStack Query (query key factories in `src/lib/queries/`) |
 | **Client state** | Zustand (stores in `src/stores/`) |
 | **Forms** | React Hook Form + Zod validation |
