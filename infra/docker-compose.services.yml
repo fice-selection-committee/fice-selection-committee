@@ -133,6 +133,7 @@ services:
       service.identity-service-url: http://identity-service:8081
       service.documents-service-url: http://documents-service:8084
       sc.auth.identity-service-url: http://identity-service:8081
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
       ZIPKIN_URL: http://zipkin:9411/api/v2/spans
     ports:
       - "${ADMISSION_SERVICE_PORT:-8083}:8083"
@@ -179,6 +180,7 @@ services:
       service.identity-service-url: http://identity-service:8081
       service.admission-service-url: http://admission-service:8083
       sc.auth.identity-service-url: http://identity-service:8081
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
       ZIPKIN_URL: http://zipkin:9411/api/v2/spans
       spring.datasource.url: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
     ports:
