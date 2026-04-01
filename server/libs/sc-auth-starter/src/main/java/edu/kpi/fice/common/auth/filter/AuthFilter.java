@@ -33,8 +33,10 @@ public class AuthFilter extends OncePerRequestFilter {
     String uri = request.getRequestURI();
 
     // Skip for explicitly configured skip-filter paths (e.g. webhook endpoints)
+    // Uses startsWith with path-boundary check to prevent /webhooksmalicious matching /webhooks
     for (String skipPath : authProperties.getSkipFilterPaths()) {
-      if (uri.startsWith(skipPath)) {
+      if (uri.startsWith(skipPath)
+          && (uri.length() == skipPath.length() || uri.charAt(skipPath.length()) == '/')) {
         return true;
       }
     }
