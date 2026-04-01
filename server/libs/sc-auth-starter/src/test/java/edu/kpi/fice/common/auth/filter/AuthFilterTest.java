@@ -46,18 +46,7 @@ class AuthFilterTest {
   }
 
   @Test
-  void shouldSkipFilterForConfiguredPaths() throws Exception {
-    when(request.getRequestURI()).thenReturn("/api/v1/webhooks/test");
-
-    authFilter.doFilterInternal(request, response, filterChain);
-
-    verify(filterChain).doFilter(request, response);
-    verifyNoInteractions(identityServiceClient);
-  }
-
-  @Test
   void shouldClearContextWhenNoAuthHeader() throws Exception {
-    when(request.getRequestURI()).thenReturn("/api/v1/something");
     when(request.getHeader("Authorization")).thenReturn(null);
 
     authFilter.doFilterInternal(request, response, filterChain);
@@ -68,7 +57,6 @@ class AuthFilterTest {
 
   @Test
   void shouldClearContextWhenInvalidAuthHeader() throws Exception {
-    when(request.getRequestURI()).thenReturn("/api/v1/something");
     when(request.getHeader("Authorization")).thenReturn("Basic abc");
 
     authFilter.doFilterInternal(request, response, filterChain);
@@ -79,7 +67,6 @@ class AuthFilterTest {
 
   @Test
   void shouldAuthenticateUserWithValidToken() throws Exception {
-    when(request.getRequestURI()).thenReturn("/api/v1/something");
     when(request.getHeader("Authorization")).thenReturn("Bearer valid-token");
 
     UserDto user =
@@ -103,7 +90,6 @@ class AuthFilterTest {
 
   @Test
   void shouldClearContextAndContinueFilterChainWhenAuthFails() throws Exception {
-    when(request.getRequestURI()).thenReturn("/api/v1/something");
     when(request.getHeader("Authorization")).thenReturn("Bearer invalid-token");
     when(identityServiceClient.getCurrentUser()).thenThrow(new RuntimeException("Token invalid"));
 
@@ -113,6 +99,47 @@ class AuthFilterTest {
     verify(filterChain).doFilter(request, response);
     verify(response, never()).setStatus(anyInt());
     assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+  }
+
+  @Test
+  void shouldNotFilterForPublicPaths() throws Exception {
+    authProperties.setPublicPaths(
+        new java.util.ArrayList<>(
+            java.util.List.of("/actuator/health", "/api/v1/notifications/stream")));
+    // Recreate filter with updated properties
+    authFilter = new AuthFilter(identityServiceClient, authProperties);
+
+    when(request.getRequestURI()).thenReturn("/api/v1/notifications/stream");
+
+    assertThat(authFilter.shouldNotFilter(request)).isTrue();
+  }
+
+  @Test
+  void shouldNotFilterForPublicPathsWithWildcard() throws Exception {
+    authProperties.setPublicPaths(
+        new java.util.ArrayList<>(java.util.List.of("/v3/api-docs/**", "/swagger-ui/**")));
+    authFilter = new AuthFilter(identityServiceClient, authProperties);
+
+    when(request.getRequestURI()).thenReturn("/v3/api-docs/some-resource");
+
+    assertThat(authFilter.shouldNotFilter(request)).isTrue();
+  }
+
+  @Test
+  void shouldFilterForNonPublicPaths() throws Exception {
+    authProperties.setPublicPaths(new java.util.ArrayList<>(java.util.List.of("/actuator/health")));
+    authFilter = new AuthFilter(identityServiceClient, authProperties);
+
+    when(request.getRequestURI()).thenReturn("/api/v1/users");
+
+    assertThat(authFilter.shouldNotFilter(request)).isFalse();
+  }
+
+  @Test
+  void shouldNotFilterForSkipFilterPaths() throws Exception {
+    when(request.getRequestURI()).thenReturn("/api/v1/webhooks/test");
+
+    assertThat(authFilter.shouldNotFilter(request)).isTrue();
   }
 
   @Test
