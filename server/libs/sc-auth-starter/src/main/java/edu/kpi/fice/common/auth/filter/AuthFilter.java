@@ -69,12 +69,10 @@ public class AuthFilter extends OncePerRequestFilter {
       context.setAuthentication(authentication);
       SecurityContextHolder.setContext(context);
     } catch (Exception e) {
-      log.error("Authentication failed: {}", e.getMessage());
+      log.warn("Bearer token validation failed ({}): {} — "
+              + "clearing security context and delegating to Spring Security",
+          request.getRequestURI(), e.getMessage());
       SecurityContextHolder.clearContext();
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      response.setContentType("application/json");
-      response.getWriter().write("{\"error\":\"Authentication failed\"}");
-      return;
     }
     filterChain.doFilter(request, response);
   }

@@ -11,8 +11,6 @@ import edu.kpi.fice.common.auth.dto.UserDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
@@ -104,18 +102,16 @@ class AuthFilterTest {
   }
 
   @Test
-  void shouldReturnUnauthorizedWhenAuthFails() throws Exception {
+  void shouldClearContextAndContinueFilterChainWhenAuthFails() throws Exception {
     when(request.getRequestURI()).thenReturn("/api/v1/something");
     when(request.getHeader("Authorization")).thenReturn("Bearer invalid-token");
     when(identityServiceClient.getCurrentUser()).thenThrow(new RuntimeException("Token invalid"));
 
-    StringWriter sw = new StringWriter();
-    when(response.getWriter()).thenReturn(new PrintWriter(sw));
-
     authFilter.doFilterInternal(request, response, filterChain);
 
-    verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    verify(filterChain, never()).doFilter(request, response);
+    // Filter should NOT short-circuit — Spring Security decides access
+    verify(filterChain).doFilter(request, response);
+    verify(response, never()).setStatus(anyInt());
     assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
   }
 

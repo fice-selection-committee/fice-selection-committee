@@ -69,6 +69,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      identity-service:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgres
@@ -84,6 +86,7 @@ services:
       RABBITMQ_USERNAME: ${RABBIT_USER}
       RABBITMQ_PASSWORD: ${RABBIT_PASS}
       ENVIRONMENT_SERVICE_PORT: 8085
+      IDENTITY_SERVICE_URL: http://identity-service:8081
       ZIPKIN_URL: http://zipkin:9411/api/v2/spans
       spring.datasource.url: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
     ports:
