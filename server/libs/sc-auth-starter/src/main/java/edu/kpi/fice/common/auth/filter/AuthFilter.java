@@ -69,9 +69,11 @@ public class AuthFilter extends OncePerRequestFilter {
       context.setAuthentication(authentication);
       SecurityContextHolder.setContext(context);
     } catch (Exception e) {
-      log.warn("Bearer token validation failed ({}): {} — "
+      log.warn(
+          "Bearer token validation failed ({}): {} — "
               + "clearing security context and delegating to Spring Security",
-          request.getRequestURI(), e.getMessage());
+          request.getRequestURI(),
+          e.getMessage());
       SecurityContextHolder.clearContext();
     }
     filterChain.doFilter(request, response);
