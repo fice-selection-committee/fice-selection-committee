@@ -1,0 +1,22 @@
+{
+  "_comment": "Baseline numbers for the FLOW-07 / UC-02 nightly k6 load run (STEP-13). Populated from the first successful run of .github/workflows/cv-load-test.yml; the workflow's regression gate fails when iteration_duration p(95) exceeds 110% of the value below. Update this file in a small chore PR after each material cv-service / documents-service / RabbitMQ topology change so the gate keeps a meaningful target.",
+  "_run_metadata": {
+    "captured_at": null,
+    "git_sha": null,
+    "k6_version": null,
+    "scenario": "burst",
+    "duration_seconds": 360
+  },
+  "iteration_duration_p95_ms": null,
+  "cv_processing_seconds_p95_ms": null,
+  "cv_queue_lag_max": null,
+  "throughput_docs_per_minute": null,
+  "_thresholds_for_reference": {
+    "iteration_duration_p95_ms_max": 5000,
+    "cv_queue_lag_max": 60,
+    "cv_processing_seconds_p95_ms_max": 5000,
+    "cv_dlq_depth_max": 0,
+    "http_req_failed_rate_max": 0.02,
+    "throughput_docs_per_minute_min": 50
+  }
+}
