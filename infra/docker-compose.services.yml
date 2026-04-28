@@ -345,6 +345,47 @@ services:
       retries: 10
       start_period: 30s
 
+  # ── Computer Vision Service (Python + FastAPI + PaddleOCR) ──
+  # Internal-only event-driven OCR microservice. Stateless, no DB, no
+  # gateway route. Consumes cv.document.requested from RabbitMQ and
+  # publishes cv.document.parsed / cv.document.failed back to documents-
+  # service. Port 8088 is the operational surface (/health + /metrics);
+  # exposed to the host only for local debugging.
+  cv-service:
+    build:
+      context: ../server/services/selection-committee-computer-vision
+      dockerfile: Dockerfile
+    container_name: sc-cv
+    restart: unless-stopped
+    networks:
+      - sc-net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      # MinIO itself has no healthcheck; minio-init's successful exit is
+      # the strongest readiness signal we have (bucket exists, CORS set).
+      # Matches the pattern used by documents-service.
+      minio-init:
+        condition: service_completed_successfully
+    environment:
+      CV_SERVICE_PORT: ${CV_SERVICE_PORT:-8088}
+      CV_LOG_LEVEL: ${CV_LOG_LEVEL:-INFO}
+      CV_OCR_LANGS: ${CV_OCR_LANGS:-ukr,en}
+      CV_RABBIT_PREFETCH: ${CV_RABBIT_PREFETCH:-8}
+      CV_RABBITMQ_URL: amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672/
+      CV_MINIO_ENDPOINT: http://minio:9000
+      CV_MINIO_BUCKET: ${MINIO_BUCKET}
+      CV_ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
+    ports:
+      - "${CV_SERVICE_PORT:-8088}:8088"
+    healthcheck:
+      # GET probe (FastAPI /health is GET-only, --spider's HEAD would 405).
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8088/health > /dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
   # ── Telegram Bot Webhook (ngrok tunnel + auto-registration) ──
   ngrok:
     image: ngrok/ngrok:latest
