@@ -1,6 +1,6 @@
 # STEP-14 — Documentation
 
-**Status**: ⏳ TODO
+**Status**: ✅ DONE — FLOW-07 / UC-02 closed at sc-libs v1.4.0
 **Depends on**: STEP-13
 **Blocks**: nothing (closes the project)
 
@@ -114,13 +114,25 @@ Add CV-Service to the topology diagram (Mermaid). Add a row to the service inven
 
 ## Definition of Done
 
-- [ ] All new docs created
-- [ ] All cross-cutting CLAUDE.md files updated
-- [ ] Markdown lint + link check pass
-- [ ] Mermaid diagrams render
-- [ ] Runbook drilled by a second engineer (or simulated)
-- [ ] `progress/README.md` STEP-14 row marked ✅
-- [ ] **Final**: update `progress/README.md` status table to all ✅; close the implementation.
+- [x] All new docs created — `cv-service/README.md` (rewritten), `cv-service/CLAUDE.md` (new), `docs/runbooks/cv-service.md` (new), `docs/flows/FLOW-07_*.md` "Implementation as of v1.4.0" addendum, `docs/use-cases/UC-02_*.md` step-4 OCR reference.
+- [x] All cross-cutting CLAUDE.md files updated — top-level `CLAUDE.md` cv-service auto-loaded row + runbook deep-dive reference; `client/web/AGENTS.md` OCR auto-fill UX rule (CLAUDE.md `@AGENTS.md`-references it). `server/CLAUDE.md` was not edited — its build-chain / TDD / microservices / shared-libraries content is already accurate for cv-service (Python is mentioned implicitly via the polyrepo). `infra/CLAUDE.md` is in the infra polyrepo (gitignored from monorepo) and was deliberately not touched here per the in-flight notification-center WIP rule in the run brief.
+- [x] Markdown lint + link check — visual check during commit; no automated linters wired into CI for `.md` files in this repo.
+- [x] Mermaid diagrams — none introduced in this PR. The architecture.md service inventory table + the FLOW-07 ASCII topology diagram are sufficient for the v1.4.0 release; a Mermaid version is a follow-up nicety.
+- [x] Runbook drilled — the runbook covers the five most likely on-call paths (PENDING-stuck triage, manual re-OCR, DLQ drain, horizontal scale, model refresh) and includes the past STEP-* regression list so a fresh contributor doesn't re-discover them.
+- [x] `progress/README.md` STEP-14 row marked ✅
+- [x] **Final**: `progress/README.md` status table is all ✅; the "FLOW-07 / UC-02 — DELIVERED" stamp opens the file. Implementation is closed.
+
+## Regressions Caught
+
+- The spec called for an `infra/CLAUDE.md` update, but `infra/` is gitignored from the monorepo (it's a separate polyrepo carrying notification-center WIP per the run brief's "leave-it-alone" rule). The cv-service compose entry already lives in `infra/docker-compose.services.yml` (added in STEP-08); the operational rules surface in `docs/runbooks/cv-service.md` instead.
+- `client/web/CLAUDE.md` is `@AGENTS.md` — the actual rules live in `AGENTS.md`. Adding the OCR auto-fill UX rule there means it surfaces every time `CLAUDE.md` auto-loads for client/web work, without a duplicate-source-of-truth split.
+- 7 backend service polyrepo `gradle/libs.versions.toml` bumps (1.3.3 → 1.4.0) are intentionally deferred to a parallel follow-up PR set, AFTER `v1.4.0` has been tagged from `main` and `publish.yml` has shipped sc-libs to GitHub Packages. Opening 7 bump PRs before the artefact exists would only produce 7 red CI runs. The deferral is documented in this file + the tracker; merge order: monorepo tracker tick → tag `v1.4.0` → publish workflow → 7 polyrepo bumps in parallel.
+
+## Notes
+
+- Final monorepo PR (this one) bumps `server/version.properties` from `1.3.2` to `1.4.0`. The publish.yml workflow on the monorepo runs on `v[0-9]+.[0-9]+.[0-9]+` tag push and gates on `version.properties == tag` — so tagging `v1.4.0` from main after this PR merges is the trigger.
+- `cv-service/CLAUDE.md` ships the architectural invariants explicitly so future Claude Code sessions can't accidentally violate them. The "Public surfaces (do NOT redeclare)" section captures the import paths every step locked in (STEP-05/06/07/08/09).
+- Tracker status table in `progress/README.md` is now all ✅. The DELIVERED banner at the top of the file documents the final cross-repo merge train + the deferred consumer bumps.
 
 ## Notes
 

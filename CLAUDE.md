@@ -13,6 +13,7 @@ Critical rules are embedded in subdirectory `CLAUDE.md` files that auto-load whe
 | `client/web/tests/CLAUDE.md` | Touching any `client/web/tests/` file | Vitest config, Playwright architecture, POM, auth fixtures, role escalation, E2E gotchas, timeout constants, flake policy |
 | `infra/CLAUDE.md` | Touching any `infra/` file | Docker startup, compose structure, health checks, env var conventions, observability, init scripts |
 | `server/services/selection-committee-e2e-tests/CLAUDE.md` | Touching backend E2E/perf tests | AbstractE2ETest base class, service URLs, REST Assured patterns, JMH benchmarks, k6 load tests, SLA thresholds |
+| `server/services/selection-committee-computer-vision/CLAUDE.md` | Touching cv-service files | Stack, run commands, architectural invariants (stateless / internal-only / AMQP+S3 / per-instance LRU), public surfaces, extractor / model-refresh recipes, Ukrainian-OCR caveats |
 
 ## Deep-Dive Reference Files
 
@@ -29,6 +30,7 @@ Read on-demand for detailed specifications beyond what the auto-loaded rules cov
 | `docs/claude/interaction-standards.md` | For complete interaction state specifications (full detail beyond auto-loaded summary) |
 | `docs/claude/ios-atmosphere.md` | For complete design system (motion tokens, keyframe animations, full detail beyond auto-loaded summary) |
 | `docs/claude/feature-flags.md` | For feature flag architecture, evaluation engine, frontend integration plan |
+| `docs/runbooks/cv-service.md` | For cv-service operational tasks (DLQ inspection, manual re-OCR, scale, model refresh, common pitfalls) |
 
 ---
 

@@ -16,7 +16,7 @@ All facts in this file are derived from reading the repository. If any fact conf
 | **Documents Service** | `selection-committee-documents-service` | 8084 | S3/MinIO file storage, document metadata | PostgreSQL, MinIO, Identity Service, Admission Service |
 | **Environment Service** | `selection-committee-environment-service` | 8085 | Feature flags, cached configuration | PostgreSQL, Redis, RabbitMQ |
 | **Notifications Service** | `selection-committee-notifications-service` | 8086 | Email delivery via RabbitMQ consumer | RabbitMQ, Mailpit (SMTP) |
-| **Computer Vision** | `selection-committee-computer-vision` | — | (Scaffolded, not yet operational) | — |
+| **Computer Vision (cv-service)** | `selection-committee-computer-vision` | 8088 (internal) | Async OCR worker — consumes `cv.document.requested`, downloads from MinIO, runs preprocess → PaddleOCR → field extract, publishes `cv.document.parsed` / `cv.document.failed`. Stateless, internal-only (no gateway route). | RabbitMQ (`cv.events` exchange + `cv.dlx`), MinIO (presigned URLs) |
 | **E2E Tests** | `selection-committee-e2e-tests` | — | Cross-service integration and performance tests | Full service stack |
 
 All service source is at `server/services/<directory>/`.
@@ -156,7 +156,7 @@ Claude MUST critically evaluate these rather than assume sufficiency. These are 
 - `NEXT_PUBLIC_API_BASE=http://gateway:8080` is the Docker-internal network address. Works for SSR (server-side rendering runs inside the Docker network). Does NOT work for client-side browser requests (browser is on the host, cannot resolve `gateway`).
 
 ### 6.6 Missing Services
-- **Computer Vision**: Scaffolded at `server/services/selection-committee-computer-vision/` but has no Dockerfile, no compose entry, and appears to have no source code yet.
+- **Computer Vision (cv-service)**: Async Python 3.12 / FastAPI worker shipped via FLOW-07 / UC-02 (STEP-01..14, sc-libs v1.4.0). Stateless and internal-only — no gateway route, no Feign endpoint, no DB. Persistence belongs to documents-service (`document.ocr_results` table — STEP-10). Consumes `cv.document.requested` from RabbitMQ, downloads via MinIO presigned URL, runs `download → preprocess → PaddleOCR → field-extract` with per-stage timeouts (30s / 15s / 60s / 5s), publishes `cv.document.parsed` / `cv.document.failed`. Idempotency cache is per-instance LRU on `(documentId, s3Key)`; multi-instance dedup migrates to Redis if scale demands. PaddleOCR `lang="uk"` + `en` fallback; `OcrEngine._lock` is the single serialisation point because PaddleOCR `.ocr()` is not thread-safe. Models pre-baked into the Docker image (~563 MB runtime); cold-start downloads forbidden in prod. Async-native `OcrBreaker` (fail_max=5, reset_timeout=30s) protects the OCR call; TTL-queue retry policy (5s / 30s / 5m → DLQ on attempt 4). Observability: 7 Prometheus metrics, OTel TracerProvider + Zipkin, W3C `traceparent` propagation through AMQP, structlog JSON with `traceId` / `spanId`. Full SLO: ≥ 50 docs/min/instance, queue lag < 60 messages, p95 < 5s — validated nightly via the monorepo's `cv-load-test.yml` workflow + the `selection-committee-e2e-tests` polyrepo's k6 scenario. Operational details in `docs/runbooks/cv-service.md`.
 
 ### 6.7 Compose Version
 - Both compose files use `version: "3.9"`. The `version` key is deprecated in modern Docker Compose V2. Not a functional issue but should be cleaned up.
