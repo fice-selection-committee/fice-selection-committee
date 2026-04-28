@@ -50,7 +50,7 @@ STEP-01 (scaffold) ──► STEP-02 (contracts) ──► STEP-03 (S3) ──�
 | # | Step | Status |
 |---|---|---|
 | 00 | Repository cleanup | ✅ done — 123 junk files removed |
-| 01 | CV-Service scaffolding (Python + Docker) | ⏳ TODO |
+| 01 | CV-Service scaffolding (Python + Docker) | ✅ done — FastAPI shell, /health + /metrics, 55.8 MB runtime image, CI workflow added |
 | 02 | Event contracts (sc-event-contracts → 1.3.3) | ⏳ TODO |
 | 03 | MinIO download adapter | ⏳ TODO |
 | 04 | Image preprocessing pipeline | ⏳ TODO |
