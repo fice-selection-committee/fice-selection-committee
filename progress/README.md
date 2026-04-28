@@ -51,8 +51,8 @@ STEP-01 (scaffold) ──► STEP-02 (contracts) ──► STEP-03 (S3) ──�
 |---|---|---|
 | 00 | Repository cleanup | ✅ done — 123 junk files removed |
 | 01 | CV-Service scaffolding (Python + Docker) | ✅ done — FastAPI shell, /health + /metrics, 55.8 MB runtime image, CI workflow added |
-| 02 | Event contracts (sc-event-contracts → 1.3.3) | ⏳ TODO |
-| 03 | MinIO download adapter | ⏳ TODO |
+| 02 | Event contracts (sc-event-contracts → 1.3.3) | ✅ done — Java records + EventConstants, Pydantic mirrors, RabbitMQ topology (cv.events + cv.dlx + retry queues), libs 1.3.3 published |
+| 03 | MinIO download adapter | ✅ done — async streaming adapter (minio-py + asyncio.to_thread), terminal/transient/error-class mapping, 6/6 acceptance gates green via Testcontainers MinIO |
 | 04 | Image preprocessing pipeline | ⏳ TODO |
 | 05 | OCR engine (PaddleOCR) | ⏳ TODO |
 | 06 | Field extractors | ⏳ TODO |
