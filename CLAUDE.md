@@ -2,20 +2,33 @@
 
 This document governs how Claude Code operates inside the FICE Selection Committee repository. Every instruction is binding. Ambiguity must be resolved by asking, not by assuming. Violation of any rule in this document or its referenced files constitutes an engineering failure.
 
-## Reference Files
+## Auto-Loaded Subdirectory Rules
 
-Read on-demand when the corresponding agent, skill, or workflow is activated. Do NOT paraphrase from memory — read the file.
+Critical rules are embedded in subdirectory `CLAUDE.md` files that auto-load when Claude works on files in those directories. This eliminates reliance on manual on-demand reads for the most frequently needed rules.
+
+| File | Auto-Loads When | Contains |
+|---|---|---|
+| `server/CLAUDE.md` | Touching any `server/` file | Build chain, TDD mandate, code style, microservices rules, test layers, shared library rules, API contracts, known test regression patterns |
+| `client/web/CLAUDE.md` | Touching any `client/web/` file | Tech stack, frontend constraints, interaction standards, design system, typography, button system, test layer mapping |
+| `client/web/tests/CLAUDE.md` | Touching any `client/web/tests/` file | Vitest config, Playwright architecture, POM, auth fixtures, role escalation, E2E gotchas, timeout constants, flake policy |
+| `infra/CLAUDE.md` | Touching any `infra/` file | Docker startup, compose structure, health checks, env var conventions, observability, init scripts |
+| `server/services/selection-committee-e2e-tests/CLAUDE.md` | Touching backend E2E/perf tests | AbstractE2ETest base class, service URLs, REST Assured patterns, JMH benchmarks, k6 load tests, SLA thresholds |
+
+## Deep-Dive Reference Files
+
+Read on-demand for detailed specifications beyond what the auto-loaded rules cover. Do NOT paraphrase from memory — read the file.
 
 | File | When to Read |
 |---|---|
 | `docs/claude/agents.md` | Before executing as any agent. MUST be read, not recalled. |
 | `docs/claude/skills.md` | Before executing any skill. MUST be read, not recalled. |
-| `docs/claude/architecture.md` | For service topology, shared libs, infrastructure, compose topology |
-| `docs/claude/docker.md` | For Docker startup, known gaps, developer workflows, improvement mandate |
-| `docs/claude/testing.md` | For TDD protocol, bug fix protocol, test infrastructure, layer mapping |
-| `docs/claude/build.md` | For build commands, dependency chain, code style, CI/CD reference |
-| `docs/claude/interaction-standards.md` | For hover, focus, disabled, loading, cursor, transition, color-state rules in frontend components |
-| `docs/claude/ios-atmosphere.md` | For typography scale, button system, motion tokens, elevation, color rules, spacing guidelines |
+| `docs/claude/architecture.md` | For full service topology, shared libs, infrastructure, compose topology |
+| `docs/claude/docker.md` | For Docker developer workflows, CI/CD integration, known gaps, improvement mandate |
+| `docs/claude/testing.md` | For full TDD protocol, bug fix protocol, test infrastructure details |
+| `docs/claude/build.md` | For CI/CD workflows, convention plugins, build system details |
+| `docs/claude/interaction-standards.md` | For complete interaction state specifications (full detail beyond auto-loaded summary) |
+| `docs/claude/ios-atmosphere.md` | For complete design system (motion tokens, keyframe animations, full detail beyond auto-loaded summary) |
+| `docs/claude/feature-flags.md` | For feature flag architecture, evaluation engine, frontend integration plan |
 
 ---
 
