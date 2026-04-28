@@ -55,7 +55,7 @@ STEP-01 (scaffold) ──► STEP-02 (contracts) ──► STEP-03 (S3) ──�
 | 03 | MinIO download adapter | ✅ done — async streaming adapter (minio-py + asyncio.to_thread), terminal/transient/error-class mapping, 6/6 acceptance gates green via Testcontainers MinIO |
 | 04 | Image preprocessing pipeline | ✅ done — loader (MIME-sniff + page cap) + 5-stage pipeline (grayscale, Hough deskew ±15°, NLMD, adaptive threshold, 300-DPI resize), 10/10 acceptance gates green, 155.7 MB runtime image |
 | 05 | OCR engine (PaddleOCR) | ✅ done — async PaddleOCR adapter with uk primary + en fallback, asyncio.Lock-serialised, models pre-baked into 563.6 MB runtime image, 7/7 acceptance gates green, paddlepaddle 3.0 + paddleocr 2.10 |
-| 06 | Field extractors | ⏳ TODO |
+| 06 | Field extractors | ✅ done — passport / IPN / foreign-passport extractors + router, 40/40 acceptance gates green (incl. 20 parametrised IPN cases), pure-Python (no new system deps), 50/50 MRZ year-pivot for DOB+expiry coverage |
 | 07 | RabbitMQ consumer & publisher | ⏳ TODO |
 | 08 | Orchestrator & resilience | ⏳ TODO |
 | 09 | Observability | ⏳ TODO |
