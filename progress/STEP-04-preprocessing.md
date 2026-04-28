@@ -1,6 +1,6 @@
 # STEP-04 — Image Preprocessing Pipeline
 
-**Status**: ⏳ TODO
+**Status**: ✅ done
 **Depends on**: STEP-03
 **Blocks**: STEP-05
 
@@ -61,24 +61,33 @@ Add to `pyproject.toml` `[ml]` group: `opencv-python-headless`, `pdf2image`, `Pi
 
 ## Tests (Acceptance Gates)
 
-- [ ] **Loader — JPEG**: load `photo.jpg` → returns 1-element list of PIL.Image.
-- [ ] **Loader — PDF single page**: `ipn_scan.pdf` → 1-element list.
-- [ ] **Loader — PDF multi-page**: `multipage.pdf` → 3 elements, ordered.
-- [ ] **Loader — corrupt**: `corrupt.bin` → raises `UnsupportedFormatError`.
-- [ ] **Loader — too many pages**: synthesize 11-page PDF → raises `PreprocessingError`.
-- [ ] **Pipeline — golden fixture**: run on `passport_clean.png` → output pixel-diff vs `golden/passport_clean_preprocessed.png` < 0.5% (use `numpy.mean(np.abs(a-b))/255 < 0.005`).
-- [ ] **Pipeline — deskew**: input is `passport_clean.png` rotated 7° via PIL. Run pipeline. Compute output skew via Hough; assert `|skew| < 0.5°`.
-- [ ] **Pipeline — DPI normalization**: 150-DPI input → output DPI metadata is 300; height ratio matches expected scale.
-- [ ] **Pipeline — determinism**: run twice on same input → byte-equal arrays.
-- [ ] **Pipeline — large image guard**: 9000×9000 → raises `PreprocessingError` (exceeds dim limit).
+- [x] **Loader — JPEG**: load `photo.jpg` → returns 1-element list of PIL.Image.
+- [x] **Loader — PDF single page**: `ipn_scan.pdf` → 1-element list.
+- [x] **Loader — PDF multi-page**: `multipage.pdf` → 3 elements, ordered.
+- [x] **Loader — corrupt**: `corrupt.bin` → raises `UnsupportedFormatError`.
+- [x] **Loader — too many pages**: synthesize 11-page PDF → raises `PreprocessingError`.
+- [x] **Pipeline — golden fixture**: run on `passport_clean.png` → output pixel-diff vs `golden/passport_clean_preprocessed.png` < 0.5% (use `numpy.mean(np.abs(a-b))/255 < 0.005`).
+- [x] **Pipeline — deskew**: input is `passport_clean.png` rotated 7° via PIL. Run pipeline. Compute output skew via Hough; assert `|skew| < 0.5°`.
+- [x] **Pipeline — DPI normalization**: 150-DPI input → output DPI metadata is 300; height ratio matches expected scale.
+- [x] **Pipeline — determinism**: run twice on same input → byte-equal arrays.
+- [x] **Pipeline — large image guard**: 9000×9000 → raises `PreprocessingError` (exceeds dim limit).
 
 ## Definition of Done
 
-- [ ] All files created including golden fixtures
-- [ ] All 10 tests pass
-- [ ] `ruff` + `mypy --strict` clean
-- [ ] Docker image builds with new system deps (`poppler-utils`, `libmagic1`)
-- [ ] `progress/README.md` STEP-04 row marked ✅
+- [x] All files created including golden fixtures
+- [x] All 10 tests pass (10/10 on Linux/CI; 7/10 + 3 skipped on Windows hosts without poppler — see Regressions Caught)
+- [x] `ruff` + `mypy --strict` clean
+- [x] Docker image builds with new system deps (`poppler-utils`, `libmagic1`)
+- [x] `progress/README.md` STEP-04 row marked ✅
+
+## Regressions Caught
+
+- **`pdf2image` requires the poppler binaries on PATH at runtime.** Pure-pip `pdf2image` is just a Python wrapper around `pdftoppm` and `pdfinfo`; on Linux the Dockerfile installs `poppler-utils`, but on Windows local dev the host needs an explicit install (`winget install oschwartz10612.Poppler`). To stop the suite turning red on hosts without poppler, the conftest grew a `require_poppler` fixture that skips the three PDF tests when `pdftoppm` / `pdfinfo` are missing. CI on Ubuntu installs `poppler-utils` in a dedicated step before `poetry install` so all 10 gates run there.
+- **`python-magic` ships only Python bindings.** Linux Docker uses `libmagic1` (apt); Windows local dev needs `python-magic-bin` (which bundles a libmagic DLL). The `ml` group declares `python-magic-bin` with `markers = "sys_platform == 'win32'"` so Linux/macOS resolutions stay clean and the Docker builder layer is unaffected.
+- **CI workflow was scoped to `--without ml`.** The pre-STEP-04 `cv-service-ci.yml` skipped the optional ml group, so adding STEP-04 tests under that policy would have left the new gates uncovered. Switched the install step to `--with ml`, added the apt install of `poppler-utils libmagic1`, and bumped the venv cache key (`cv-venv-ml-…`) so the cached venv does not silently miss the new wheels.
+- **Pillow 13 deprecates `Image.fromarray(arr, mode=...)`.** The fixture generator originally passed `mode="RGB"`; with `filterwarnings = ["error"]` in `pyproject.toml` this aborts the suite. Dropped the `mode=` kwarg — Pillow infers it from the dtype and shape.
+- **`Settings.max_pages` / `Settings.max_image_dimension` were missing.** STEP-04's spec mentions `CV_MAX_PAGES` and an 8000-px dimension cap but the existing `Settings` class did not declare either. Added both with safe defaults (10 / 8000) so the loader and pipeline can read from a single source of truth without re-parsing env vars.
+- **Docker builder used `--without ml,dev`.** Pre-STEP-04 the runtime image excluded the entire ml group; once preprocessing lands the orchestrator (STEP-08) needs `cv2`/`pdf2image`/`magic` at request time, so the builder switched to `--with ml --without dev`. Image grew 55.8 MB → 155.7 MB. Documented at the top of the Dockerfile builder stage; STEP-05 (PaddleOCR) will roughly double it again.
 
 ## Notes
 

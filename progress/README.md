@@ -53,7 +53,7 @@ STEP-01 (scaffold) ──► STEP-02 (contracts) ──► STEP-03 (S3) ──�
 | 01 | CV-Service scaffolding (Python + Docker) | ✅ done — FastAPI shell, /health + /metrics, 55.8 MB runtime image, CI workflow added |
 | 02 | Event contracts (sc-event-contracts → 1.3.3) | ✅ done — Java records + EventConstants, Pydantic mirrors, RabbitMQ topology (cv.events + cv.dlx + retry queues), libs 1.3.3 published |
 | 03 | MinIO download adapter | ✅ done — async streaming adapter (minio-py + asyncio.to_thread), terminal/transient/error-class mapping, 6/6 acceptance gates green via Testcontainers MinIO |
-| 04 | Image preprocessing pipeline | ⏳ TODO |
+| 04 | Image preprocessing pipeline | ✅ done — loader (MIME-sniff + page cap) + 5-stage pipeline (grayscale, Hough deskew ±15°, NLMD, adaptive threshold, 300-DPI resize), 10/10 acceptance gates green, 155.7 MB runtime image |
 | 05 | OCR engine (PaddleOCR) | ⏳ TODO |
 | 06 | Field extractors | ⏳ TODO |
 | 07 | RabbitMQ consumer & publisher | ⏳ TODO |
