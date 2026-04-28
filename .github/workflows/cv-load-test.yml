@@ -1,0 +1,190 @@
+name: CV Load Test
+
+# Nightly load validation for FLOW-07 / UC-02 (STEP-13). Brings up the full
+# Docker stack, runs the k6 cv-pipeline scenario for ~6 minutes, and records
+# the result. Fails when any of the SLO thresholds is missed:
+#
+#   * iteration_duration p(95) < 5s
+#   * cv_queue_lag max < 60 messages
+#   * cv_processing_seconds p(95) < 5s
+#   * cv_dlq_depth max == 0
+#   * http_req_failed rate < 2%
+#
+# The polyrepos (cv-service, documents-service, infra, e2e-tests, gateway,
+# identity-service, ...) are gitignored from the monorepo. The job clones them
+# into the expected paths via a GitHub fine-grained PAT exposed as
+# `secrets.SC_BOT_TOKEN`. If the secret is unset (e.g. on a fork), the
+# polyrepo clones are skipped and the job exits early with a friendly notice
+# rather than a red X.
+#
+# Schedule: nightly @ 02:00 UTC + workflow_dispatch for ad-hoc runs.
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: cv-load-test-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  load:
+    name: k6 cv-pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      SC_BOT_TOKEN: ${{ secrets.SC_BOT_TOKEN }}
+
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Verify polyrepo bot token
+        id: token
+        run: |
+          if [ -z "$SC_BOT_TOKEN" ]; then
+            echo "::warning::SC_BOT_TOKEN secret is not set — polyrepo clones will be skipped, the load run will exit early."
+            echo "have_token=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "have_token=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Clone cv-service polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-computer-vision
+          ref: main
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-computer-vision
+
+      - name: Clone documents-service polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-documents-service
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-documents-service
+
+      - name: Clone e2e-tests polyrepo (load scripts)
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-e2e-tests
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-e2e-tests
+
+      - name: Clone infra polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-infra
+          ref: master
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: infra
+
+      - name: Set up Docker Buildx
+        if: steps.token.outputs.have_token == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate JWT signing keys
+        if: steps.token.outputs.have_token == 'true'
+        working-directory: infra
+        run: |
+          if [ -f scripts/gen-jwt-keys.sh ]; then
+            bash scripts/gen-jwt-keys.sh
+          else
+            echo "::warning::gen-jwt-keys.sh not found in infra — skipping; rely on existing secrets/."
+          fi
+
+      - name: Bring up the stack
+        if: steps.token.outputs.have_token == 'true'
+        working-directory: infra
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.services.yml up -d --wait
+          docker compose ps
+
+      - name: Generate k6 fixtures
+        if: steps.token.outputs.have_token == 'true'
+        working-directory: server/services/selection-committee-e2e-tests/load
+        run: python3 generate-fixtures.py --count 20
+
+      - name: Mint applicant JWT
+        if: steps.token.outputs.have_token == 'true'
+        id: jwt
+        run: |
+          # Bot helper: hits identity-service's test-only mint-token route to
+          # provision a JWT for the load run. Replace with your tenant-specific
+          # path if the route differs.
+          token=$(curl -fsS -X POST "http://localhost:8080/api/v1/auth/test-mint" \
+            -H 'Content-Type: application/json' \
+            -d '{"role":"APPLICANT","email":"k6-load@test.local"}' \
+            | jq -r '.accessToken' || echo "")
+          if [ -z "$token" ] || [ "$token" = "null" ]; then
+            echo "::warning::Could not mint a load-test JWT. The k6 run will hit the gateway anonymously and may receive 401s; the SLO assertion will still gate."
+            token=""
+          fi
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Run k6 cv-pipeline
+        if: steps.token.outputs.have_token == 'true'
+        working-directory: server/services/selection-committee-e2e-tests/load
+        run: |
+          docker run --rm --network=host \
+            -v "$PWD:/scripts" \
+            -e BASE_URL=http://localhost:8080 \
+            -e PROM_URL=http://localhost:9090 \
+            -e JWT_TOKEN=${{ steps.jwt.outputs.token }} \
+            grafana/k6 run --summary-export=/scripts/k6-summary.json /scripts/cv-pipeline.js
+          echo "k6 exit code: $?"
+
+      - name: Capture cv-service logs on failure
+        if: failure() && steps.token.outputs.have_token == 'true'
+        working-directory: infra
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.services.yml logs cv-service > cv-service.log || true
+          docker compose -f docker-compose.yml -f docker-compose.services.yml logs documents-service > documents-service.log || true
+
+      - name: Upload k6 results + logs
+        if: always() && steps.token.outputs.have_token == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-load-results
+          path: |
+            server/services/selection-committee-e2e-tests/load/k6-summary.json
+            infra/cv-service.log
+            infra/documents-service.log
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Compare against baseline
+        if: steps.token.outputs.have_token == 'true'
+        run: |
+          baseline=progress/baselines/cv-load-baseline.json
+          summary=server/services/selection-committee-e2e-tests/load/k6-summary.json
+          if [ ! -f "$baseline" ] || [ ! -f "$summary" ]; then
+            echo "::warning::Baseline or summary missing — skipping regression gate. Update $baseline from this run if results look right."
+            exit 0
+          fi
+          base_p95=$(jq -r '.iteration_duration_p95_ms // empty' "$baseline")
+          curr_p95=$(jq -r '.metrics.iteration_duration["p(95)"] // empty' "$summary")
+          if [ -z "$base_p95" ] || [ -z "$curr_p95" ]; then
+            echo "::warning::Unable to read p95 fields — skipping regression gate."
+            exit 0
+          fi
+          # Fail when current p95 exceeds 110% of baseline.
+          if awk "BEGIN { exit !($curr_p95 > $base_p95 * 1.10) }"; then
+            echo "::error::cv-load p95 regression: current=${curr_p95}ms baseline=${base_p95}ms (>110%)"
+            exit 1
+          fi
+          echo "p95 OK: current=${curr_p95}ms baseline=${base_p95}ms"
+
+      - name: Tear down the stack
+        if: always() && steps.token.outputs.have_token == 'true'
+        working-directory: infra
+        run: docker compose -f docker-compose.yml -f docker-compose.services.yml down -v
