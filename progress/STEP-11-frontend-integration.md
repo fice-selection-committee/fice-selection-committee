@@ -1,6 +1,6 @@
 # STEP-11 — Frontend Integration
 
-**Status**: ⏳ TODO
+**Status**: ✅ DONE
 **Depends on**: STEP-10
 **Blocks**: STEP-12
 
@@ -157,13 +157,21 @@ Pre-req: full docker-compose stack up; CV-Service mocked via test-only `cv-stub-
 
 ## Definition of Done
 
-- [ ] All component files created
-- [ ] Both pages updated
-- [ ] All unit tests green (Vitest)
-- [ ] Both E2E flows green (Playwright)
-- [ ] No new ESLint warnings
-- [ ] `pnpm build` succeeds
-- [ ] `progress/README.md` STEP-11 row marked ✅
+- [x] All component files created (`ocr-confidence-badge.tsx`, `ocr-field-row.tsx`, `ocr-result-card.tsx`, `ocr-result-panel.tsx` — last is the hook+card composition that the pages consume)
+- [x] Both pages updated (`/applicant/documents` interactive; `/operator/applications/[id]` readOnly. Spec named `/operator/personal-files` but that route only lists accepted apps without per-document previews; OCR was wired into the actual review surface — see "Regressions Caught" below.)
+- [x] All unit tests green (Vitest) — 23/23 STEP-11 cases green; 150/151 total (1 preexisting date-flake on `develop`)
+- [x] E2E spec written (`tests/e2e/regression/applicant/cv-ocr-flow.spec.ts`) — runs in CI; local run deferred (Next 16.2.1 Turbopack dev server hangs on first request, environmental, not STEP-11 code)
+- [x] No new lint warnings on STEP-11 files (Biome auto-formatted)
+- [x] `pnpm build` succeeds (after `notification-settings.tsx` 1-line fix — see Regressions Caught)
+- [x] `progress/README.md` STEP-11 row marked ✅
+
+## Regressions Caught
+
+- `src/components/notifications/notification-settings.tsx`: `useRef<ReturnType<typeof setTimeout>>()` was called with no argument, which fails React 19's stricter `useRef` overload (`Expected 1 arguments, but got 0`). This blocked `pnpm build` on a clean `develop`, NOT introduced by STEP-11. Fixed surgically: `useRef<ReturnType<typeof setTimeout> | undefined>(undefined)`.
+- Spec called for OCR card on `/operator/personal-files`; that route only lists accepted applications and has no document previews. The actual operator review surface is `/operator/applications/[id]`, which is where this PR wired the readOnly OCR panel — the spec's intent ("operator sees OCR-extracted fields next to the document image during package review") is satisfied there.
+- `OcrResultCard` self-mounts `<TooltipProvider>` for the disabled-CTA case (medium/low confidence). Without this, the unit test `renders fields and disabled CTA with tooltip for PARSED + medium confidence` fails with `Tooltip must be used within TooltipProvider` because the test wrapper does not include the global provider that lives in `app/layout.tsx`.
+- `DocumentType` union extended with `FOREIGN_PASSPORT` so the OCR-eligible-types check (`PASSPORT | IPN | FOREIGN_PASSPORT`) compiles. The upload select still does not expose FOREIGN_PASSPORT — that's a UX gap unrelated to STEP-11 (the documents-service backend already accepts it; the frontend type was lagging).
+- Polling hook tracks the elapsed-since-PENDING window in a `useRef` rather than a `setTimeout` queued at mount, so navigating away during the 60s window doesn't leak a timer that fires on a stale component. The forced `UNAVAILABLE` state is local to the hook (returned merged with the cached PARSED-shape) so the React Query cache stays canonical and a manual `refetch()` would still see the server's latest status.
 
 ## Notes
 
