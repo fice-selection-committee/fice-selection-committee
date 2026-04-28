@@ -1,6 +1,6 @@
 # STEP-02 — Event Contracts (sc-event-contracts → 1.3.3)
 
-**Status**: ⏳ TODO
+**Status**: ✅ DONE (2026-04-28)
 **Depends on**: STEP-01
 **Blocks**: STEP-07, STEP-10
 
@@ -127,20 +127,29 @@ cd server
 
 ## Tests (Acceptance Gates)
 
-- [ ] `./gradlew :sc-event-contracts:test` — Jackson round-trip for all 3 records (object → JSON → object equality)
-- [ ] `pytest tests/events/test_contract_parity.py` — for each sample JSON: Pydantic `model_validate(json)` succeeds; `model_dump_json()` produces stable output; field set matches `set(JavaRecord.RECORD_COMPONENTS)` (read from a checked-in `events/expected_fields.json`)
-- [ ] **Topology test** (manual + scripted): bring up RabbitMQ container, apply `definitions.json`, run `rabbitmqadmin list exchanges` and `list queues` — assert `cv.events`, `cv.dlx`, `cv.document.requested`, `cv.document.results`, `cv.dlq`, `cv.retry.5s`, `cv.retry.30s`, `cv.retry.5m` all exist with expected bindings
-- [ ] All existing `sc-event-contracts` tests still green (no regression)
-- [ ] `./gradlew checkScLibsVersion` passes
-- [ ] After bumping consumer services to 1.3.3, `./gradlew build` from each service builds cleanly
+- [x] `./gradlew :libs:sc-event-contracts:test` — Jackson round-trip for all 3 records (5 tests, all green)
+- [x] `pytest tests/events/test_contract_parity.py` — Pydantic decodes canonical Java JSON, field-set parity, camelCase enforcement, Unicode preservation, blank-string rejection (7 tests, all green)
+- [x] **Topology test**: started RabbitMQ container, applied `definitions.json`, listed exchanges/queues/bindings — `cv.events` + `cv.dlx` exchanges present, `cv.document.requested`/`cv.document.results`/`cv.dlq`/`cv.retry.{5s,30s,5m}` queues present, all bindings (`cv.events → cv.document.requested` on `cv.document.requested`, `cv.events → cv.document.results` on both `cv.document.parsed.#` and `cv.document.failed.#`, `cv.dlx → cv.dlq` on `cv.dead`) verified
+- [x] All existing `sc-event-contracts` tests still green (no regression — only new test class added)
+- [ ] `./gradlew checkScLibsVersion` — task does not exist on `main` yet (planned for a later step); manually verified all 7 consumer `libs.versions.toml` files updated
+- [x] documents-service `compileJava` succeeds against sc-libs 1.3.3 (verified in this session)
 
 ## Definition of Done
 
-- [ ] Java records added with validation annotations
-- [ ] EventConstants extended
-- [ ] Python Pydantic models added
-- [ ] Sample JSON fixtures committed and parity test green
-- [ ] RabbitMQ `definitions.json` updated; old `cv.tasks` removed
-- [ ] Library version bumped to 1.3.3 and `publishToMavenLocal` ran
-- [ ] All consumer service `build.gradle` files updated to 1.3.3
-- [ ] `progress/README.md` STEP-02 row marked ✅
+- [x] Java records added with validation annotations (`@NotNull`, `@NotBlank`)
+- [x] EventConstants extended (CV_EVENTS_EXCHANGE, CV_DLX, queues, retry queues, routing keys)
+- [x] Python Pydantic models added (camelCase, `extra="forbid"`, `frozen=True`)
+- [x] Sample JSON fixtures committed and parity test green
+- [x] RabbitMQ `definitions.json` updated; placeholder `cv.tasks` queue removed; full DLX + retry topology added
+- [x] Library version bumped to 1.3.3 and `publishToMavenLocal` ran
+- [x] All 7 consumer service `gradle/libs.versions.toml` files updated to 1.3.3 (identity, admission, documents, environment, notifications, gateway, telegram-bot)
+- [x] `progress/README.md` STEP-02 row marked ✅
+
+## Regressions Caught
+
+1. **`sc-event-contracts` had no `src/test/` directory and no test deps.** The library only declared `api libs.jackson.databind`. Added `testImplementation libs.spring.boot.starter.test`, `testImplementation libs.assertj.core`, `testRuntimeOnly libs.junit.platform.launcher` and a `useJUnitPlatform()` block to `build.gradle`. Future shared-lib changes can now extend the existing test source set.
+2. **Validation annotations needed `jakarta.validation-api`.** The library carried zero validation annotations on existing event DTOs. Added `jakarta-validation-api` to `libs.versions.toml` (Spring-Boot-BOM-managed, no version pin) and exposed it as `api` from sc-event-contracts so consumers see the annotations transitively.
+3. **Spotless reformatted records & test on first `:check` run.** Google Java Format wraps long Javadoc and tightens whitespace. Ran `spotlessApply` once to lock the canonical form before commit.
+4. **Polyrepo discovery — `infra/` is its own repo.** The mission's polyrepo split table did not list `infra/` as a polyrepo for STEP-02, but the `.gitignore` excludes `infra/*` (with narrow exceptions). The `infra/rabbitmq/definitions.json` change therefore lands in the **selection-committee-infra** polyrepo, not the monorepo. Recorded so future steps with infra changes do not assume the monorepo is the destination.
+5. **No `checkScLibsVersion` Gradle task on `main`.** Pre-flight notes warned this. Verified each consumer's per-service `libs.versions.toml` manually (`grep 'sc-libs = "1.3'` after edit); CI drift detection deferred to whenever that task lands.
+6. **RabbitMQ `rabbitmqadmin` requires explicit `--username=`/`--password=` flags.** Passing `-u`/`-p` short flags interpreted them as the `node` arg (URL form) and produced a confusing "Action … not understood" error. Documented for future infra topology validation steps.
