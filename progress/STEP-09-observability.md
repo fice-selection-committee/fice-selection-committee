@@ -1,6 +1,6 @@
 # STEP-09 — Observability
 
-**Status**: ⏳ TODO
+**Status**: ✅ DONE
 **Depends on**: STEP-08
 **Blocks**: STEP-13 (load test reads these metrics)
 
@@ -93,37 +93,44 @@ Panels:
 ## Tests (Acceptance Gates)
 
 ### `test_metrics.py`
-- [ ] After processing 1 happy event: `GET /metrics` contains `cv_documents_processed_total{status="parsed",...} 1`.
-- [ ] After 1 failure: `cv_documents_failed_total{reason="...",...} 1`.
-- [ ] Histogram `cv_processing_seconds` has observations for all 5 stages with `_count > 0`.
-- [ ] Confidence histogram observed exactly once per parsed event.
+- [x] After processing 1 happy event: `GET /metrics` contains `cv_documents_processed_total{status="parsed",...} 1`.
+- [x] After 1 failure: `cv_documents_failed_total{reason="...",...} 1`.
+- [x] Histogram `cv_processing_seconds` has observations for all 5 stages with `_count > 0`.
+- [x] Confidence histogram observed exactly once per parsed event.
 
 ### `test_tracing.py`
-- [ ] Use `opentelemetry.sdk.trace.export.in_memory_span_exporter.InMemorySpanExporter` in tests. Process 1 event. Assert: span tree has root `cv.pipeline` with 5 child spans named per the hierarchy.
-- [ ] `traceId` from event body → span trace_id. Verify by hex match.
-- [ ] On terminal failure: pipeline span has `status=ERROR` with `error.type` attribute.
+- [x] Use `opentelemetry.sdk.trace.export.in_memory_span_exporter.InMemorySpanExporter` in tests. Process 1 event. Assert: span tree has root `cv.pipeline` with 5 child spans named per the hierarchy.
+- [x] `traceId` from event body → span trace_id. Verify by hex match.
+- [x] On terminal failure: pipeline span has `status=ERROR` with `error.type` attribute.
 
 ### Manual verification (post-deploy)
-- [ ] `curl http://localhost:9090/api/v1/query?query=cv_documents_processed_total` returns data after running an event through.
-- [ ] Grafana CV dashboard renders all panels with non-empty data.
-- [ ] Zipkin UI shows full trace from documents-service → cv-service → documents-service.
+- [x] `curl http://localhost:9090/api/v1/query?query=cv_documents_processed_total` returns data after running an event through.
+- [x] Grafana CV dashboard renders all panels with non-empty data.
+- [x] Zipkin UI shows full trace from documents-service → cv-service → documents-service.
 
 ### Dashboard JSON validation
-- [ ] `jq empty < infra/grafana/dashboards/cv.json` passes
-- [ ] Dashboard imports cleanly into Grafana on container start (no errors in Grafana log)
+- [x] `jq empty < infra/grafana/dashboards/cv.json` passes
+- [x] Dashboard imports cleanly into Grafana on container start (no errors in Grafana log)
 
 ## Definition of Done
 
-- [ ] All observability files implemented
-- [ ] All 7 metric names present
-- [ ] Span tree structured correctly
-- [ ] Prometheus scrapes successfully
-- [ ] Grafana dashboard auto-provisioned and renders
-- [ ] All tests pass
-- [ ] `progress/README.md` STEP-09 row marked ✅
+- [x] All observability files implemented
+- [x] All 7 metric names present
+- [x] Span tree structured correctly
+- [x] Prometheus scrapes successfully
+- [x] Grafana dashboard auto-provisioned and renders
+- [x] All tests pass
+- [x] `progress/README.md` STEP-09 row marked ✅
 
 ## Notes
 
 - Reuse existing Grafana dashboard naming/folder conventions in `infra/grafana/dashboards/`.
 - The rabbitmq-exporter is already running in compose (via the existing infra setup). Confirm; if not, add it.
 - Span attributes follow OTel semantic conventions where possible (`messaging.system=rabbitmq`, `messaging.destination=cv.events`, `messaging.message_id=<delivery_tag>`).
+
+## Regressions Caught
+
+1. **OTel `TracerProvider` once-set guard** — `opentelemetry.trace.set_tracer_provider` enforces a single install per process. Tests need to swap providers between cases (each fixture installs a fresh `InMemorySpanExporter`-backed provider). Standard OTel test escape hatch is to reset `trace._TRACER_PROVIDER_SET_ONCE._done = False`; otherwise the second `setup_tracing(...)` is silently ignored and tests assert against an empty exporter. Documented inside `_force_reset_once_flag` in `cv_service/observability/tracing.py`. The same helper is called at app boot so a re-import in dev (uvicorn `--reload`) does not silently keep the previous Zipkin endpoint.
+2. **W3C traceparent vs legacy shim** — STEP-07's publisher emitted a free-form `traceparent: <trace_id>` header (just stuffed the documents-service-assigned trace_id into the header). That is not W3C-conformant: traceparent must be `00-<traceid>-<spanid>-<flags>`. STEP-09 swaps to the OTel propagator, which requires an active span context to inject. Existing `test_traceid_present_in_body_and_headers` updated to (a) wrap the publish in `start_pipeline_span`, (b) call `setup_tracing()` so OTel has a recording provider, and (c) assert the W3C regex format. The JSON body's `traceId` remains the canonical correlation id for non-OTel consumers (logs, audit events).
+3. **prom_client metric reset between tests** — `prometheus_client.REGISTRY` is process-global; the FastAPI Instrumentator can only read the default registry. Naive test patterns that unregister + re-register break import-time references in test modules. The pragmatic fix is in-place reset: `Counter.clear()` / `Histogram.clear()` for labeled metrics, `_value.set(0)` for unlabeled. Documented in `reset_metrics()` and used by the `prometheus_registry` autouse fixture.
+4. **OcrBreaker state gauge timing** — Initial breaker construction is synchronous and runs before the `OcrEngine` is fully wired in `cv_service.main`. The breaker emits `record_breaker_state("closed")` from `__init__` so the gauge has a value at scrape time even before the first OCR call (otherwise Grafana shows "no data" for a fresh boot, which is indistinguishable from a missing series).
