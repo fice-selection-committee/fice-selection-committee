@@ -1,6 +1,6 @@
 # STEP-06 — Field Extractors
 
-**Status**: ⏳ TODO
+**Status**: ✅ DONE
 **Depends on**: STEP-05
 **Blocks**: STEP-08
 
@@ -126,14 +126,50 @@ def extract(document_type: str, ocr: OcrResult) -> ExtractionResult:
 
 ## Definition of Done
 
-- [ ] All 4 extractor files created
-- [ ] Router dispatches correctly
-- [ ] All ~15 parametrized tests pass
-- [ ] `ruff` + `mypy --strict` clean
-- [ ] `progress/README.md` STEP-06 row marked ✅
+- [x] All 4 extractor files created
+- [x] Router dispatches correctly
+- [x] All ~15 parametrized tests pass (**40 gates green**, incl. 20 parametrised IPN cases)
+- [x] `ruff` + `mypy --strict` clean
+- [x] `progress/README.md` STEP-06 row marked ✅
 
 ## Notes
 
 - The 10 valid + 10 invalid IPN samples should be **synthetic** (computed via the algorithm), not real people's IDs.
 - Foreign-passport extractor handles **TD3 only** (2 × 44 chars). TD1 (3 × 30) is out-of-scope; document this.
 - Ukrainian internal passport in card form (since 2016) has its own MRZ on the back; if MRZ is detected on a `passport` document, it overrides label-based extraction. Handle gracefully but test deferred to STEP-13 load test fixtures.
+
+## Regressions Caught
+
+Non-obvious decisions / fixes made during execution. Captured here so STEP-07 → STEP-14 inherit the lessons.
+
+### MRZ two-digit year inference — 50/50 pivot, not "current year + 5"
+
+The spec proposed `YY > current_yy + 5 → 19xx, else 20xx`. With the 2026 anchor that resolves an expiry of `35` to 1935 — wrong for any future expiry beyond a 5-year window. Replaced with the de-facto-standard 50/50 pivot:
+
+- `YY > 50` → `19YY`
+- `YY ≤ 50` → `20YY`
+
+Documented in `cv_service.extraction.foreign_passport`'s module docstring. The fixture set covers both directions: `940315` (DOB) → 1994-03-15, `350101` (expiry) → 2035-01-01.
+
+### Programmatic OCR fixtures, not JSON files
+
+The "Files to Create" list mentioned `tests/extraction/fixtures/*.json`. Built tokens programmatically in `tests/extraction/conftest.py` instead: the parametric IPN suite (10 valid + 10 invalid) computes IPNs via the same mod-11 algorithm the extractor uses, and serialising those to JSON would add a maintenance surface without coverage upside. STEP-08 contract tests can synthesise their own JSON if they want to round-trip through the wire format.
+
+### Bypass `cv_service.ocr.__init__` to avoid paddle import in extraction tests
+
+`tests/extraction/conftest.py` imports `OcrResult` / `OcrToken` directly from `cv_service.ocr.models` rather than the package surface. The package `__init__.py` re-exports those names but also imports `OcrEngine` → `paddleocr` → `paddle`, which triggers `google.protobuf` and `astor` `DeprecationWarning` instances under Python 3.12. Even with the deeper-module import, Python still runs `cv_service.ocr.__init__` (PEP 328); the project-wide `filterwarnings = ["error"]` policy then turns those into collection errors. Added two new ignores to `[tool.pytest.ini_options].filterwarnings` matching the existing paddle / paddleocr / ppocr quarantine pattern:
+
+- `ignore::DeprecationWarning:google.protobuf.*`
+- `ignore::DeprecationWarning:astor.*`
+
+### Passport label-value boundary case — touching x is acceptable
+
+Initial `_find_value_to_right_of` used `_bbox_x_start(token) <= label_x_end` as the "to-the-right" predicate, which excluded values whose bbox starts exactly where the label ends (the "По батькові" → "ГРИГОРОВИЧ" pair in the golden fixture). Loosened to strict `<` so touching boundaries pass through. This is the only difference between the green golden test and a 6/7 partial.
+
+### IPN tie-break — highest confidence, not first match
+
+Spec said "first 10-digit token". Switched to "highest-confidence 10-digit token" — robust against page numbers / phone fragments / OCR noise that may precede the legitimate IPN. The parametric `test_picks_highest_confidence_candidate_when_multiple_present` gate pins this behaviour.
+
+### `tests/extraction/**` + `src/cv_service/extraction/**` opt into RUF001/002/003 ignores
+
+Same pattern as `tests/ocr/**` (STEP-05). The Cyrillic label tables (`Прізвище`, `Ім'я`, `По батькові`) and the apostrophe-variant character class (`'’`) trip ambiguous-unicode checks otherwise. The `noqa` per-line approach is fragile across formatter line-wraps; the per-file-ignores entry is the proven pattern in this repo.
