@@ -44,6 +44,9 @@ zxing = "3.5.3"
 # ── Serialization ─────────────────────────────────────────
 jackson = "2.19.0"
 
+# ── Validation ────────────────────────────────────────────
+# jakarta.validation-api version managed by spring-boot BOM
+
 # ── Misc ───────────────────────────────────────────────────
 dotenv = "4.0.0"
 jspecify = "1.0.0"
@@ -137,6 +140,10 @@ zxing-javase = { module = "com.google.zxing:javase", version.ref = "zxing" }
 
 # ── Serialization ─────────────────────────────────────────
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+
+# ── Validation ────────────────────────────────────────────
+# Version comes from spring-boot BOM imported by sc.library-conventions
+jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api" }
 
 # ── Misc ───────────────────────────────────────────────────
 dotenv = { module = "me.paulschwarz:spring-dotenv", version.ref = "dotenv" }
