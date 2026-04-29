@@ -194,6 +194,31 @@ jobs:
             rabbitmq/definitions.example.json > rabbitmq/definitions.json
           echo "Generated rabbitmq/definitions.json with hash for user '${RABBIT_USER}'"
 
+      - name: Rewrite postgres/init/01-create-dbs.sql for CI
+        if: steps.token.outputs.have_token == 'true'
+        working-directory: infra
+        run: |
+          # The committed 01-create-dbs.sql uses :ID_USER style placeholders that
+          # postgres' docker-entrypoint-initdb.d does NOT substitute (psql -v vars
+          # aren't passed). The bootstrap PowerShell rewrites this file at local
+          # setup time; CI needs the same.
+          #
+          # Per audit of every service's application.yml on develop:
+          #   - identity / environment / admission / documents / telegram-bot
+          #     all use ${POSTGRES_DB} (= selection-committee) with ${POSTGRES_USER}
+          #     (= scadmin) — those credentials are created by the postgres
+          #     entrypoint from RABBITMQ_DEFAULT_USER/PASS env vars, no extra DDL needed.
+          #   - notifications uses sc_notifications / scnotifications — needs creation.
+          #   - gateway has no datasource.
+          cat > postgres/init/01-create-dbs.sql <<'SQL'
+          -- Notifications service has its own DB + user.
+          -- Other services share the admin DB created by the postgres entrypoint.
+          CREATE USER scnotifications WITH PASSWORD 'scnotifications';
+          CREATE DATABASE sc_notifications OWNER scnotifications;
+          GRANT ALL PRIVILEGES ON DATABASE sc_notifications TO scnotifications;
+          SQL
+          echo "Rewrote postgres/init/01-create-dbs.sql for CI"
+
       - name: Generate JWT signing keys
         if: steps.token.outputs.have_token == 'true'
         working-directory: infra
@@ -250,16 +275,20 @@ jobs:
         if: failure() && steps.token.outputs.have_token == 'true'
         working-directory: infra
         run: |
-          # Capture every service so a "container X unhealthy" failure has
-          # the actual stderr from X in the upload-artifact, not just whichever
-          # services we pre-listed. Useful when a downstream cascades from an
-          # upstream's startup failure.
-          for svc in cv-service documents-service identity-service environment-service \
-                     admission-service notifications-service gateway telegram-bot-service web; do
-            docker compose -f docker-compose.yml -f docker-compose.services.yml logs --no-color "$svc" \
-              > "$svc.log" 2>&1 || true
+          # Capture every container's stdout/stderr by container name so we get
+          # something even if compose-level service-name resolution flakes after
+          # `--wait` failure. The previous approach using `docker compose logs <svc>`
+          # produced empty logs in run 25101358535 because compose's view of the
+          # services differed from the running container set after the failure.
+          docker compose -f docker-compose.yml -f docker-compose.services.yml ps -a \
+            > stack-ps.log 2>&1 || true
+          for cname in sc-cv sc-documents sc-identity sc-environment sc-admission \
+                       sc-notifications sc-gateway sc-telegram-bot sc-web; do
+            docker logs "$cname" > "${cname}.log" 2>&1 || echo "(no container $cname)" > "${cname}.log"
           done
-          docker compose -f docker-compose.yml -f docker-compose.services.yml ps -a > stack-ps.log 2>&1 || true
+          # Also dump postgres + rabbitmq for init failures
+          docker logs selection-committee-postgres-1 > postgres.log 2>&1 || true
+          docker logs selection-committee-rabbitmq-1 > rabbitmq.log 2>&1 || true
 
       - name: Upload k6 results + logs
         if: always() && steps.token.outputs.have_token == 'true'
