@@ -228,6 +228,14 @@ jobs:
           else
             echo "::warning::gen-jwt-keys.sh not found in infra — skipping; rely on existing secrets/."
           fi
+          # openssl creates files with 0600 by default. Identity-service runs as
+          # non-root spring user inside its container (Spring Boot OCI default);
+          # the bind mount preserves host permissions, so 0600 = AccessDenied.
+          # Run 25102230988 had identity crash on
+          # `java.nio.file.AccessDeniedException: /run/secrets/private_key.pem`.
+          # 0644 keeps owner-write but lets the in-container user read.
+          chmod 0644 secrets/jwtRS256.* 2>/dev/null || true
+          ls -la secrets/
 
       - name: Bring up the stack
         if: steps.token.outputs.have_token == 'true'
