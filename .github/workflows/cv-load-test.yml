@@ -91,6 +91,19 @@ jobs:
         if: steps.token.outputs.have_token == 'true'
         uses: docker/setup-buildx-action@v3
 
+      - name: Provision .env from .env.example
+        if: steps.token.outputs.have_token == 'true'
+        working-directory: infra
+        run: |
+          # Compose interpolates ${VAR} from a local .env in the working directory.
+          # Without this, COMPOSE_PROJECT_NAME / POSTGRES_* / RABBIT_* / MINIO_*
+          # all evaluate to empty and `docker compose up` fails with
+          # "project name must not be empty".
+          if [ ! -f .env ]; then
+            cp .env.example .env
+            echo "Provisioned infra/.env from .env.example"
+          fi
+
       - name: Generate JWT signing keys
         if: steps.token.outputs.have_token == 'true'
         working-directory: infra
