@@ -222,12 +222,20 @@ jobs:
             grafana/k6 run --summary-export=/scripts/k6-summary.json /scripts/cv-pipeline.js
           echo "k6 exit code: $?"
 
-      - name: Capture cv-service logs on failure
+      - name: Capture all service logs on failure
         if: failure() && steps.token.outputs.have_token == 'true'
         working-directory: infra
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.services.yml logs cv-service > cv-service.log || true
-          docker compose -f docker-compose.yml -f docker-compose.services.yml logs documents-service > documents-service.log || true
+          # Capture every service so a "container X unhealthy" failure has
+          # the actual stderr from X in the upload-artifact, not just whichever
+          # services we pre-listed. Useful when a downstream cascades from an
+          # upstream's startup failure.
+          for svc in cv-service documents-service identity-service environment-service \
+                     admission-service notifications-service gateway telegram-bot-service web; do
+            docker compose -f docker-compose.yml -f docker-compose.services.yml logs --no-color "$svc" \
+              > "$svc.log" 2>&1 || true
+          done
+          docker compose -f docker-compose.yml -f docker-compose.services.yml ps -a > stack-ps.log 2>&1 || true
 
       - name: Upload k6 results + logs
         if: always() && steps.token.outputs.have_token == 'true'
@@ -236,8 +244,7 @@ jobs:
           name: cv-load-results
           path: |
             server/services/selection-committee-e2e-tests/load/k6-summary.json
-            infra/cv-service.log
-            infra/documents-service.log
+            infra/*.log
           retention-days: 14
           if-no-files-found: ignore
 
