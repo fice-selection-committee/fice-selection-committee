@@ -87,6 +87,72 @@ jobs:
           token: ${{ secrets.SC_BOT_TOKEN }}
           path: infra
 
+      # docker-compose.services.yml builds 6 additional Java services + the
+      # Next.js frontend from source. Missing any one of them fails compose
+      # at the `lstat` step before container creation.
+      - name: Clone identity-service polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-identity-service
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-identity-service
+
+      - name: Clone environment-service polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-environment-service
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-environment-service
+
+      - name: Clone admission-service polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-admission-service
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-admission-service
+
+      - name: Clone notifications-service polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-notifications-service
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-notifications-service
+
+      - name: Clone gateway polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-gateway
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-gateway
+
+      - name: Clone telegram-bot-service polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-telegram-bot-service
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: server/services/selection-committee-telegram-bot-service
+
+      - name: Clone web polyrepo
+        if: steps.token.outputs.have_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: fice-selection-committee/selection-committee-web
+          ref: develop
+          token: ${{ secrets.SC_BOT_TOKEN }}
+          path: client/web
+
       - name: Set up Docker Buildx
         if: steps.token.outputs.have_token == 'true'
         uses: docker/setup-buildx-action@v3
