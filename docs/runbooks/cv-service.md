@@ -47,9 +47,26 @@ Triage in this order:
 
 ---
 
-## Manual re-OCR for a single document
+## Re-OCR for a single document
 
-There is no admin REST endpoint yet (deferred). For now, republish via `rabbitmqadmin`:
+**Preferred (v1.4.1+): admin REST endpoint.**
+
+```bash
+curl -X POST \
+  http://${GATEWAY_HOST:-localhost}:8080/api/v1/admin/documents/12345/reprocess-ocr \
+  -H "Authorization: Bearer $ADMIN_JWT"
+```
+
+| Outcome | Status | Body |
+|---|---|---|
+| Re-process queued | `202 Accepted` | `{"documentId": 12345, "status": "PENDING", "queuedAt": "..."}` |
+| Document not found | `404 Not Found` | error |
+| Document type not CV-eligible (only `passport` / `ipn` / `foreign_passport` are) | `409 Conflict` | error |
+| Caller not ADMIN | `403 Forbidden` | error |
+
+The endpoint resets the `ocr_results` row to `PENDING` and republishes via the existing `CvRequestPublisher` — same circuit-breaker fallback as the upload path, so broker downtime is silently swallowed and you can simply retry. Audit log captures the reprocess event.
+
+**Fallback when documents-service is unhealthy: manual AMQP republish.**
 
 ```bash
 # 1. Build the JSON payload — the wire shape is documented in
