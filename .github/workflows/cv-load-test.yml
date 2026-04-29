@@ -170,6 +170,30 @@ jobs:
             echo "Provisioned infra/.env from .env.example"
           fi
 
+      - name: Generate rabbitmq/definitions.json with hashed password
+        if: steps.token.outputs.have_token == 'true'
+        working-directory: infra
+        run: |
+          # rabbitmq/definitions.json is gitignored (it contains the SHA256-salted
+          # password hash for the scrabbit user). The compose RABBITMQ_SERVER_
+          # ADDITIONAL_ERL_ARGS bind-mounts that file as a load-on-startup arg, so
+          # if it's missing rabbitmq half-initializes (no users created) and AMQP
+          # clients see ACCESS_REFUSED. Generate it from .example by computing
+          # rabbit_password_hashing_sha256 = base64(salt || sha256(salt || pwd))
+          # for the configured ${RABBIT_PASS}.
+          set -a; . ./.env; set +a
+          HASH=$(python3 - <<'PYEOF'
+          import hashlib, base64, secrets, os
+          pwd = os.environ['RABBIT_PASS'].encode()
+          salt = secrets.token_bytes(4)
+          print(base64.b64encode(salt + hashlib.sha256(salt + pwd).digest()).decode())
+          PYEOF
+          )
+          # Use a non-/ delimiter for sed because the hash may contain /
+          sed "s|<< REPLACE_WITH_PASSWORD_HASH >>|${HASH}|" \
+            rabbitmq/definitions.example.json > rabbitmq/definitions.json
+          echo "Generated rabbitmq/definitions.json with hash for user '${RABBIT_USER}'"
+
       - name: Generate JWT signing keys
         if: steps.token.outputs.have_token == 'true'
         working-directory: infra
