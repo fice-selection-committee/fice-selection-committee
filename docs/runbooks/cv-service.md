@@ -127,6 +127,60 @@ Each instance has independent in-memory dedup. Acceptable until measured duplica
 
 ---
 
+## Reproducing the nightly load run locally
+
+The `.github/workflows/cv-load-test.yml` workflow brings up the full 9-service stack and runs k6 against it. To reproduce locally (skip the workflow's polyrepo-clone steps since you already have them):
+
+```bash
+# 1. From the infra repo: provision env + rabbitmq definitions + JWT keys.
+cd selection-committee-infra
+cp -n .env.example .env
+
+# Generate the rabbitmq password hash (definitions.json is gitignored).
+set -a; . ./.env; set +a
+HASH=$(python3 -c "
+import hashlib, base64, secrets, os
+pwd = os.environ['RABBIT_PASS'].encode()
+salt = secrets.token_bytes(4)
+print(base64.b64encode(salt + hashlib.sha256(salt + pwd).digest()).decode())
+")
+sed "s|<< REPLACE_WITH_PASSWORD_HASH >>|${HASH}|" rabbitmq/definitions.example.json > rabbitmq/definitions.json
+
+# Replace the placeholder postgres init SQL with a CI-correct version
+# (the .sql in the repo uses :ID_USER style placeholders that postgres'
+# entrypoint does NOT substitute; bootstrap rewrites it locally too).
+cat > postgres/init/01-create-dbs.sql <<'SQL'
+CREATE USER scnotifications WITH PASSWORD 'scnotifications';
+CREATE DATABASE sc_notifications OWNER scnotifications;
+GRANT ALL PRIVILEGES ON DATABASE sc_notifications TO scnotifications;
+SQL
+
+# JWT keys + 0644 perms so the in-container spring user can read them.
+bash scripts/gen-jwt-keys.sh
+chmod 0644 secrets/jwtRS256.*
+
+# 2. Bring up the full stack.
+docker compose -f docker-compose.yml -f docker-compose.services.yml up -d --wait
+
+# 3. Generate fixtures + mint a JWT (the workflow uses an internal endpoint;
+#    locally you can register/login via the regular API or paste an applicant token).
+cd ../selection-committee-e2e-tests/load
+python3 generate-fixtures.py --count 20
+chmod 0777 .   # so the dockerized k6 user can write k6-summary.json
+
+JWT_TOKEN=<paste-applicant-token>
+docker run --rm --network=host \
+  -v "$PWD:/scripts" \
+  -e BASE_URL=http://localhost:8080 \
+  -e PROM_URL=http://localhost:9090 \
+  -e JWT_TOKEN="${JWT_TOKEN}" \
+  grafana/k6 run --summary-export=/scripts/k6-summary.json /scripts/cv-pipeline.js
+```
+
+The summary lands in `selection-committee-e2e-tests/load/k6-summary.json`. To update the regression baseline after a material change, copy `iteration_duration p(95)` and friends into `progress/baselines/cv-load-baseline.json` (monorepo) and open a small chore PR.
+
+---
+
 ## Common pitfalls (from past regressions)
 
 * **`wget --spider` returns 405** against the FastAPI health endpoint — use `wget -q -O - http://localhost:8088/health > /dev/null` (GET, output discarded) in Compose health checks. STEP-01 regression.
