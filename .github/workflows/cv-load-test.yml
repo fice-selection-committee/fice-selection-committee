@@ -271,6 +271,13 @@ jobs:
         if: steps.token.outputs.have_token == 'true'
         working-directory: server/services/selection-committee-e2e-tests/load
         run: |
+          # k6 runs inside its own container as a non-root user; the host bind
+          # mount inherits the runner's perms (0755 on the dir, 0644 on files),
+          # which is read-only for everyone but the runner UID. The k6 container
+          # user can't write k6-summary.json without explicit world-write on
+          # the dir. Run 25103810012 had:
+          #   "could not open '/scripts/k6-summary.json': open ...: permission denied"
+          chmod 0777 .
           docker run --rm --network=host \
             -v "$PWD:/scripts" \
             -e BASE_URL=http://localhost:8080 \
